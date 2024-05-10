@@ -1,27 +1,29 @@
 import { createServerClient } from '@/lib/pocketbase';
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation';
-import { Button } from '@mui/material'
+import { Box, Button, Fab, Typography } from '@mui/material'
 import Item from '@/lib/item'
+import AnimeList from '@/lib/component/AnimeList/AnimeList';
+import AddIcon from '@mui/icons-material/Add'
 
 export default async function Home() {
     const pb = createServerClient(cookies())
     if (!pb.authStore.isValid) {
         return redirect('/login')
     }
-    const data = await pb.collection('animes').getFullList()
     return (
         <div>
-            <h1>Hi</h1>
-            <Button variant='contained'>Hi</Button>
             <div>
-                <ol>
-                    {data.map((anime) => (
-                        // <li key={anime.id}>{anime.name}</li>
-                        <Item key={anime.id} id={anime.id} name={anime.name} />
-                    ))}
-                </ol>
+                <Typography variant="h3" align="center">Anime List</Typography>
+                <AnimeList title="Watched" filter="status = 'finished'" sort="+finish_time" />
+                <AnimeList title="To Watch" filter="status = 'pending'" sort="+created" />
             </div>
+
+            <Box>
+                <Fab sx={{position: 'fixed', right: 10, bottom: 10}} size="medium" color="primary">
+                    <AddIcon />
+                </Fab>
+            </Box>
         </div>
     );
 }

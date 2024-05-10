@@ -1,3 +1,4 @@
+import { Box, Container, Paper } from "@mui/material";
 
 
 
@@ -8,8 +9,14 @@ export default function MainLayout({
 }>) {
     return (
         <div>
-            <h2>This is from layout</h2>
-            {children}
+            <Container maxWidth={false} sx={{maxWidth: '700px'}} disableGutters>
+                <Paper elevation={5}>
+                    <Box padding={{ sm: 6, xs: 2 }}>
+                        {children}
+                    </Box>
+                </Paper>
+            </Container>
+            
         </div>
     )
 }
