@@ -5,6 +5,8 @@ import { Box, Button, Fab, Typography } from '@mui/material'
 import Item from '@/lib/item'
 import AnimeList from '@/lib/component/AnimeList/AnimeList';
 import AddIcon from '@mui/icons-material/Add'
+import AppMenu from '@/lib/component/AppMenu/AppMenu';
+import CardLayout from './cardLayout';
 
 export default async function Home() {
     const pb = createServerClient(cookies())
@@ -24,6 +26,10 @@ export default async function Home() {
                     <AddIcon />
                 </Fab>
             </Box>
+
+            <AppMenu />
+
+            <CardLayout />
         </div>
     );
 }

@@ -6,6 +6,35 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { deepmerge } from '@mui/utils'
 import { useMemo } from 'react';
 
+declare module '@mui/material/styles' {
+    interface Theme {
+        status: {
+            pending: string;
+            inProgress: string;
+            finished: string;
+            abandon: string;
+        };
+        downloadStatus: {
+            pending: string;
+            inProgress: string;
+            finished: string;
+        };
+    }
+    // allow configuration using `createTheme`
+    interface ThemeOptions {
+        status?: {
+            pending?: string;
+            inProgress?: string;
+            finished?: string;
+            abandon?: string;
+        };
+        downloadStatus?: {
+            pending?: string;
+            inProgress?: string;
+            finished?: string;
+        };
+    }
+}
 
 const roboto = Noto_Sans_TC({
     weight: ['300', '400', '500', '700'],
@@ -27,6 +56,34 @@ export const themeOptions = {
     },
 } as Theme;
 
+export const statusLightColorTheme = {
+    status: {
+        pending: 'palette.text.primary',
+        inProgress: 'palette.text.primary',
+        finished: '#ab1000',
+        abandon: '#7e00de'
+    },
+    downloadStatus: {
+        pending: 'palette.text.primary',
+        inProgress: 'palette.text.primary',
+        finished: '#00651a'
+    }
+}
+
+export const statusDarkColorTheme = {
+    status: {
+        pending: 'palette.text.primary',
+        inProgress: 'palette.text.primary',
+        finished: '#c79b96',
+        abandon: '#b98bdc'
+    },
+    downloadStatus: {
+        pending: 'palette.text.primary',
+        inProgress: 'palette.text.primary',
+        finished: '#85b792'
+    }
+}
+
 export default function CustomThemeProvider({
     children,
 }: Readonly<{
@@ -34,10 +91,12 @@ export default function CustomThemeProvider({
 }>) {
 
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)') ? 'dark' : 'light'
+    const statusColor = prefersDarkMode == 'light' ? statusLightColorTheme : statusDarkColorTheme
     const theme = useMemo(() => createTheme(deepmerge(themeOptions, {
         palette: {
             mode: prefersDarkMode,
         },
+        ...statusColor,
     })), [prefersDarkMode])
     
     return (

@@ -26,7 +26,7 @@ export default async function AnimeList(props: AnimeListProps) {
             { (
                 <ol>
                 {animes.map((anime) => (
-                    <AnimeListItem key={anime.id} name={anime.name} status={anime.status} downloadStatus={anime.download_status} tags={anime.expand?.tags || []} />
+                    <AnimeListItem key={anime.id} id={anime.id} name={anime.name} status={anime.status} downloadStatus={anime.download_status} tags={anime.expand?.tags || []} />
                 ))}
                 </ol>
             )}
