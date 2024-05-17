@@ -7,6 +7,7 @@ import AnimeList from '@/lib/component/AnimeList/AnimeList';
 import AddIcon from '@mui/icons-material/Add'
 import AppMenu from '@/lib/component/AppMenu/AppMenu';
 import CardLayout from './cardLayout';
+import EditorLayout from './editorLayout';
 
 export default async function Home() {
     const pb = createServerClient(cookies())
@@ -30,6 +31,7 @@ export default async function Home() {
             <AppMenu />
 
             <CardLayout />
+            <EditorLayout />
         </div>
     );
 }

@@ -1,5 +1,5 @@
 'use client'
-import { closeCard, useGetAnimeQuery } from "@/lib/redux/animeSlice"
+import { closeCard, openEditor, useGetAnimeQuery } from "@/lib/redux/animeSlice"
 import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Divider, Fab, IconButton, Rating, Skeleton, Typography } from "@mui/material"
 import { fieldSorter } from '@/lib/vendor/sortHelper'
 import TagChip from '@/lib/component/AnimeList/TagChip'
@@ -92,6 +92,7 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                         display: 'flex',
                         flexDirection: 'column-reverse',
                         transition: 'background .5s',
+                        backgroundColor: '#83838324',
                     }}
                     image={posterUrl || undefined}
                 ></CardMedia>
@@ -108,6 +109,7 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                     }}
                     size='small'
                     color='primary'
+                    onClick={() => dispatch(openEditor(id))}
                 ><EditIcon /></Fab>
 
                 {/* Title + Copy Button */}

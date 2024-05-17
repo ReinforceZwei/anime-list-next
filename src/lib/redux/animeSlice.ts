@@ -27,11 +27,13 @@ export const {
 
 export interface AnimeState {
     viewingId: string | null
+    editingId: string | null
     open: boolean
 }
 
 const initialState: AnimeState = {
     viewingId: null,
+    editingId: null,
     open: false,
 }
 
@@ -46,6 +48,12 @@ export const animeSlice = createSlice({
         closeCard: (state) => {
             state.open = false
             state.viewingId = null
+        },
+        openEditor: (state, action: PayloadAction<string>) => {
+            state.editingId = action.payload
+        },
+        closeEditor: (state) => {
+            state.editingId = null
         }
     }
 })
@@ -53,6 +61,8 @@ export const animeSlice = createSlice({
 export const {
     openCard,
     closeCard,
+    openEditor,
+    closeEditor,
 } = animeSlice.actions
 
 export default animeSlice.reducer
