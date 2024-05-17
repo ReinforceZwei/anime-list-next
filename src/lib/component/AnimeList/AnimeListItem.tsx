@@ -3,7 +3,7 @@ import { Chip, useTheme } from '@mui/material'
 import TagChip from '@/lib/component/AnimeList/TagChip'
 import { fieldSorter } from '@/lib/vendor/sortHelper'
 import { useAppDispatch } from '@/lib/hooks'
-import { open } from '@/lib/redux/animeSlice'
+import { openCard } from '@/lib/redux/animeSlice'
 
 interface AnimeListItemProps {
     id: string
@@ -32,7 +32,7 @@ export default function AnimeListItem(props: AnimeListItemProps) {
     const sortedTags = tags.sort(fieldSorter(['weight', 'name']))
 
     const handleOnClick = () => {
-        dispatch(open(id))
+        dispatch(openCard(id))
     }
 
 

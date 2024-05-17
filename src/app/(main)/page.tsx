@@ -22,7 +22,7 @@ export default async function Home() {
             </div>
 
             <Box>
-                <Fab sx={{position: 'fixed', right: 10, bottom: 10}} size="medium" color="primary">
+                <Fab sx={{position: 'fixed', right: 10, bottom: 10}} size="small" color="primary">
                     <AddIcon />
                 </Fab>
             </Box>

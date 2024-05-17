@@ -39,11 +39,11 @@ export const animeSlice = createSlice({
     name: 'anime',
     initialState,
     reducers: {
-        open: (state, action: PayloadAction<string>) => {
+        openCard: (state, action: PayloadAction<string>) => {
             state.viewingId = action.payload
             state.open = true
         },
-        close: (state) => {
+        closeCard: (state) => {
             state.open = false
             state.viewingId = null
         }
@@ -51,21 +51,21 @@ export const animeSlice = createSlice({
 })
 
 export const {
-    open,
-    close,
+    openCard,
+    closeCard,
 } = animeSlice.actions
 
 export default animeSlice.reducer
 
 interface AnimeRecord extends RecordModel {
     name: string
-    status: 'pending' | 'in-progress' | 'finished' | 'abandon'
-    download_status: 'pending' | 'in-progress' | 'finished'
-    finish_time: string
-    rating: number
-    comment: string
-    remark: string
-    tmdb_id: string
+    status?: 'pending' | 'in-progress' | 'finished' | 'abandon'
+    download_status?: 'pending' | 'in-progress' | 'finished'
+    finish_time?: string
+    rating?: number
+    comment?: string
+    remark?: string
+    tmdb_id?: string
     tags: string[]
     user_id: string
 }

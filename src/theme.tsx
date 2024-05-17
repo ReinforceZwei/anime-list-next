@@ -90,7 +90,11 @@ export default function CustomThemeProvider({
     children: React.ReactNode;
 }>) {
 
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)') ? 'dark' : 'light'
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)', {
+        ssrMatchMedia: (query) => ({
+            matches: query == '(prefers-color-scheme: dark)'
+        })
+    }) ? 'dark' : 'light'
     const statusColor = prefersDarkMode == 'light' ? statusLightColorTheme : statusDarkColorTheme
     const theme = useMemo(() => createTheme(deepmerge(themeOptions, {
         palette: {

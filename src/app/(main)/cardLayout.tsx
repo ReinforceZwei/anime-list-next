@@ -19,6 +19,7 @@ export default function CardLayout() {
                 top: 5,
                 maxWidth: 350,
                 width: '100%',
+                zIndex: 'drawer',
             }}>
                 <AnimeCard2 id={id} />
             </Box>
