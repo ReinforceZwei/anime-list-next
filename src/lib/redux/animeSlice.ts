@@ -10,7 +10,7 @@ export const animeApi = baseApi.injectEndpoints({
                 const pb = createBrowserClient()
                 try {
                     const data = await pb.collection<AnimeRecord>('animes').getOne(id, {
-                        expand: 'tags'
+                        expand: 'tags,categories'
                     })
                     return { data }
                 } catch (error) {
@@ -79,3 +79,16 @@ interface AnimeRecord extends RecordModel {
     tags: string[]
     user_id: string
 }
+
+export const STATUS_OPTIONS = [
+    { value: 'pending', label: 'Pending' },
+    { value: 'in-progress', label: 'In progress' },
+    { value: 'finished', label: 'Finished' },
+    { value: 'abandon', label: 'Abandon' },
+]
+
+export const DOWNLOAD_STATUS_OPTIONS = [
+    { value: 'pending', label: 'Pending' },
+    { value: 'in-progress', label: 'In progress' },
+    { value: 'finished', label: 'Finished' },
+]

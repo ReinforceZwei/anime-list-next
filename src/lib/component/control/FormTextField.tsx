@@ -1,17 +1,18 @@
 'use client'
 
 import { TextField, TextFieldProps } from "@mui/material"
-import { Control, Controller } from "react-hook-form"
+import { Control, Controller, RegisterOptions } from "react-hook-form"
 
 interface FormTextFieldProps {
     control: Control<any>
     name: string
     label: string
     TextFieldProps?: TextFieldProps
+    rules?: RegisterOptions
 }
 
 export default function FormTextField(props: FormTextFieldProps) {
-    const { control, name, label, TextFieldProps } = props
+    const { control, name, label, TextFieldProps, rules } = props
 
 
     return (
@@ -30,6 +31,7 @@ export default function FormTextField(props: FormTextFieldProps) {
             )}
             name={name}
             control={control}
+            rules={rules}
         />
     )
 }
