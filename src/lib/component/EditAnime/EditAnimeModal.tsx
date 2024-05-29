@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAnimeQuery, STATUS_OPTIONS, DOWNLOAD_STATUS_OPTIONS } from "@/lib/redux/animeSlice"
+import { useGetAnimeQuery, STATUS_OPTIONS, DOWNLOAD_STATUS_OPTIONS, useUpdateAnimeMutation, AnimeRecord } from "@/lib/redux/animeSlice"
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, ListItemIcon, ListItemText, MenuItem, TextField, Typography, useMediaQuery, useTheme } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2'
 import { useEffect, useMemo, useState } from "react"
@@ -13,6 +13,7 @@ import FormRating from "@/lib/component/control/FormRating"
 import InfoIcon from '@mui/icons-material/Info';
 import StatusMenuItem, { getStatusIcon } from "./StatusMenuItem"
 import FormTagSelect from "../control/FormTagSelect"
+import { useRouter } from 'next/navigation'
 
 
 interface EditAnimeModalProps {
@@ -33,10 +34,13 @@ type FormValues = {
 
 export default function EditAnimeModal(props: EditAnimeModalProps) {
     const theme = useTheme()
+    const router = useRouter()
 
     const { id: animeId, onClose } = props
     const { data: anime, isFetching: isLoading } = useGetAnimeQuery(animeId)
     const { data: tags, isFetching: isTagsLoading } = useGetTagsQuery()
+
+    const [updateAnime] = useUpdateAnimeMutation()
 
     const [internalShow, setInternalShow] = useState(true)
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
@@ -60,12 +64,25 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
     useEffect(() => {
         if (!isLoading && anime) {
             // reset({...anime, tags: anime.tags.map((tag) => tagsById[tag])})
-            reset({...anime, tags: anime.expand.tags, categories: anime.expand.categories})
+            reset({...anime, tags: anime.expand?.tags || [], categories: anime.expand?.categories || []})
         }
     }, [anime, isLoading])
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data)
+        const final = {
+            ...data,
+            tags: data.tags?.map(x => x.id) || [],
+            categories: data.categories?.map(x => x.id) || [],
+        } as unknown
+        console.log(final)
+        updateAnime(final as AnimeRecord).unwrap().then(() => {
+            setInternalShow(false)
+            router.refresh()
+        }).catch((error) => {
+            console.error(error)
+            alert('Error update anime')
+        })
     }
 
     return (
@@ -167,7 +184,7 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
                         </FormSelect>
                     </Grid> */}
 
-                    <Grid xs={12}>
+                    <Grid xs>
                         <FormTagSelect
                             control={control}
                             name='tags'
@@ -184,6 +201,10 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
                                 }
                             }}
                         />
+                    </Grid>
+                    <Grid xs='auto'>
+                        <IconButton><InfoIcon /></IconButton>
+                        {/* <Button variant="outlined">Add</Button> */}
                     </Grid>
 
                     <Grid xs={12}>

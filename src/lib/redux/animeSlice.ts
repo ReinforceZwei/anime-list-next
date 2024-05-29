@@ -6,6 +6,7 @@ import { createBrowserClient } from "@/lib/pocketbase";
 export const animeApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAnime: builder.query<AnimeRecord, string>({
+            providesTags: (result) => result ? [{ type: 'animes', id: result.id }] : [{ type: 'animes', id: '*' }],
             queryFn: async (id) => {
                 const pb = createBrowserClient()
                 try {
@@ -17,12 +18,25 @@ export const animeApi = baseApi.injectEndpoints({
                     return { error: error }
                 }
             }
-        })
+        }),
+        updateAnime: builder.mutation<AnimeRecord, AnimeRecord>({
+            invalidatesTags: (result, error, arg) => [{ type: 'animes', id: arg.id }],
+            queryFn: async (anime) => {
+                const pb = createBrowserClient()
+                try {
+                    const data = await pb.collection<AnimeRecord>('animes').update(anime.id, anime)
+                    return { data }
+                } catch (error) {
+                    return { error: error }
+                }
+            }
+        }),
     })
 })
 
 export const {
-    useGetAnimeQuery
+    useGetAnimeQuery,
+    useUpdateAnimeMutation,
 } = animeApi
 
 export interface AnimeState {
@@ -67,7 +81,7 @@ export const {
 
 export default animeSlice.reducer
 
-interface AnimeRecord extends RecordModel {
+export interface AnimeRecord extends RecordModel {
     name: string
     status?: 'pending' | 'in-progress' | 'finished' | 'abandon'
     download_status?: 'pending' | 'in-progress' | 'finished'
