@@ -31,24 +31,39 @@ export const animeApi = baseApi.injectEndpoints({
                 }
             }
         }),
+        addAnime: builder.mutation<AnimeRecord, Partial<AnimeRecord>>({
+            invalidatesTags: [{ type: 'animes', id: '*' }],
+            queryFn: async (anime) => {
+                const pb = createBrowserClient()
+                try {
+                    const data = await pb.collection<AnimeRecord>('animes').create(anime)
+                    return { data }
+                } catch (error) {
+                    return { error: error }
+                }
+            }
+        }),
     })
 })
 
 export const {
     useGetAnimeQuery,
     useUpdateAnimeMutation,
+    useAddAnimeMutation,
 } = animeApi
 
 export interface AnimeState {
     viewingId: string | null
     editingId: string | null
     open: boolean
+    openAddAnime: boolean
 }
 
 const initialState: AnimeState = {
     viewingId: null,
     editingId: null,
     open: false,
+    openAddAnime: false,
 }
 
 export const animeSlice = createSlice({
@@ -68,7 +83,13 @@ export const animeSlice = createSlice({
         },
         closeEditor: (state) => {
             state.editingId = null
-        }
+        },
+        openAddAnime: (state) => {
+            state.openAddAnime = true
+        },
+        closeAddAnime: (state) => {
+            state.openAddAnime = false
+        },
     }
 })
 
@@ -77,6 +98,8 @@ export const {
     closeCard,
     openEditor,
     closeEditor,
+    openAddAnime,
+    closeAddAnime,
 } = animeSlice.actions
 
 export default animeSlice.reducer

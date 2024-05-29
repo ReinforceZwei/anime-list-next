@@ -8,6 +8,7 @@ import AddIcon from '@mui/icons-material/Add'
 import AppMenu from '@/lib/component/AppMenu/AppMenu';
 import CardLayout from './cardLayout';
 import EditorLayout from './editorLayout';
+import AddAnimeLayout from './addAnimeLayout';
 
 export default async function Home() {
     const pb = createServerClient(cookies())
@@ -22,16 +23,11 @@ export default async function Home() {
                 <AnimeList title="To Watch" filter="status = 'pending'" sort="+created" />
             </div>
 
-            <Box>
-                <Fab sx={{position: 'fixed', right: 10, bottom: 10}} size="small" color="primary">
-                    <AddIcon />
-                </Fab>
-            </Box>
-
             <AppMenu />
 
             <CardLayout />
             <EditorLayout />
+            <AddAnimeLayout />
         </div>
     );
 }
