@@ -20,6 +20,7 @@ export default async function Home() {
             <div>
                 <Typography variant="h3" align="center">Anime List</Typography>
                 <AnimeList title="Watched" filter="status = 'finished'" sort="+finish_time" />
+                <AnimeList title="Watching" filter="status = 'in-progress'" sort="+start_time" />
                 <AnimeList title="To Watch" filter="status = 'pending'" sort="+created" />
             </div>
 

@@ -17,20 +17,23 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useTransition } from "react"
 import CloseIcon from '@mui/icons-material/Close';
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { useRouter } from 'next/navigation'
 import GeneralControl from "./GeneralControl"
 import GutterlessTabPanel from "./GutterlessTabPanel";
+import updateStartTimeOnStatusChange from "./updateRules/updateStartTimeOnStatusChange";
+import updateFinishTimeOnStatusChange from "./updateRules/updateFinishTimeOnStatusChange";
+import { useRouterRefresh } from "@/lib/routerHooks";
 
 
 interface EditAnimeModalProps {
     id: string
-    onClose?: Function
+    onClose?: (requireRefresh: boolean, requireScroll: boolean) => void
 }
 
-type FormValues = {
+export type FormValues = {
     name: string
     status: 'pending' | 'in-progress' | 'finished' | 'abandon'
     download_status: 'pending' | 'in-progress' | 'finished'
@@ -39,13 +42,14 @@ type FormValues = {
     remark: string
     tags: string[]
     categories: string[]
+    start_time: string  // Datetime stored as string
+    finish_time: string // Datetime stored as string
 }
 
 type TabValues = 'general'
 
 export default function EditAnimeModal(props: EditAnimeModalProps) {
     const theme = useTheme()
-    const router = useRouter()
 
     const { id: animeId, onClose } = props
     const { data: anime, isFetching: isLoading } = useGetAnimeQuery(animeId)
@@ -56,8 +60,10 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
     const [internalShow, setInternalShow] = useState(true)
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
     const [tabValue, setTabValue] = useState<TabValues>('general')
+    const [requireScroll, setRequireScroll] = useState(false)
+    const [requireRefresh, setRequireRefresh] = useState(false)
 
-    const { handleSubmit, reset, setValue, setFocus, control } = useForm<FormValues>({
+    const { handleSubmit, reset, setValue, setFocus, control, formState } = useForm<FormValues>({
         defaultValues: {
             name: '',
             status: 'pending',
@@ -77,15 +83,27 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data)
-        const final = {
+        let final = {
             ...data,
             tags: data.tags?.map(x => x.id) || [],
             categories: data.categories?.map(x => x.id) || [],
-        } as unknown
+        } as FormValues
+
+        // Apply rules
+        final = updateStartTimeOnStatusChange(final, formState)
+        final = updateFinishTimeOnStatusChange(final, formState)
+
+        // If status changed, scroll to new position after page update
+        if (formState.dirtyFields.status) {
+            setRequireScroll(true)
+        }
+        setRequireRefresh(true)
+
+
         console.log(final)
-        updateAnime(final as AnimeRecord).unwrap().then(() => {
+        updateAnime(final as unknown as AnimeRecord).unwrap().then(() => {
             setInternalShow(false)
-            router.refresh()
+
         }).catch((error) => {
             console.error(error)
             alert('Error update anime')
@@ -100,7 +118,7 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
             fullWidth={true}
             maxWidth='sm'
             TransitionProps={{
-                onExited: () => {onClose && onClose()}
+                onExited: () => {onClose && onClose(requireRefresh, requireScroll)}
             }}
             scroll="paper"
             PaperProps={{

@@ -36,7 +36,10 @@ export const animeApi = baseApi.injectEndpoints({
             queryFn: async (anime) => {
                 const pb = createBrowserClient()
                 try {
-                    const data = await pb.collection<AnimeRecord>('animes').create(anime)
+                    const data = await pb.collection<AnimeRecord>('animes').create({
+                        ...anime,
+                        user_id: pb.authStore.model?.id,
+                    })
                     return { data }
                 } catch (error) {
                     return { error: error }

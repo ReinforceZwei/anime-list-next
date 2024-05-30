@@ -15,6 +15,8 @@ import { useState } from "react"
 import CloseIcon from '@mui/icons-material/Close';
 import { SubmitHandler, useForm } from "react-hook-form";
 import FormTextField from "../control/FormTextField";
+import { AnimeRecord, useAddAnimeMutation } from "@/lib/redux/animeSlice";
+import { useRouter } from "next/navigation";
 
 const defaultValues = {
     status: 'pending',
@@ -32,6 +34,9 @@ interface AddAnimeModalProps {
 export default function AddAnimeModal(props: AddAnimeModalProps) {
     const { onClose } = props
     const theme = useTheme()
+    const router = useRouter()
+
+    const [addAnime] = useAddAnimeMutation()
 
     const { handleSubmit, reset, setValue, setFocus, control } = useForm<FormValues>({
         defaultValues: {
@@ -45,6 +50,21 @@ export default function AddAnimeModal(props: AddAnimeModalProps) {
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data)
+        const final = {
+            ...defaultValues,
+            ...data,
+        }
+        console.log('final', final)
+        addAnime(final as AnimeRecord).unwrap().then(() => {
+            setInternalShow(false)
+            if (onClose) {
+                onClose()
+            }
+            router.refresh()
+        }).catch((error) => {
+            console.error(error)
+            alert('Fail to add anime')
+        })
     }
 
 

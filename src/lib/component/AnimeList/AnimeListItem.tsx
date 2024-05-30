@@ -41,7 +41,7 @@ export default function AnimeListItem(props: AnimeListItemProps) {
     }
     return (
         <li>
-            <span style={style} onClick={handleOnClick}>{name}</span>
+            <span style={style} onClick={handleOnClick} data-anime-id={id}>{name}</span>
             { sortedTags && sortedTags.map(tag => (
                 <TagChip key={tag.id} name={tag.name} />
             ))}
