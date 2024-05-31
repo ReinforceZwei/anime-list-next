@@ -2,7 +2,7 @@
 import AnimeCard from "@/lib/component/AnimeCard/AnimeCard";
 import FormTagSelect from "@/lib/component/control/FormTagSelect";
 import { useGetAnimeQuery } from "@/lib/redux/animeSlice";
-import { useGetTagsQuery } from "@/lib/redux/tagSlice";
+import { TagRecord, useGetTagsQuery } from "@/lib/redux/tagSlice";
 import { Button, Chip, useTheme } from "@mui/material";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -24,7 +24,7 @@ export default function Page() {
         console.log('create new value', value)
     }
     
-    const submit = (data) => {
+    const submit = (data: any) => {
         console.log(data)
     }
 
@@ -38,7 +38,7 @@ export default function Page() {
         return <div>Loading</div>
     }
 
-    const tagBy = data.reduce((prev, curr) => {prev[curr.id] = curr; return prev}, {})
+    const tagBy = data.reduce((prev, curr) => {prev[curr.id] = curr; return prev}, {} as { [key: string]: TagRecord})
 
     return (
         <div>

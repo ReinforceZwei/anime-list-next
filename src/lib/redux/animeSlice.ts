@@ -20,7 +20,7 @@ export const animeApi = baseApi.injectEndpoints({
             }
         }),
         updateAnime: builder.mutation<AnimeRecord, AnimeRecord>({
-            invalidatesTags: (result, error, arg) => [{ type: 'animes', id: arg.id }],
+            invalidatesTags: (result, error, arg) => result ? [{ type: 'animes', id: arg.id }] : [],
             queryFn: async (anime) => {
                 const pb = createBrowserClient()
                 try {

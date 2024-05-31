@@ -45,10 +45,10 @@ export const themeOptions = {
     palette: {
         mode: 'light',
         primary: {
-            main: '#f9a825',
+            main: '#f06292',
         },
         secondary: {
-            main: '#546e7a',
+            main: '#f50057',
         },
     },
     typography: {

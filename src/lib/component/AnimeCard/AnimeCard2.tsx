@@ -117,7 +117,7 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                     { isLoading ? <Skeleton /> : (
                         <>
                         {anime!.name}
-                        <IconButton size="small" color="secondary"><ContentCopyIcon fontSize="inherit" /></IconButton>
+                        <IconButton size="small" color="primary"><ContentCopyIcon fontSize="inherit" /></IconButton>
                         </>
                     ) }
                     

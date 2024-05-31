@@ -25,7 +25,7 @@ export const {
     useGetTagsQuery
 } = tagApi
 
-interface TagRecord extends RecordModel {
+export interface TagRecord extends RecordModel {
     name: string
     color?: string
     weight?: number
