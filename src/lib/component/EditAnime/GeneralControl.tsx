@@ -11,6 +11,7 @@ import FormTagSelect from '../control/FormTagSelect'
 import FormRating from '../control/FormRating'
 import { Control } from 'react-hook-form'
 import { useGetTagsQuery } from '@/lib/redux/tagSlice'
+import getColor from '../TagChip/getColor'
 
 
 interface GeneralControlProps {
@@ -82,10 +83,14 @@ export default function GeneralControl(props: GeneralControlProps) {
                         getOptionLabel={(option) => option?.name}
                         compareOption={(a, b) => a?.id == b?.id}
                         getChipProps={(option) => {
+                            const c = getColor(option?.color || '#ffffff')
                             return {
                                 //onDelete: undefined,
                                 sx: {
-                                    backgroundColor: option?.color || ''
+                                    ...c,
+                                    '& .MuiChip-deleteIcon': {
+                                        color: c.color,
+                                    }
                                 }
                             }
                         }}

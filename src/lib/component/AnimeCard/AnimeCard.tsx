@@ -2,7 +2,7 @@
 import { useGetAnimeQuery } from "@/lib/redux/animeSlice"
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Divider, IconButton, Rating, Typography } from "@mui/material"
 import { fieldSorter } from '@/lib/vendor/sortHelper'
-import TagChip from '@/lib/component/AnimeList/TagChip'
+import TagChip from '@/lib/component/TagChip/TagChip'
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { DateTime } from 'luxon'

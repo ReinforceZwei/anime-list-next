@@ -1,6 +1,6 @@
 'use client'
 import { Chip, useTheme } from '@mui/material'
-import TagChip from '@/lib/component/AnimeList/TagChip'
+import TagChip from '@/lib/component/TagChip/TagChip'
 import { fieldSorter } from '@/lib/vendor/sortHelper'
 import { useAppDispatch } from '@/lib/hooks'
 import { openCard } from '@/lib/redux/animeSlice'
@@ -43,7 +43,7 @@ export default function AnimeListItem(props: AnimeListItemProps) {
         <li>
             <span style={style} onClick={handleOnClick} data-anime-id={id}>{name}</span>
             { sortedTags && sortedTags.map(tag => (
-                <TagChip key={tag.id} name={tag.name} />
+                <TagChip key={tag.id} name={tag.name} color={tag.color} />
             ))}
         </li>
     )

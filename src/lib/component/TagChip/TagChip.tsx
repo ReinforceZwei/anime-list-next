@@ -1,5 +1,6 @@
 'use client'
 import { Chip, Skeleton, styled, useTheme } from "@mui/material"
+import getColor from "./getColor"
 
 const Tag = styled('span')(({ theme }) => ({
     color: theme.palette.getContrastText(theme.palette.text.secondary),
@@ -23,8 +24,8 @@ export default function TagChip(props: TagChipProps) {
     const theme = useTheme()
     const { name, color } = props
 
-    
+    const style = getColor(color || theme.palette.primary.main)
     return (
-        <Tag sx={{backgroundColor: color || 'pink', color: theme.palette.getContrastText('#FFC0CB')}}>{name}</Tag>
+        <Tag sx={style}>{name}</Tag>
     )
 }

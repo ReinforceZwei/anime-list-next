@@ -2,7 +2,7 @@
 import { closeCard, openEditor, useGetAnimeQuery } from "@/lib/redux/animeSlice"
 import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Divider, Fab, IconButton, Rating, Skeleton, Typography } from "@mui/material"
 import { fieldSorter } from '@/lib/vendor/sortHelper'
-import TagChip from '@/lib/component/AnimeList/TagChip'
+import TagChip from '@/lib/component/TagChip/TagChip'
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
@@ -12,6 +12,7 @@ import { useGetImageBaseQuery, useLazyGetDetailsQuery, useLazySearchQuery } from
 import { useEffect, useMemo, useState } from "react"
 import { TvSeriesDetail } from "@/lib/service/types/tmdb"
 import { useAppDispatch } from "@/lib/hooks"
+import { TagRecord } from "@/lib/redux/tagSlice"
 
 
 interface AnimeCard2Props {
@@ -21,7 +22,7 @@ interface AnimeCard2Props {
 export default function AnimeCard2({ id }: AnimeCard2Props) {
     const dispatch = useAppDispatch()
     const { data: anime, isFetching: isLoading } = useGetAnimeQuery(id)
-    const tags = anime?.expand?.tags || []
+    const tags: TagRecord[] = anime?.expand?.tags || []
 
     const sortedTags = tags.slice().sort(fieldSorter(['weight', 'name']))
 
@@ -127,7 +128,7 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                 <Box>
                 { isLoading ? <Skeleton /> : (
                     sortedTags && sortedTags.map(tag => (
-                        <TagChip key={tag.id} name={tag.name} />
+                        <TagChip key={tag.id} name={tag.name} color={tag.color} />
                     ))
                 )}
                 </Box>
