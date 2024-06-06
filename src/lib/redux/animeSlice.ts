@@ -111,11 +111,13 @@ export interface AnimeRecord extends RecordModel {
     name: string
     status?: 'pending' | 'in-progress' | 'finished' | 'abandon'
     download_status?: 'pending' | 'in-progress' | 'finished'
+    start_time?: string
     finish_time?: string
     rating?: number
     comment?: string
     remark?: string
     tmdb_id?: string
+    tmdb_season_number?: string
     tags: string[]
     user_id: string
 }

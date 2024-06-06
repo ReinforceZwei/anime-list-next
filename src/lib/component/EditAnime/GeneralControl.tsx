@@ -10,8 +10,9 @@ import { getStatusIcon } from './StatusMenuItem'
 import FormTagSelect from '../control/FormTagSelect'
 import FormRating from '../control/FormRating'
 import { Control } from 'react-hook-form'
-import { useGetTagsQuery } from '@/lib/redux/tagSlice'
+import { openAddTag, useGetTagsQuery } from '@/lib/redux/tagSlice'
 import getColor from '../TagChip/getColor'
+import { useAppDispatch } from '@/lib/hooks'
 
 
 interface GeneralControlProps {
@@ -20,17 +21,19 @@ interface GeneralControlProps {
 
 
 export default function GeneralControl(props: GeneralControlProps) {
-
     const { control } = props
+    const dispatch = useAppDispatch()
 
     const { data: tags, isFetching: isTagsLoading } = useGetTagsQuery()
 
     return (
         <Grid container spacing={1.5} mt={2}>
+            {/* Name */}
             <Grid xs={12}>
                 <FormTextField control={control} name='name' label='Name' TextFieldProps={{ fullWidth: true }} />
             </Grid>
 
+            {/* Status */}
             <Grid xs={6}>
                 <FormSelect
                     control={control}
@@ -52,6 +55,7 @@ export default function GeneralControl(props: GeneralControlProps) {
                 </FormSelect>
             </Grid>
 
+            {/* Download status */}
             <Grid xs={6}>
                 <FormSelect
                     control={control}
@@ -73,6 +77,7 @@ export default function GeneralControl(props: GeneralControlProps) {
                 </FormSelect>
             </Grid>
 
+            {/* Tags */}
             <Grid xs={12} container>
                 <Grid xs>
                     <FormTagSelect
@@ -97,11 +102,11 @@ export default function GeneralControl(props: GeneralControlProps) {
                     />
                 </Grid>
                 <Grid xs='auto' sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconButton><AddIcon /></IconButton>
-                    {/* <Button variant="outlined">Add</Button> */}
+                    <IconButton onClick={() => dispatch(openAddTag())}><AddIcon /></IconButton>
                 </Grid>
             </Grid>
 
+            {/* Category */}
             <Grid xs={12} container>
                 <Grid xs>
                     <FormTagSelect
@@ -123,15 +128,16 @@ export default function GeneralControl(props: GeneralControlProps) {
                 </Grid>
                 <Grid xs='auto' sx={{ display: 'flex', alignItems: 'center' }}>
                     <IconButton><AddIcon /></IconButton>
-                    {/* <Button variant="outlined">Add</Button> */}
                 </Grid>
             </Grid>
 
+            {/* Rating */}
             <Grid xs={12}>
                 <Typography component="legend">Rating</Typography>
                 <FormRating control={control} name='rating' />
             </Grid>
 
+            {/* Comment */}
             <Grid xs={12}>
                 <FormTextField
                     control={control}
@@ -145,6 +151,7 @@ export default function GeneralControl(props: GeneralControlProps) {
                 />
             </Grid>
 
+            {/* Remark */}
             <Grid xs={12}>
                 <FormTextField
                     control={control}

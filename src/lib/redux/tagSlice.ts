@@ -32,3 +32,31 @@ export interface TagRecord extends RecordModel {
     user_id: string
     display: boolean
 }
+
+export interface TagState {
+    openAddTag: boolean
+}
+
+const initialState: TagState = {
+    openAddTag: false,
+}
+
+export const tagSlice = createSlice({
+    name: 'anime',
+    initialState,
+    reducers: {
+        openAddTag: (state, action: PayloadAction<string>) => {
+            state.openAddTag = true
+        },
+        closeAddTag: (state) => {
+            state.openAddTag = false
+        },
+    }
+})
+
+export const {
+    openAddTag,
+    closeAddTag,
+} = tagSlice.actions
+
+export default tagSlice.reducer

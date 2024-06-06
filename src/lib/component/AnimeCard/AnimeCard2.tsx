@@ -142,12 +142,21 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                 { isLoading ? <Skeleton /> : (
                 <Box>
                     <Typography variant="caption" color='text.secondary' component='div'>
-                        新增於 {DateTime.fromSQL(anime?.created!).toLocaleString(DateTime.DATETIME_SHORT)} 
+                        新增於 {DateTime.fromSQL(anime?.created!).toLocaleString(DateTime.DATETIME_SHORT)}
                     </Typography>
+
+                    {anime?.start_time && (
+                    <Typography variant="caption" color='warning.light' component='div'>
+                        開始於 {DateTime.fromSQL(anime?.start_time).toLocaleString(DateTime.DATETIME_SHORT)}
+                    </Typography>
+                    )}
 
                     {anime?.finish_time && (
                     <Typography variant="caption" color='success.light' component='div'>
-                        完成於 {DateTime.fromSQL(anime?.finish_time).toLocaleString(DateTime.DATETIME_SHORT)} 
+                        完成於 {DateTime.fromSQL(anime?.finish_time).toLocaleString(DateTime.DATETIME_SHORT)}
+                        { anime?.start_time && (
+                            <span>{' '}({Math.ceil(DateTime.fromSQL(anime?.finish_time).diff(DateTime.fromSQL(anime?.start_time)).as('days'))}日)</span>
+                        ) }
                     </Typography>
                     )}
                     

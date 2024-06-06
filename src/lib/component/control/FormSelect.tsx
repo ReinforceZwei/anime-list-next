@@ -1,6 +1,6 @@
 'use client'
 
-import { FormControl, FormControlProps, InputLabel, MenuItem, Select, SelectChangeEvent, SelectProps } from "@mui/material"
+import { FormControl, FormControlProps, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent, SelectProps } from "@mui/material"
 import { ReactNode, useState } from "react"
 import { Control, Controller, RegisterOptions } from "react-hook-form";
 
@@ -22,7 +22,7 @@ export default function FormSelect(props: FormSelectProps) {
 
     return (
         <Controller
-            render={({ field: { onBlur, onChange, ref, value, name, disabled } }) => (
+            render={({ field: { onBlur, onChange, ref, value, name, disabled }, fieldState: { error } }) => (
                 <FormControl fullWidth={fullWidth} {...FormControlProps}>
                     <InputLabel>{label}</InputLabel>
                     <Select
@@ -34,10 +34,12 @@ export default function FormSelect(props: FormSelectProps) {
                         disabled={disabled}
                         multiple={multiple}
                         label={label}
+                        error={!!error}
                         {...SelectProps}
                     >
                         {children}
                     </Select>
+                    { error?.message && <FormHelperText>{error?.message}</FormHelperText> }
                 </FormControl>
             )}
             control={control}

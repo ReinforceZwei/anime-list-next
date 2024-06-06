@@ -17,7 +17,7 @@ export default function FormTextField(props: FormTextFieldProps) {
 
     return (
         <Controller
-            render={({ field: { onBlur, onChange, ref, value, name, disabled } }) => (
+            render={({ field: { onBlur, onChange, ref, value, name, disabled }, fieldState: { error } }) => (
                 <TextField
                     onBlur={onBlur}
                     onChange={onChange}
@@ -26,6 +26,8 @@ export default function FormTextField(props: FormTextFieldProps) {
                     name={name}
                     disabled={disabled}
                     label={label}
+                    error={!!error}
+                    helperText={error?.message}
                     {...TextFieldProps}
                 />
             )}

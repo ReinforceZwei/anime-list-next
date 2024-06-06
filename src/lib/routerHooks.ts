@@ -16,21 +16,16 @@ export function useRouterRefresh() {
 
     const refresh = () => {
         return new Promise((resolve, reject) => {
-            console.log('hook, created new promise')
             setResolve(() => resolve)
             startTransition(() => {
-                console.log('hook, called router refresh')
                 router.refresh()
             })
         })
     }
 
     useEffect(() => {
-        console.log('hook, use effect called: isTriggered', isTriggered, ', isPending', isPending, ', resolve', resolve)
         if (isTriggered && !isPending) {
-            console.log('hook, in use effect, check promise resolve')
             if (resolve) {
-                console.log('hook, in use effect, promise resolve called')
                 resolve(null)
                 
                 setIsTriggered(false)
@@ -38,11 +33,8 @@ export function useRouterRefresh() {
             }
         }
         if (isPending) {
-            console.log('hook, in use effect, set triggered to true')
             setIsTriggered(true)
         }
-
-        return () => { console.log('hook, use effect clean up') }
     }, [isTriggered, isPending, resolve])
 
     return refresh

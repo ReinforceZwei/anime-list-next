@@ -9,6 +9,7 @@ import AppMenu from '@/lib/component/AppMenu/AppMenu';
 import CardLayout from './cardLayout';
 import EditorLayout from './editorLayout';
 import AddAnimeLayout from './addAnimeLayout';
+import AddTagLayout from './addTagLayout';
 
 export default async function Home() {
     const pb = createServerClient(cookies())
@@ -29,6 +30,7 @@ export default async function Home() {
             <CardLayout />
             <EditorLayout />
             <AddAnimeLayout />
+            <AddTagLayout />
         </div>
     );
 }

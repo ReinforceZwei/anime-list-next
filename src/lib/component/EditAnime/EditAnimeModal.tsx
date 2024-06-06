@@ -102,7 +102,7 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
 
         console.log(final)
         updateAnime(final as unknown as AnimeRecord).unwrap().then(() => {
-            //setInternalShow(false)
+            setInternalShow(false)
 
         }).catch((error) => {
             console.error(error)

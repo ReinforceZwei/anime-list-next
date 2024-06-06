@@ -4,6 +4,7 @@ import TagChip from '@/lib/component/TagChip/TagChip'
 import { fieldSorter } from '@/lib/vendor/sortHelper'
 import { useAppDispatch } from '@/lib/hooks'
 import { openCard } from '@/lib/redux/animeSlice'
+import { CSSProperties } from 'react'
 
 interface AnimeListItemProps {
     id: string
@@ -36,8 +37,9 @@ export default function AnimeListItem(props: AnimeListItemProps) {
     }
 
 
-    const style = {
-        color: color
+    const style: CSSProperties = {
+        color: color,
+        cursor: 'pointer',
     }
     return (
         <li>
