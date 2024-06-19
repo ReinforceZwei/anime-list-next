@@ -1,4 +1,4 @@
-import { getContrastRatio } from "@mui/material";
+import { getContrastRatio, alpha } from "@mui/material";
 
 
 interface ColorStyle {
@@ -7,9 +7,25 @@ interface ColorStyle {
 }
 
 export default function getColor(color: string): ColorStyle {
-    const a = getContrastRatio('#000000', color)
     return {
         backgroundColor: color,
-        color: a >= 3 ? '#000000' : '#ffffff'
+        color: selectContrastColor(color, '#ffffff', '#000000')
     }
+}
+
+export function getMuiChipColor(color: string) {
+    const bgColor = getColor(color)
+    return {
+        ...bgColor,
+        '& .MuiChip-deleteIcon': {
+            color: alpha(bgColor.color, 0.7),
+            '&:hover': {
+                color: bgColor.color
+            }
+        }
+    }
+}
+
+export function selectContrastColor(color: string, light: string, dark: string): string {
+    return getContrastRatio(light, color) > getContrastRatio(dark, color) ? light : dark
 }

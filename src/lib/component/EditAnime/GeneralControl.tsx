@@ -4,14 +4,14 @@ import Grid from '@mui/material/Unstable_Grid2'
 import FormTextField from '../control/FormTextField'
 import FormSelect from '../control/FormSelect'
 import { DOWNLOAD_STATUS_OPTIONS, STATUS_OPTIONS } from '@/lib/redux/animeSlice'
-import { Box, IconButton, MenuItem, Typography } from '@mui/material'
+import { Box, IconButton, MenuItem, Typography, useTheme } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import { getStatusIcon } from './StatusMenuItem'
 import FormTagSelect from '../control/FormTagSelect'
 import FormRating from '../control/FormRating'
 import { Control } from 'react-hook-form'
 import { openAddTag, useGetTagsQuery } from '@/lib/redux/tagSlice'
-import getColor from '../TagChip/getColor'
+import getColor, { getMuiChipColor } from '../TagChip/getColor'
 import { useAppDispatch } from '@/lib/hooks'
 
 
@@ -23,6 +23,7 @@ interface GeneralControlProps {
 export default function GeneralControl(props: GeneralControlProps) {
     const { control } = props
     const dispatch = useAppDispatch()
+    const theme = useTheme()
 
     const { data: tags, isFetching: isTagsLoading } = useGetTagsQuery()
 
@@ -88,14 +89,10 @@ export default function GeneralControl(props: GeneralControlProps) {
                         getOptionLabel={(option) => option?.name}
                         compareOption={(a, b) => a?.id == b?.id}
                         getChipProps={(option) => {
-                            const c = getColor(option?.color || '#ffffff')
                             return {
                                 //onDelete: undefined,
                                 sx: {
-                                    ...c,
-                                    '& .MuiChip-deleteIcon': {
-                                        color: c.color,
-                                    }
+                                    ...getMuiChipColor(option?.color || theme.palette.primary.main),
                                 }
                             }
                         }}

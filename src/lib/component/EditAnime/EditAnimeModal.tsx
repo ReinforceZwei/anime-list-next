@@ -26,6 +26,7 @@ import GutterlessTabPanel from "./GutterlessTabPanel";
 import updateStartTimeOnStatusChange from "./updateRules/updateStartTimeOnStatusChange";
 import updateFinishTimeOnStatusChange from "./updateRules/updateFinishTimeOnStatusChange";
 import { useRouterRefresh } from "@/lib/routerHooks";
+import { TagRecord } from "@/lib/redux/tagSlice";
 
 
 interface EditAnimeModalProps {
@@ -40,8 +41,8 @@ export type FormValues = {
     rating: number
     comment: string
     remark: string
-    tags: string[]
-    categories: string[]
+    tags: TagRecord[]
+    categories: TagRecord[]
     start_time: string  // Datetime stored as string
     finish_time: string // Datetime stored as string
 }
@@ -83,15 +84,17 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data)
-        let final = {
-            ...data,
-            tags: data.tags?.map(x => x.id) || [],
-            categories: data.categories?.map(x => x.id) || [],
-        } as FormValues
+        let copy = { ...data } as FormValues
 
         // Apply rules
-        final = updateStartTimeOnStatusChange(final, formState)
-        final = updateFinishTimeOnStatusChange(final, formState)
+        copy = updateStartTimeOnStatusChange(copy, formState)
+        copy = updateFinishTimeOnStatusChange(copy, formState)
+
+        const final: Partial<AnimeRecord> = {
+            ...copy,
+            tags: data.tags?.map(x => x.id) || [],
+            categories: data.categories?.map(x => x.id) || [],
+        } 
 
         // If status changed, scroll to new position after page update
         if (formState.dirtyFields.status) {
@@ -100,8 +103,8 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
         setRequireRefresh(true)
 
 
-        console.log(final)
-        updateAnime(final as unknown as AnimeRecord).unwrap().then(() => {
+        console.log(copy)
+        updateAnime(final as AnimeRecord).unwrap().then(() => {
             setInternalShow(false)
 
         }).catch((error) => {

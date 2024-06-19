@@ -24,8 +24,11 @@ export default function TagChip(props: TagChipProps) {
     const theme = useTheme()
     const { name, color } = props
 
-    const style = getColor(color || theme.palette.primary.main)
+    const style = {
+        ...getColor(color || theme.palette.primary.main),
+        transition: 'none',
+    }
     return (
-        <Tag sx={style}>{name}</Tag>
+        <Tag style={style}>{name}</Tag>
     )
 }

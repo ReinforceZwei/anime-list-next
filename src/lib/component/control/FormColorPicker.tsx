@@ -1,7 +1,7 @@
 'use client'
 
 import { Control, Controller, RegisterOptions } from "react-hook-form"
-import { Box, ButtonBase, Popover } from "@mui/material"
+import { Box, ButtonBase, ClickAwayListener, Popover, Popper } from "@mui/material"
 import { HexColorPicker } from "react-colorful"
 import { useState, MouseEvent } from "react"
 
@@ -15,22 +15,23 @@ interface FormColorPickerProps {
 export default function FormColorPicker(props: FormColorPickerProps) {
     const { control, name, rules } = props
 
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
+    const handleClick = (event: MouseEvent<HTMLElement>) => {
+        setAnchorEl(anchorEl ? null : event.currentTarget);
     };
 
     const handleClose = () => {
-        setAnchorEl(null);
-    };
+        setAnchorEl(null)
+    }
 
     const open = Boolean(anchorEl);
 
     return (
         <Controller
             render={({ field: { onBlur, onChange, ref, value, name, disabled } }) => (
-                <Box>
+                <ClickAwayListener onClickAway={() => handleClose()}>
+                    <span>
                     <ButtonBase
                         sx={{
                             width: '48px',
@@ -46,31 +47,34 @@ export default function FormColorPicker(props: FormColorPickerProps) {
                             backgroundColor: value, // put in sx will have performence impact
                         }}
                     ></ButtonBase>
-                    <Popover
+                    <Popper
                         open={open}
                         anchorEl={anchorEl}
-                        onClose={handleClose}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        slotProps={{
-                            paper: {
-                                sx: {
-                                    overflowY: 'hidden'
-                                }
-                            }
+                        placement='right-start'
+                        //disablePortal
+                        // modifiers={[
+                        //     {
+                        //         name: 'flip',
+                        //         enabled: false,
+                        //     },
+                        //     {
+                        //         name: 'preventOverflow',
+                        //         enabled: false,
+                        //     }
+                        // ]}
+                        sx={{
+                            zIndex: 9999
                         }}
                     >
-                        <Box>
+                        <Box sx={{ pl: 3 }}>
                             <HexColorPicker
                                 color={value}
                                 onChange={onChange}
                             />
                         </Box>
-                    </Popover>
-                    
-                </Box>
+                    </Popper>
+                    </span>
+                </ClickAwayListener>
             )}
             control={control}
             name={name}

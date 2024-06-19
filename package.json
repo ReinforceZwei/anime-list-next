@@ -18,6 +18,7 @@
     "@mui/material-nextjs": "^5.15.11",
     "@reduxjs/toolkit": "^2.2.4",
     "luxon": "^3.4.4",
+    "material-ui-confirm": "^3.0.16",
     "next": "14.2.3",
     "pocketbase": "^0.21.2",
     "react": "^18",

@@ -14,7 +14,7 @@ import {
     useTheme
 } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CloseIcon from '@mui/icons-material/Close';
 import { SubmitHandler, useForm } from "react-hook-form";
 import FormTextField from "../control/FormTextField";
@@ -24,7 +24,8 @@ import FormSwitch from "../control/FormSwitch";
 import FormColorPicker from "../control/FormColorPicker";
 import TagChip from "../TagChip/TagChip";
 import MuiTagChip from "../TagChip/MuiTagChip";
-import { useAddTagMutation } from "@/lib/redux/tagSlice";
+import { useAddTagMutation, useDeleteTagMutation, useGetTagQuery, useUpdateTagMutation } from "@/lib/redux/tagSlice";
+import { useConfirm } from "material-ui-confirm";
 
 
 interface FormValues {
@@ -34,14 +35,20 @@ interface FormValues {
     display: boolean
 }
 
-interface AddTagModalProps {
+interface EditTagModalProps {
+    id: string
     onClose?: Function
 }
 
-export default function AddTagModal(props: AddTagModalProps) {
-    const { onClose } = props
+export default function EditTagModal(props: EditTagModalProps) {
+    const { id, onClose } = props
+    const confirm = useConfirm()
 
-    const [addTag] = useAddTagMutation()
+    const [isDeleted, setIsDeleted] = useState(false)
+
+    const { data: tag, isFetching } = useGetTagQuery(id, { skip: isDeleted })
+    const [ updateTag ] = useUpdateTagMutation()
+    const [ deleteTag ] = useDeleteTagMutation()
     const { handleSubmit, reset, setValue, setFocus, control, watch } = useForm<FormValues>({
         defaultValues: {
             name: '',
@@ -55,16 +62,37 @@ export default function AddTagModal(props: AddTagModalProps) {
     const inputColor = watch('color')
 
     const [internalShow, setInternalShow] = useState(true)
+    
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data)
-        addTag(data).unwrap().then(() => {
+        updateTag(data).unwrap().then(() => {
             setInternalShow(false)
         }).catch((error) => {
             console.error(error)
-            alert('Fail to create tag')
+            alert('Fail to update tag')
         })
     }
+
+    const onDelete = () => {
+        confirm().then(() => {
+            setIsDeleted(true)
+            deleteTag(id).unwrap().then(() => {
+                setInternalShow(false)
+            }).catch((error) => {
+                console.error(error)
+                alert('Fail to delete tag')
+            })
+        }).catch(() => {
+            console.log('cancel it!')
+        })
+    }
+
+    useEffect(() => {
+        if (!isFetching) {
+            reset({...tag})
+        }
+    }, [isFetching, tag])
 
 
     return (
@@ -91,7 +119,7 @@ export default function AddTagModal(props: AddTagModalProps) {
                     alignItems: 'center',
                 }}
             >
-                Add New Tag
+                Edit Tag
                 <IconButton onClick={() => setInternalShow(false)}>
                     <CloseIcon />
                 </IconButton>
@@ -161,8 +189,9 @@ export default function AddTagModal(props: AddTagModalProps) {
             </DialogContent>
 
             <DialogActions>
+                <Button variant='outlined' sx={{mr: 'auto'}} color="error" onClick={() => onDelete()}>Delete</Button>
                 <Button onClick={() => setInternalShow(false)}>Cancel</Button>
-                <Button type='submit' variant='contained'>Create</Button>
+                <Button type='submit' variant='contained'>Save</Button>
             </DialogActions>
             
         </Dialog>

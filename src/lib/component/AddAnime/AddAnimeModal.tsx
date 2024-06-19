@@ -11,7 +11,7 @@ import {
     useTheme
 } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CloseIcon from '@mui/icons-material/Close';
 import { SubmitHandler, useForm } from "react-hook-form";
 import FormTextField from "../control/FormTextField";
@@ -47,6 +47,11 @@ export default function AddAnimeModal(props: AddAnimeModalProps) {
     const [internalShow, setInternalShow] = useState(true)
 
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
+    useEffect(() => {
+        setTimeout(() => setFocus('name'), 1)
+        
+    }, [setFocus])
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data)
@@ -109,6 +114,7 @@ export default function AddAnimeModal(props: AddAnimeModalProps) {
                             label='Name'
                             TextFieldProps={{
                                 fullWidth: true,
+                                autoFocus: true,
                             }}
                             rules={{
                                 required: true,
