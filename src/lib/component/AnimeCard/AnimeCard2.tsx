@@ -1,6 +1,6 @@
 'use client'
-import { closeCard, openEditor, useGetAnimeQuery } from "@/lib/redux/animeSlice"
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Divider, Fab, IconButton, Rating, Skeleton, Typography } from "@mui/material"
+import { closeCard, openEditor, openPoster, useGetAnimeQuery } from "@/lib/redux/animeSlice"
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Divider, Fab, IconButton, Rating, Skeleton, Tooltip, Typography } from "@mui/material"
 import { fieldSorter } from '@/lib/vendor/sortHelper'
 import TagChip from '@/lib/component/TagChip/TagChip'
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -59,6 +59,24 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
         imageBase && tmdbData?.poster_path ? `${imageBase}w500${tmdbData.poster_path}` : null
     ), [imageBase, tmdbData, id])
 
+    const handlePoster = () => {
+        if (posterUrl) {
+            dispatch(openPoster(posterUrl))
+        }
+    }
+
+    const [copySucessMsg, setCopySucessMsg] = useState(false)
+    const handleCopy = () => {
+        if (anime) {
+            navigator.clipboard.writeText(anime.name).then(() => {
+                setCopySucessMsg(true)
+                setTimeout(() => {
+                    setCopySucessMsg(false)
+                }, 1000)
+            })
+        }
+    }
+
 
     if (tmdbData) {
         console.log(tmdbData)
@@ -86,7 +104,9 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                 ><CloseIcon fontSize="small" /></Fab>
             </Box>
 
-            <CardActionArea>
+            <CardActionArea
+                onClick={handlePoster}
+            >
                 <CardMedia
                     sx={{
                         height: 467,
@@ -118,7 +138,11 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                     { isLoading ? <Skeleton /> : (
                         <>
                         {anime!.name}
-                        <IconButton size="small" color="primary"><ContentCopyIcon fontSize="inherit" /></IconButton>
+                        <Tooltip title='Copied' placement="top" arrow open={copySucessMsg}>
+                            <IconButton size="small" color="primary" onClick={handleCopy}>
+                                <ContentCopyIcon fontSize="inherit" />
+                            </IconButton>
+                        </Tooltip>
                         </>
                     ) }
                     

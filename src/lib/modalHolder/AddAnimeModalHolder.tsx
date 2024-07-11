@@ -8,7 +8,7 @@ import AddIcon from '@mui/icons-material/Add'
 
 
 
-export default function AddAnimeLayout() {
+export default function AddAnimeModalHolder() {
     const dispatch = useAppDispatch()
     const isOpen = useAppSelector(state => state.anime.openAddAnime)
 

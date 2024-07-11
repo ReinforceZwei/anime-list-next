@@ -8,7 +8,7 @@ import { Box } from "@mui/material"
 
 
 
-export default function EditorLayout() {
+export default function EditorModalHolder() {
     const dispatch = useAppDispatch()
     const id = useAppSelector(state => state.anime.editingId)
     const refresh = useRouterRefresh()

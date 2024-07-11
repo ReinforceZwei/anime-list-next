@@ -58,6 +58,7 @@ export const {
 export interface AnimeState {
     viewingId: string | null
     editingId: string | null
+    posterSrc: string | null
     open: boolean
     openAddAnime: boolean
 }
@@ -65,6 +66,7 @@ export interface AnimeState {
 const initialState: AnimeState = {
     viewingId: null,
     editingId: null,
+    posterSrc: null,
     open: false,
     openAddAnime: false,
 }
@@ -93,6 +95,12 @@ export const animeSlice = createSlice({
         closeAddAnime: (state) => {
             state.openAddAnime = false
         },
+        openPoster: (state, action: PayloadAction<string>) => {
+            state.posterSrc = action.payload
+        },
+        closePoster: (state) => {
+            state.posterSrc = null
+        },
     }
 })
 
@@ -103,6 +111,8 @@ export const {
     closeEditor,
     openAddAnime,
     closeAddAnime,
+    openPoster,
+    closePoster,
 } = animeSlice.actions
 
 export default animeSlice.reducer

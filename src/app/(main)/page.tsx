@@ -6,10 +6,11 @@ import Item from '@/lib/item'
 import AnimeList from '@/lib/component/AnimeList/AnimeList';
 import AddIcon from '@mui/icons-material/Add'
 import AppMenu from '@/lib/component/AppMenu/AppMenu';
-import CardLayout from './cardLayout';
-import EditorLayout from './editorLayout';
-import AddAnimeLayout from './addAnimeLayout';
-import AddTagLayout from './addTagLayout';
+import AnimeCardModalHolder from '@/lib/modalHolder/AnimeCardModalHolder';
+import EditorModalHolder from '@/lib/modalHolder/EditorModalHolder';
+import AddAnimeModalHolder from '@/lib/modalHolder/AddAnimeModalHolder';
+import AddTagModalHolder from '@/lib/modalHolder/AddTagModalHolder';
+import PosterViewerModalHolder from '@/lib/modalHolder/PosterViewerModalHolder';
 
 export default async function Home() {
     const pb = createServerClient(cookies())
@@ -27,10 +28,11 @@ export default async function Home() {
 
             <AppMenu />
 
-            <CardLayout />
-            <EditorLayout />
-            <AddAnimeLayout />
-            <AddTagLayout />
+            <AnimeCardModalHolder />
+            <EditorModalHolder />
+            <AddAnimeModalHolder />
+            <AddTagModalHolder />
+            <PosterViewerModalHolder />
         </div>
     );
 }

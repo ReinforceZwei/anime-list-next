@@ -7,7 +7,7 @@ import { Box } from "@mui/material"
 
 
 
-export default function CardLayout() {
+export default function AnimeCardModalHolder() {
     const open = useAppSelector(state => state.anime.open)
     const id = useAppSelector(state => state.anime.viewingId)
 

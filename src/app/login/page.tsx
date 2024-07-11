@@ -13,6 +13,7 @@ import { createBrowserClient } from "@/lib/pocketbase"
 import { useRouter } from "next/navigation"
 import { AuthProviderInfo } from "pocketbase"
 import FormTextField from "@/lib/component/control/FormTextField"
+import { LoadingButton } from "@mui/lab"
 
 
 type FormValues = {
@@ -33,6 +34,8 @@ export default function LoginPage() {
         }
     })
 
+    const { isSubmitting } = formState
+
     useEffect(() => {
         let getAuthMethods = async () => {
             let methods = await pb.collection('users').listAuthMethods()
@@ -41,15 +44,14 @@ export default function LoginPage() {
         getAuthMethods()
     }, [])
 
-    const handleLogin: SubmitHandler<FormValues> = ({ username, password }) => {
-        pb.collection('users').authWithPassword(username, password)
-        .then(authData => {
-            router.push("/")
-        })
-        .catch(err => {
+    const handleLogin: SubmitHandler<FormValues> = async ({ username, password }) => {
+        try {
+            await pb.collection('users').authWithPassword(username, password)
+            router.push('/')
+        } catch (err: any) {
             console.log(err)
             setLoginError(err?.message || 'Unknown error')
-        })
+        }
     }
 
     const handleOauth = (providerName: string) => {
@@ -113,7 +115,8 @@ export default function LoginPage() {
                                 />
                             </Grid>
                             <Grid xs={12} sx={{textAlign: 'center'}}>
-                                <Button type='submit' variant="outlined">登入</Button>
+                                {/* <Button type='submit' variant="outlined">登入</Button> */}
+                                <LoadingButton type='submit' variant="outlined" loading={isSubmitting}>登入</LoadingButton>
                             </Grid>
                             {loginError && (
                                 <Grid xs={12}>

@@ -7,7 +7,7 @@ import { Box } from "@mui/material"
 
 
 
-export default function AddTagLayout() {
+export default function AddTagModalHolder() {
     const dispatch = useAppDispatch()
     const open = useAppSelector((state) => state.tag.openAddTag)
 
