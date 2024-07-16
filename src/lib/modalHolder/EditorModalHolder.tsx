@@ -6,6 +6,24 @@ import { closeEditor } from "@/lib/redux/animeSlice"
 import { useRouterRefresh } from "@/lib/routerHooks"
 import { Box } from "@mui/material"
 
+/**
+ * Scroll element into view only when element is not in viewport
+ * @param element Element to scroll into
+ * @returns 
+ */
+function scrollIntoView(element: Element | null) {
+    if (!element) {
+        return
+    }
+
+    const top = element.getBoundingClientRect().top
+    const isInView = top >= 0 && top <= window.innerHeight
+    if (!isInView) {
+        element.scrollIntoView({
+            behavior: 'smooth'
+        })
+    }
+}
 
 
 export default function EditorModalHolder() {
@@ -17,9 +35,7 @@ export default function EditorModalHolder() {
         if (requireRefresh) {
             refresh().then(() => {
                 if (requireScroll) {
-                    document.querySelector(`span[data-anime-id="${id}"]`)?.scrollIntoView({
-                        behavior: 'smooth'
-                    })
+                    scrollIntoView(document.querySelector(`span[data-anime-id="${id}"]`))
                 }
             }).finally(() => {
                 dispatch(closeEditor())

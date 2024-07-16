@@ -3,6 +3,7 @@ import { createServerClient } from "@/lib/pocketbase"
 import { cookies } from "next/headers"
 import AnimeListItem from '@/lib/component/AnimeList/AnimeListItem'
 import { getAnimes } from "@/lib/service/anime"
+import AnimeListClient from "./AnimeListClient"
 
 interface AnimeListProps {
     title: string
@@ -26,13 +27,14 @@ export default async function AnimeList(props: AnimeListProps) {
     return (
         <div>
             { title && <Typography variant="subtitle1" align="center">{title}</Typography> }
-            { (
+            {/* { (
                 <ol>
                 {animes.map((anime) => (
                     <AnimeListItem key={anime.id} id={anime.id} name={anime.name} status={anime.status} downloadStatus={anime.download_status} tags={anime.expand?.tags || []} />
                 ))}
                 </ol>
-            )}
+            )} */}
+            <AnimeListClient animes={animes} {...props} />
         </div>
     )
 }

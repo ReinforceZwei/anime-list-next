@@ -1,12 +1,16 @@
 'use client'
 import { closeCard, openEditor, openPoster, useGetAnimeQuery } from "@/lib/redux/animeSlice"
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Divider, Fab, IconButton, Rating, Skeleton, Tooltip, Typography } from "@mui/material"
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Divider, Fab, IconButton, Rating, Skeleton, Tooltip, Typography, useTheme } from "@mui/material"
+import { alpha } from "@mui/material";
 import { fieldSorter } from '@/lib/vendor/sortHelper'
 import TagChip from '@/lib/component/TagChip/TagChip'
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import FlagIcon from '@mui/icons-material/Flag';
 import { DateTime } from 'luxon'
 import { useGetImageBaseQuery, useLazyGetDetailsQuery, useLazySearchQuery } from "@/lib/redux/tmdbApi"
 import { useEffect, useMemo, useState } from "react"
@@ -21,6 +25,7 @@ interface AnimeCard2Props {
 
 export default function AnimeCard2({ id }: AnimeCard2Props) {
     const dispatch = useAppDispatch()
+    const theme = useTheme()
     const { data: anime, isFetching: isLoading } = useGetAnimeQuery(id)
     const tags: TagRecord[] = anime?.expand?.tags || []
 
@@ -89,6 +94,8 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
             maxHeight: '98vh',
             overflow: 'auto',
             zIndex: 'drawer',
+            display: 'flex',
+            flexDirection: 'column',
         }}>
             <Box sx={{position: 'fixed', zIndex: 5000}}>
                 <Fab
@@ -96,30 +103,45 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                         position: 'sticky',
                         right: 4,
                         top: 4,
-                        height: 22,
-                        width: 22,
-                        minHeight: 22,
+                        height: 32,
+                        width: 32,
+                        minHeight: 32,
                     }}
                     onClick={() => dispatch(closeCard())}
-                ><CloseIcon fontSize="small" /></Fab>
+                ><CloseIcon /></Fab>
             </Box>
 
             <CardActionArea
                 onClick={handlePoster}
+                sx={{
+                    position: 'fixed',
+                    height: '98vh',
+                    maxHeight: 467,
+                    maxWidth: 350,
+                }}
             >
                 <CardMedia
                     sx={{
-                        height: 467,
-                        display: 'flex',
-                        flexDirection: 'column-reverse',
+                        height: '100%',
                         transition: 'background .5s',
                         backgroundColor: '#83838324',
                     }}
                     image={posterUrl || undefined}
                 ></CardMedia>
             </CardActionArea>
+
+            <Box
+                sx={{
+                    maxHeight: 467,
+                    height: 467,
+                }}
+            ></Box>
             
-            <Box>
+            <Box sx={{
+                flex: 1,
+                backdropFilter: 'blur(10px)',
+                backgroundColor: alpha(theme.palette.background.default, 0.3),
+            }}>
             <CardContent sx={{position: 'relative'}}>
                 {/* Edit Button */}
                 <Fab
@@ -202,11 +224,27 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                 </>
                 )}
 
+                {!isLoading && anime?.remark && (
+                <>
+                <Divider><Typography variant="caption" color='text.secondary'>備註</Typography></Divider>
+
+                <Box sx={{ whiteSpace: 'break-spaces' }}>
+                    
+                    <Typography variant="body2" component='div'>
+                        {anime?.remark}
+                    </Typography>
+                    
+                </Box>
+                </>
+                )}
+
                 {tmdbData && tmdbData.id}
             </CardContent>
 
             <CardActions>
-                <Button>Edit</Button>
+                {/* <Button variant="contained">Pending <ArrowForwardIcon fontSize="small" /> Watching</Button> */}
+                <Button variant="contained" size='small' color="secondary" startIcon={<KeyboardDoubleArrowRightIcon />}>Watching</Button>
+                <Button variant="contained" size='small' color="secondary" startIcon={<FlagIcon />}>Finished</Button>
             </CardActions>
 
             </Box>

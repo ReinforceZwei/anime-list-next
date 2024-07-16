@@ -19,6 +19,7 @@ declare module '@mui/material/styles' {
             inProgress: string;
             finished: string;
         };
+        remark: string;
     }
     // allow configuration using `createTheme`
     interface ThemeOptions {
@@ -33,6 +34,7 @@ declare module '@mui/material/styles' {
             inProgress?: string;
             finished?: string;
         };
+        remark?: string;
     }
 }
 
@@ -67,7 +69,8 @@ export const statusLightColorTheme = {
         pending: 'palette.text.primary',
         inProgress: 'palette.text.primary',
         finished: '#00651a'
-    }
+    },
+    remark: '#0300bb',
 }
 
 export const statusDarkColorTheme = {
@@ -81,7 +84,8 @@ export const statusDarkColorTheme = {
         pending: 'palette.text.primary',
         inProgress: 'palette.text.primary',
         finished: '#85b792'
-    }
+    },
+    remark: '#918fff',
 }
 
 export default function CustomThemeProvider({

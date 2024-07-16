@@ -99,8 +99,8 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
         // If status changed, scroll to new position after page update
         if (formState.dirtyFields.status) {
             setRequireScroll(true)
+            setRequireRefresh(true)
         }
-        setRequireRefresh(true)
 
 
         console.log(copy)

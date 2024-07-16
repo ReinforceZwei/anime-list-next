@@ -61,6 +61,7 @@ export interface AnimeState {
     posterSrc: string | null
     open: boolean
     openAddAnime: boolean
+    touchedAnimeId: string[]
 }
 
 const initialState: AnimeState = {
@@ -69,6 +70,7 @@ const initialState: AnimeState = {
     posterSrc: null,
     open: false,
     openAddAnime: false,
+    touchedAnimeId: [],
 }
 
 export const animeSlice = createSlice({
@@ -101,6 +103,11 @@ export const animeSlice = createSlice({
         closePoster: (state) => {
             state.posterSrc = null
         },
+        animeTouched: (state, action: PayloadAction<string>) => {
+            if (!state.touchedAnimeId.includes(action.payload)) {
+                state.touchedAnimeId.push(action.payload)
+            }
+        },
     }
 })
 
@@ -113,6 +120,7 @@ export const {
     closeAddAnime,
     openPoster,
     closePoster,
+    animeTouched,
 } = animeSlice.actions
 
 export default animeSlice.reducer
