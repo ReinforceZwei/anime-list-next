@@ -3,20 +3,21 @@ import { closeCard, openEditor, openPoster, useGetAnimeQuery } from "@/lib/redux
 import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Divider, Fab, IconButton, Rating, Skeleton, Tooltip, Typography, useTheme } from "@mui/material"
 import { alpha } from "@mui/material";
 import { fieldSorter } from '@/lib/vendor/sortHelper'
-import TagChip from '@/lib/component/TagChip/TagChip'
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import FlagIcon from '@mui/icons-material/Flag';
-import { DateTime } from 'luxon'
 import { useGetImageBaseQuery, useLazyGetDetailsQuery, useLazySearchQuery } from "@/lib/redux/tmdbApi"
 import { useEffect, useMemo, useState } from "react"
 import { TvSeriesDetail } from "@/lib/service/types/tmdb"
 import { useAppDispatch } from "@/lib/hooks"
 import { TagRecord } from "@/lib/redux/tagSlice"
+import AnimeCardTitle from "./AnimeCardTitle";
+import AnimeCardTags from "./AnimeCardTags";
+import AnimeCardRating from "./AnimeCardRating";
+import AnimeCardDateTime from "./AnimeCardDateTime";
+import AnimeCardTextWithTitle from "./AnimeCardTextWithTitle";
 
 
 interface AnimeCard2Props {
@@ -70,18 +71,6 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
         }
     }
 
-    const [copySucessMsg, setCopySucessMsg] = useState(false)
-    const handleCopy = () => {
-        if (anime) {
-            navigator.clipboard.writeText(anime.name).then(() => {
-                setCopySucessMsg(true)
-                setTimeout(() => {
-                    setCopySucessMsg(false)
-                }, 1000)
-            })
-        }
-    }
-
 
     if (tmdbData) {
         console.log(tmdbData)
@@ -125,14 +114,18 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                         height: '100%',
                         transition: 'background .5s',
                         backgroundColor: '#83838324',
+                        borderTopLeftRadius: 4,
+                        borderTopRightRadius: 4,
                     }}
                     image={posterUrl || undefined}
                 ></CardMedia>
             </CardActionArea>
 
+            {/* Placeholder to squeeze info card to bottom */}
             <Box
                 sx={{
                     maxHeight: 467,
+                    minHeight: 30,
                     height: 467,
                 }}
             ></Box>
@@ -156,87 +149,27 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                 ><EditIcon /></Fab>
 
                 {/* Title + Copy Button */}
-                <Typography variant="h5" component='div'>
-                    { isLoading ? <Skeleton /> : (
-                        <>
-                        {anime!.name}
-                        <Tooltip title='Copied' placement="top" arrow open={copySucessMsg}>
-                            <IconButton size="small" color="primary" onClick={handleCopy}>
-                                <ContentCopyIcon fontSize="inherit" />
-                            </IconButton>
-                        </Tooltip>
-                        </>
-                    ) }
-                    
-                </Typography>
+                <AnimeCardTitle loading={isLoading} title={anime?.name} />
+                
                 
                 {/* Tags/Categories */}
-                <Box>
-                { isLoading ? <Skeleton /> : (
-                    sortedTags && sortedTags.map(tag => (
-                        <TagChip key={tag.id} name={tag.name} color={tag.color} />
-                    ))
-                )}
-                </Box>
+                <AnimeCardTags loading={isLoading} tags={sortedTags} />
 
                 {/* Rating */}
-                <Box>
-                    { isLoading ? <Skeleton /> : <Rating value={anime?.rating} readOnly /> }
-                </Box>
+                <AnimeCardRating loading={isLoading} rating={anime?.rating} />
 
                 {/* Date Time */}
-                { isLoading ? <Skeleton /> : (
-                <Box>
-                    <Typography variant="caption" color='text.secondary' component='div'>
-                        新增於 {DateTime.fromSQL(anime?.created!).toLocaleString(DateTime.DATETIME_SHORT)}
-                    </Typography>
-
-                    {anime?.start_time && (
-                    <Typography variant="caption" color='warning.light' component='div'>
-                        開始於 {DateTime.fromSQL(anime?.start_time).toLocaleString(DateTime.DATETIME_SHORT)}
-                    </Typography>
-                    )}
-
-                    {anime?.finish_time && (
-                    <Typography variant="caption" color='success.light' component='div'>
-                        完成於 {DateTime.fromSQL(anime?.finish_time).toLocaleString(DateTime.DATETIME_SHORT)}
-                        { anime?.start_time && (
-                            <span>{' '}({Math.ceil(DateTime.fromSQL(anime?.finish_time).diff(DateTime.fromSQL(anime?.start_time)).as('days'))}日)</span>
-                        ) }
-                    </Typography>
-                    )}
-                    
-                </Box>
-                )}
+                <AnimeCardDateTime
+                    loading={isLoading}
+                    createTime={anime?.created}
+                    startTime={anime?.start_time}
+                    finishTime={anime?.finish_time}
+                />
 
                 {/* Comment */}
-                {!isLoading && anime?.comment && (
-                <>
-                <Divider><Typography variant="caption" color='text.secondary'>感想</Typography></Divider>
+                <AnimeCardTextWithTitle loading={isLoading} title="感想" content={anime?.comment} />
 
-                <Box sx={{ whiteSpace: 'break-spaces' }}>
-                    
-                    <Typography variant="body2" component='div'>
-                        {anime?.comment}
-                    </Typography>
-                    
-                </Box>
-                </>
-                )}
-
-                {!isLoading && anime?.remark && (
-                <>
-                <Divider><Typography variant="caption" color='text.secondary'>備註</Typography></Divider>
-
-                <Box sx={{ whiteSpace: 'break-spaces' }}>
-                    
-                    <Typography variant="body2" component='div'>
-                        {anime?.remark}
-                    </Typography>
-                    
-                </Box>
-                </>
-                )}
+                <AnimeCardTextWithTitle loading={isLoading} title="備註" content={anime?.remark} />
 
                 {tmdbData && tmdbData.id}
             </CardContent>
