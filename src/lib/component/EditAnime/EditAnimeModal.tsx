@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAnimeQuery, STATUS_OPTIONS, DOWNLOAD_STATUS_OPTIONS, useUpdateAnimeMutation, AnimeRecord } from "@/lib/redux/animeSlice"
+import { useGetAnimeQuery, STATUS_OPTIONS, DOWNLOAD_STATUS_OPTIONS, useUpdateAnimeMutation, AnimeRecord, useDeleteAnimeMutation, closeCard } from "@/lib/redux/animeSlice"
 import {
     Box,
     Button,
@@ -27,6 +27,9 @@ import updateStartTimeOnStatusChange from "./updateRules/updateStartTimeOnStatus
 import updateFinishTimeOnStatusChange from "./updateRules/updateFinishTimeOnStatusChange";
 import { useRouterRefresh } from "@/lib/routerHooks";
 import { TagRecord } from "@/lib/redux/tagSlice";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useConfirm } from "material-ui-confirm";
+import { useAppDispatch } from "@/lib/hooks";
 
 
 interface EditAnimeModalProps {
@@ -51,12 +54,16 @@ type TabValues = 'general'
 
 export default function EditAnimeModal(props: EditAnimeModalProps) {
     const theme = useTheme()
+    const confirm = useConfirm()
+    const dispatch = useAppDispatch()
+    const router = useRouter()
 
     const { id: animeId, onClose } = props
     const { data: anime, isFetching: isLoading } = useGetAnimeQuery(animeId)
     // const { data: tags, isFetching: isTagsLoading } = useGetTagsQuery()
 
     const [updateAnime] = useUpdateAnimeMutation()
+    const [deleteAnime] = useDeleteAnimeMutation()
 
     const [internalShow, setInternalShow] = useState(true)
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
@@ -113,6 +120,22 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
         })
     }
 
+    const onDelete = () => {
+        confirm()
+            .then(() => {
+                deleteAnime(animeId).unwrap().then(() => {
+                    setInternalShow(false)
+                    dispatch(closeCard())
+                    router.refresh()
+
+                }).catch((error) => {
+                    console.error(error)
+                    alert('Error delete anime')
+                })
+            })
+            .catch(() => { /* cancel */})
+    }
+
     return (
         <Dialog
             open={internalShow}
@@ -158,7 +181,8 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
                 </TabContext>
             </DialogContent>
 
-            <DialogActions>
+            <DialogActions sx={{ justifyContent: 'space-between'}}>
+                <Button variant="outlined" color='error' startIcon={<DeleteIcon />} onClick={onDelete}>Delete</Button>
                 <Button type='submit'>Save</Button>
             </DialogActions>
             

@@ -11,6 +11,7 @@ import {
     IconButton,
     List,
     ListItem,
+    Skeleton,
     useMediaQuery,
     useTheme
 } from "@mui/material"
@@ -76,7 +77,7 @@ export default function ManageTagModal(props: ManageTagModalProps) {
                     <Divider>Edit</Divider>
                 </Box>
 
-                { !isFetching && (
+                { isFetching ? (<><Skeleton /><Skeleton /></>) : (
                     tags?.map(tag => (
                         <Box key={tag.id} display='inline'>
                             <MuiTagChip

@@ -46,6 +46,18 @@ export const animeApi = baseApi.injectEndpoints({
                 }
             }
         }),
+        deleteAnime: builder.mutation<boolean, string>({
+            invalidatesTags: [{ type: 'animes', id: '*' }],
+            queryFn: async (id) => {
+                const pb = createBrowserClient()
+                try {
+                    const data = await pb.collection<AnimeRecord>('animes').delete(id)
+                    return { data }
+                } catch (error) {
+                    return { error: error }
+                }
+            }
+        }),
     })
 })
 
@@ -53,6 +65,7 @@ export const {
     useGetAnimeQuery,
     useUpdateAnimeMutation,
     useAddAnimeMutation,
+    useDeleteAnimeMutation,
 } = animeApi
 
 export interface AnimeState {

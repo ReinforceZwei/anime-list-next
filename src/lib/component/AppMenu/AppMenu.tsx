@@ -2,7 +2,7 @@
 
 import { Box, Fab, Menu, MenuItem, MenuList } from "@mui/material"
 import { useState } from "react"
-import ManageTagLayout from "./ManageTagLayout";
+import ManageTagModalHolder from "@/lib/modalHolder/ManageTagModalHolder";
 import { useAppDispatch } from "@/lib/hooks";
 import { openManageTag } from "@/lib/redux/tagSlice";
 
@@ -40,7 +40,7 @@ export default function AppMenu() {
                 
             </Menu>
 
-            <ManageTagLayout />
+            <ManageTagModalHolder />
         </Box>
     )
 }
