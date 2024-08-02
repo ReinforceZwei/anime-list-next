@@ -2,9 +2,9 @@
 
 import EditAnimeModal from "@/lib/component/EditAnime/EditAnimeModal"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
-import { closeEditor } from "@/lib/redux/animeSlice"
 import { useRouterRefresh } from "@/lib/routerHooks"
 import { Box } from "@mui/material"
+import { closeEditAnimeModal } from "../redux/uiSlice"
 
 /**
  * Scroll element into view only when element is not in viewport
@@ -28,7 +28,7 @@ function scrollIntoView(element: Element | null) {
 
 export default function EditorModalHolder() {
     const dispatch = useAppDispatch()
-    const id = useAppSelector(state => state.anime.editingId)
+    const { open, payload: id } = useAppSelector(state => state.ui.editAnimeModal)
     const refresh = useRouterRefresh()
 
     const handleOnClose = (requireRefresh: boolean, requireScroll: boolean) => {
@@ -38,14 +38,14 @@ export default function EditorModalHolder() {
                     scrollIntoView(document.querySelector(`span[data-anime-id="${id}"]`))
                 }
             }).finally(() => {
-                dispatch(closeEditor())
+                dispatch(closeEditAnimeModal())
             })
         } else {
-            dispatch(closeEditor())
+            dispatch(closeEditAnimeModal())
         }
     }
 
-    if (id !== null) {
+    if (open && id) {
         return (
             <Box sx={{
                 position: 'fixed',

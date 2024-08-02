@@ -19,10 +19,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from "react"
-import { openAddTag, useGetTagsQuery } from "@/lib/redux/tagSlice";
+import { useGetTagsQuery } from "@/lib/redux/tagSlice";
 import MuiTagChip from "../TagChip/MuiTagChip";
 import EditTagModal from "../EditTag/EditTagModal";
 import { useAppDispatch } from "@/lib/hooks";
+import { openAddTagModal } from "@/lib/redux/uiSlice";
 
 interface ManageTagModalProps {
     onClose?: Function
@@ -70,7 +71,7 @@ export default function ManageTagModal(props: ManageTagModalProps) {
             <DialogContent dividers>
 
                 <Box>
-                    <Button variant="contained" startIcon={<AddIcon />} onClick={() => dispatch(openAddTag())}>Create</Button>
+                    <Button variant="contained" startIcon={<AddIcon />} onClick={() => dispatch(openAddTagModal())}>Create</Button>
                 </Box>
 
                 <Box pt={1} pb={1}>

@@ -3,8 +3,9 @@ import { Chip, useTheme } from '@mui/material'
 import TagChip from '@/lib/component/TagChip/TagChip'
 import { fieldSorter } from '@/lib/vendor/sortHelper'
 import { useAppDispatch, useAppSelector } from '@/lib/hooks'
-import { animeTouched, openCard, useGetAnimeQuery } from '@/lib/redux/animeSlice'
+import { animeTouched, useGetAnimeQuery } from '@/lib/redux/animeSlice'
 import { CSSProperties, useCallback, useEffect, useMemo } from 'react'
+import { openAnimeCard } from '@/lib/redux/uiSlice'
 
 interface AnimeListItemProps {
     id: string
@@ -54,7 +55,7 @@ export default function AnimeListItem(props: AnimeListItemProps) {
     const sortedTags = useMemo(() => myTags.sort(fieldSorter(['weight', 'name'])), [myTags])
 
     const handleOnClick = useCallback(() => {
-        dispatch(openCard(id))
+        dispatch(openAnimeCard(id))
         dispatch(animeTouched(id))
     }, [id])
 

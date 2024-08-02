@@ -2,23 +2,23 @@
 
 import AddAnimeModal from "@/lib/component/AddAnime/AddAnimeModal"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
-import { closeAddAnime, closeEditor, openAddAnime } from "@/lib/redux/animeSlice"
 import { Box, Fab } from "@mui/material"
 import AddIcon from '@mui/icons-material/Add'
+import { closeAddAnimeModal, openAddAnimeModal } from "../redux/uiSlice"
 
 
 
 export default function AddAnimeModalHolder() {
     const dispatch = useAppDispatch()
-    const isOpen = useAppSelector(state => state.anime.openAddAnime)
+    const { open } = useAppSelector(state => state.ui.addAnimeModal)
 
     return (
         <Box>
-            <Fab sx={{position: 'fixed', right: 10, bottom: 10}} size="small" color="primary" onClick={() => dispatch(openAddAnime())}>
+            <Fab sx={{position: 'fixed', right: 10, bottom: 10}} size="small" color="primary" onClick={() => dispatch(openAddAnimeModal())}>
                 <AddIcon />
             </Fab>
 
-            { isOpen && <AddAnimeModal onClose={() => dispatch(closeAddAnime())} /> }
+            { open && <AddAnimeModal onClose={() => dispatch(closeAddAnimeModal())} /> }
         </Box>
     )
 }

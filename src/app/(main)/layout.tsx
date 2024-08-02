@@ -1,5 +1,7 @@
 import StoreProvider from "@/lib/StoreProvider";
 import MuiConfirmProvider from "@/lib/component/MuiConfirm/MuiConfirmProvider";
+import GlassmorphismPaper from "@/lib/component/Wallpaper/GlassmorphismPaper";
+import WallpaperWrapper from "@/lib/component/Wallpaper/WallpaperWrapper";
 import { Box, Container, Paper } from "@mui/material";
 
 
@@ -13,13 +15,11 @@ export default function MainLayout({
         <div>
             <StoreProvider>
                 <MuiConfirmProvider>
-                    <Container maxWidth={false} sx={{maxWidth: '700px'}} disableGutters>
-                        <Paper elevation={5}>
-                            <Box padding={{ sm: 6, xs: 2 }}>
-                                {children}
-                            </Box>
-                        </Paper>
-                    </Container>
+                    <WallpaperWrapper>
+                        <Container maxWidth={false} sx={{maxWidth: '700px'}} disableGutters>
+                            {children}
+                        </Container>
+                    </WallpaperWrapper>
                 </MuiConfirmProvider>
             </StoreProvider>
         </div>

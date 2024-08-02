@@ -90,40 +90,40 @@ export interface TagRecord extends RecordModel {
     display: boolean
 }
 
-export interface TagState {
-    openAddTag: boolean
-    openManageTag: boolean
-}
+// export interface TagState {
+//     openAddTag: boolean
+//     openManageTag: boolean
+// }
 
-const initialState: TagState = {
-    openAddTag: false,
-    openManageTag: false,
-}
+// const initialState: TagState = {
+//     openAddTag: false,
+//     openManageTag: false,
+// }
 
-export const tagSlice = createSlice({
-    name: 'anime',
-    initialState,
-    reducers: {
-        openAddTag: (state) => {
-            state.openAddTag = true
-        },
-        closeAddTag: (state) => {
-            state.openAddTag = false
-        },
-        openManageTag: (state) => {
-            state.openManageTag = true
-        },
-        closeManageTag: (state) => {
-            state.openManageTag = false
-        }
-    }
-})
+// export const tagSlice = createSlice({
+//     name: 'anime',
+//     initialState,
+//     reducers: {
+//         openAddTag: (state) => {
+//             state.openAddTag = true
+//         },
+//         closeAddTag: (state) => {
+//             state.openAddTag = false
+//         },
+//         openManageTag: (state) => {
+//             state.openManageTag = true
+//         },
+//         closeManageTag: (state) => {
+//             state.openManageTag = false
+//         }
+//     }
+// })
 
-export const {
-    openAddTag,
-    closeAddTag,
-    openManageTag,
-    closeManageTag,
-} = tagSlice.actions
+// export const {
+//     openAddTag,
+//     closeAddTag,
+//     openManageTag,
+//     closeManageTag,
+// } = tagSlice.actions
 
-export default tagSlice.reducer
+// export default tagSlice.reducer

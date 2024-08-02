@@ -8,8 +8,7 @@ import { Box } from "@mui/material"
 
 
 export default function AnimeCardModalHolder() {
-    const open = useAppSelector(state => state.anime.open)
-    const id = useAppSelector(state => state.anime.viewingId)
+    const { open, payload: id } = useAppSelector(state => state.ui.animeCard)
 
     if (open && id) {
         return (

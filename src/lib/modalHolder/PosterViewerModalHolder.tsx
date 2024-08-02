@@ -3,22 +3,22 @@
 import { Box } from "@mui/material"
 import PosterViewer from "../component/PosterViewer/PosterViewer"
 import { useAppDispatch, useAppSelector } from "../hooks"
-import { closePoster } from "../redux/animeSlice"
+import { closePosterModal } from "../redux/uiSlice"
 
 
 
 export default function PosterViewerModalHolder() {
     const dispatch = useAppDispatch()
-    const src = useAppSelector((state) => state.anime.posterSrc)
+    const { open, payload: src } = useAppSelector((state) => state.ui.posterModal)
 
     const handleClose = () => {
-        dispatch(closePoster())
+        dispatch(closePosterModal())
     }
     
 
     return (
         <Box>
-            { src && <PosterViewer imageSrc={src} onClose={handleClose} /> }
+            { open && src && <PosterViewer imageSrc={src} onClose={handleClose} /> }
         </Box>
     )
 }

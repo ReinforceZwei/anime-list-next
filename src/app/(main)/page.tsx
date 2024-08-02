@@ -11,20 +11,36 @@ import EditorModalHolder from '@/lib/modalHolder/EditorModalHolder';
 import AddAnimeModalHolder from '@/lib/modalHolder/AddAnimeModalHolder';
 import AddTagModalHolder from '@/lib/modalHolder/AddTagModalHolder';
 import PosterViewerModalHolder from '@/lib/modalHolder/PosterViewerModalHolder';
+import GlassmorphismPaper from '@/lib/component/Wallpaper/GlassmorphismPaper';
+import { Metadata, ResolvingMetadata } from 'next';
+import { getUserSettings } from '@/lib/service/userSettings';
+
+export async function generateMetadata(props: any, parent: ResolvingMetadata): Promise<Metadata> {
+    const userSettings = await getUserSettings()
+
+    return {
+        title: userSettings ? userSettings.app_title : (await parent).title
+    }
+}
 
 export default async function Home() {
     const pb = createServerClient(cookies())
     if (!pb.authStore.isValid) {
         return redirect('/login')
     }
+    const userSettings = await getUserSettings()
+    const title = userSettings ? userSettings.app_title : 'Anime List'
+    
     return (
         <div>
-            <div>
-                <Typography variant="h3" align="center">Anime List</Typography>
-                <AnimeList title="Watched" filter="status = 'finished'" sort="+finish_time" />
-                <AnimeList title="Watching" filter="status = 'in-progress'" sort="+start_time" />
-                <AnimeList title="To Watch" filter="status = 'pending'" sort="+created" />
-            </div>
+            <GlassmorphismPaper elevation={5}>
+                <Box padding={{ sm: 6, xs: 2 }}>
+                    <Typography variant="h3" align="center">{title}</Typography>
+                    <AnimeList title="Watched" filter="status = 'finished'" sort="+finish_time" />
+                    <AnimeList title="Watching" filter="status = 'in-progress'" sort="+start_time" />
+                    <AnimeList title="To Watch" filter="status = 'pending'" sort="+created" />
+                </Box>
+            </GlassmorphismPaper>
 
             <AppMenu />
 

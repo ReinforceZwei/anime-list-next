@@ -90,32 +90,32 @@ export const animeSlice = createSlice({
     name: 'anime',
     initialState,
     reducers: {
-        openCard: (state, action: PayloadAction<string>) => {
-            state.viewingId = action.payload
-            state.open = true
-        },
-        closeCard: (state) => {
-            state.open = false
-            state.viewingId = null
-        },
-        openEditor: (state, action: PayloadAction<string>) => {
-            state.editingId = action.payload
-        },
-        closeEditor: (state) => {
-            state.editingId = null
-        },
-        openAddAnime: (state) => {
-            state.openAddAnime = true
-        },
-        closeAddAnime: (state) => {
-            state.openAddAnime = false
-        },
-        openPoster: (state, action: PayloadAction<string>) => {
-            state.posterSrc = action.payload
-        },
-        closePoster: (state) => {
-            state.posterSrc = null
-        },
+        // openCard: (state, action: PayloadAction<string>) => {
+        //     state.viewingId = action.payload
+        //     state.open = true
+        // },
+        // closeCard: (state) => {
+        //     state.open = false
+        //     state.viewingId = null
+        // },
+        // openEditor: (state, action: PayloadAction<string>) => {
+        //     state.editingId = action.payload
+        // },
+        // closeEditor: (state) => {
+        //     state.editingId = null
+        // },
+        // openAddAnime: (state) => {
+        //     state.openAddAnime = true
+        // },
+        // closeAddAnime: (state) => {
+        //     state.openAddAnime = false
+        // },
+        // openPoster: (state, action: PayloadAction<string>) => {
+        //     state.posterSrc = action.payload
+        // },
+        // closePoster: (state) => {
+        //     state.posterSrc = null
+        // },
         animeTouched: (state, action: PayloadAction<string>) => {
             if (!state.touchedAnimeId.includes(action.payload)) {
                 state.touchedAnimeId.push(action.payload)
@@ -125,14 +125,14 @@ export const animeSlice = createSlice({
 })
 
 export const {
-    openCard,
-    closeCard,
-    openEditor,
-    closeEditor,
-    openAddAnime,
-    closeAddAnime,
-    openPoster,
-    closePoster,
+    // openCard,
+    // closeCard,
+    // openEditor,
+    // closeEditor,
+    // openAddAnime,
+    // closeAddAnime,
+    // openPoster,
+    // closePoster,
     animeTouched,
 } = animeSlice.actions
 

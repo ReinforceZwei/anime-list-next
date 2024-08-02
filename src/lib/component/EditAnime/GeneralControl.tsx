@@ -10,9 +10,10 @@ import { getStatusIcon } from './StatusMenuItem'
 import FormTagSelect from '../control/FormTagSelect'
 import FormRating from '../control/FormRating'
 import { Control } from 'react-hook-form'
-import { openAddTag, useGetTagsQuery } from '@/lib/redux/tagSlice'
+import { useGetTagsQuery } from '@/lib/redux/tagSlice'
 import getColor, { getMuiChipColor } from '../TagChip/getColor'
 import { useAppDispatch } from '@/lib/hooks'
+import { openAddTagModal } from '@/lib/redux/uiSlice'
 
 
 interface GeneralControlProps {
@@ -99,7 +100,7 @@ export default function GeneralControl(props: GeneralControlProps) {
                     />
                 </Grid>
                 <Grid xs='auto' sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconButton onClick={() => dispatch(openAddTag())}><AddIcon /></IconButton>
+                    <IconButton onClick={() => dispatch(openAddTagModal())}><AddIcon /></IconButton>
                 </Grid>
             </Grid>
 

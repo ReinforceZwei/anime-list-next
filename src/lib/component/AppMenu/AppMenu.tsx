@@ -4,7 +4,7 @@ import { Box, Fab, Menu, MenuItem, MenuList } from "@mui/material"
 import { useState } from "react"
 import ManageTagModalHolder from "@/lib/modalHolder/ManageTagModalHolder";
 import { useAppDispatch } from "@/lib/hooks";
-import { openManageTag } from "@/lib/redux/tagSlice";
+import { openManageTagModal } from "@/lib/redux/uiSlice";
 
 
 
@@ -35,7 +35,7 @@ export default function AppMenu() {
             >
                 <MenuList dense disablePadding>
                     <MenuItem>HeHeXD</MenuItem>
-                    <MenuItem onClick={() => {handleClose();dispatch(openManageTag())}}>Tags</MenuItem>
+                    <MenuItem onClick={() => {handleClose();dispatch(openManageTagModal())}}>Tags</MenuItem>
                 </MenuList>
                 
             </Menu>

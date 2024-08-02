@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAnimeQuery, STATUS_OPTIONS, DOWNLOAD_STATUS_OPTIONS, useUpdateAnimeMutation, AnimeRecord, useDeleteAnimeMutation, closeCard } from "@/lib/redux/animeSlice"
+import { useGetAnimeQuery, STATUS_OPTIONS, DOWNLOAD_STATUS_OPTIONS, useUpdateAnimeMutation, AnimeRecord, useDeleteAnimeMutation } from "@/lib/redux/animeSlice"
 import {
     Box,
     Button,
@@ -22,7 +22,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { useRouter } from 'next/navigation'
 import GeneralControl from "./GeneralControl"
-import GutterlessTabPanel from "./GutterlessTabPanel";
+import GutterlessTabPanel from "../Tab/GutterlessTabPanel";
 import updateStartTimeOnStatusChange from "./updateRules/updateStartTimeOnStatusChange";
 import updateFinishTimeOnStatusChange from "./updateRules/updateFinishTimeOnStatusChange";
 import { useRouterRefresh } from "@/lib/routerHooks";
@@ -30,6 +30,7 @@ import { TagRecord } from "@/lib/redux/tagSlice";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useConfirm } from "material-ui-confirm";
 import { useAppDispatch } from "@/lib/hooks";
+import { closeAnimeCard } from "@/lib/redux/uiSlice";
 
 
 interface EditAnimeModalProps {
@@ -125,7 +126,7 @@ export default function EditAnimeModal(props: EditAnimeModalProps) {
             .then(() => {
                 deleteAnime(animeId).unwrap().then(() => {
                     setInternalShow(false)
-                    dispatch(closeCard())
+                    dispatch(closeAnimeCard())
                     router.refresh()
 
                 }).catch((error) => {
