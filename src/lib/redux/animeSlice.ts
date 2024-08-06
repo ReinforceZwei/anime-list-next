@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { RecordModel } from "pocketbase";
 import { baseApi } from "./api";
 import { createBrowserClient } from "@/lib/pocketbase";
+import { AnimeRecord } from '@/types/anime';
 
 export const animeApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -90,32 +90,6 @@ export const animeSlice = createSlice({
     name: 'anime',
     initialState,
     reducers: {
-        // openCard: (state, action: PayloadAction<string>) => {
-        //     state.viewingId = action.payload
-        //     state.open = true
-        // },
-        // closeCard: (state) => {
-        //     state.open = false
-        //     state.viewingId = null
-        // },
-        // openEditor: (state, action: PayloadAction<string>) => {
-        //     state.editingId = action.payload
-        // },
-        // closeEditor: (state) => {
-        //     state.editingId = null
-        // },
-        // openAddAnime: (state) => {
-        //     state.openAddAnime = true
-        // },
-        // closeAddAnime: (state) => {
-        //     state.openAddAnime = false
-        // },
-        // openPoster: (state, action: PayloadAction<string>) => {
-        //     state.posterSrc = action.payload
-        // },
-        // closePoster: (state) => {
-        //     state.posterSrc = null
-        // },
         animeTouched: (state, action: PayloadAction<string>) => {
             if (!state.touchedAnimeId.includes(action.payload)) {
                 state.touchedAnimeId.push(action.payload)
@@ -125,43 +99,7 @@ export const animeSlice = createSlice({
 })
 
 export const {
-    // openCard,
-    // closeCard,
-    // openEditor,
-    // closeEditor,
-    // openAddAnime,
-    // closeAddAnime,
-    // openPoster,
-    // closePoster,
     animeTouched,
 } = animeSlice.actions
 
 export default animeSlice.reducer
-
-export interface AnimeRecord extends RecordModel {
-    name: string
-    status?: 'pending' | 'in-progress' | 'finished' | 'abandon'
-    download_status?: 'pending' | 'in-progress' | 'finished'
-    start_time?: string
-    finish_time?: string
-    rating?: number
-    comment?: string
-    remark?: string
-    tmdb_id?: string
-    tmdb_season_number?: string
-    tags: string[]
-    user_id: string
-}
-
-export const STATUS_OPTIONS = [
-    { value: 'pending', label: 'Pending' },
-    { value: 'in-progress', label: 'In progress' },
-    { value: 'finished', label: 'Finished' },
-    { value: 'abandon', label: 'Abandon' },
-]
-
-export const DOWNLOAD_STATUS_OPTIONS = [
-    { value: 'pending', label: 'Pending' },
-    { value: 'in-progress', label: 'In progress' },
-    { value: 'finished', label: 'Finished' },
-]

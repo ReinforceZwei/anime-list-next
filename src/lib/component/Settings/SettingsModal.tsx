@@ -17,6 +17,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import GutterlessTabPanel from "../Tab/GutterlessTabPanel";
+import ThemePanel from "./ThemePanel";
 
 export type FormValues = {
     background_image: string
@@ -79,6 +80,8 @@ export default function SettingsModal() {
                     <GutterlessTabPanel value='general'>
                         
                     </GutterlessTabPanel>
+
+                    <ThemePanel control={control} />
                 
                 </TabContext>
             </DialogContent>

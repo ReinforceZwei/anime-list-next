@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getImageBaseUrl, getTvDetails, multiSearch } from '@/lib/service/tmdb'
-import { SearchResult, TvSeriesDetail } from "@/lib/service/types/tmdb";
+import { SearchResult, TvSeriesDetail } from "@/types/tmdb";
 
 export const tmdbApi = createApi({
     reducerPath: 'tmdbApi',

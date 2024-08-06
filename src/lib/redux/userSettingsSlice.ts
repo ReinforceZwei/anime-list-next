@@ -1,7 +1,6 @@
-import { RecordModel } from "pocketbase";
 import { baseApi } from "./api";
 import { createBrowserClient } from "@/lib/pocketbase";
-import { generateCacheTagList } from '../vendor/rtkQueryUtils';
+import { UserSettingsRecord } from "@/types/userSettings";
 
 
 export const userSettingsApi = baseApi.injectEndpoints({
@@ -20,12 +19,3 @@ export const userSettingsApi = baseApi.injectEndpoints({
         })
     })
 })
-
-
-
-export interface UserSettingsRecord extends RecordModel {
-    background_image: string
-    color_mode: 'light' | 'dark'
-    app_title: string
-    glass_effect: boolean
-}

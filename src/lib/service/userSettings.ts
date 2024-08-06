@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers"
 import { createServerClient } from "../pocketbase"
-import { UserSettingsRecord } from "../redux/userSettingsSlice"
+import { UserSettingsRecord } from "@/types/userSettings"
 
 export async function getUserSettings(): Promise<UserSettingsRecord | null> {
     const cookie = cookies()

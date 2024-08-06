@@ -1,7 +1,7 @@
 import { createServerClient } from '@/lib/pocketbase';
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation';
-import { Box, Button, Fab, Typography } from '@mui/material'
+import { Box, Button, Fab, Paper, Typography } from '@mui/material'
 import Item from '@/lib/item'
 import AnimeList from '@/lib/component/AnimeList/AnimeList';
 import AddIcon from '@mui/icons-material/Add'
@@ -30,17 +30,41 @@ export default async function Home() {
     }
     const userSettings = await getUserSettings()
     const title = userSettings ? userSettings.app_title : 'Anime List'
+    const useGlassEffect = userSettings ? userSettings.glass_effect : false
+
+    const listLayout = [
+        {
+            title: 'Watched',
+            filter: "status = 'finished'",
+            sort: '+finish_time',
+        },
+        {
+            title: 'Watching',
+            filter: "status = 'in-progress'",
+            sort: '+start_time',
+        },
+        {
+            title: 'To Watch',
+            filter: "status = 'pending'",
+            sort: '+created',
+        },
+    ]
+
+    const PaperToUse = useGlassEffect ? GlassmorphismPaper : Paper
     
     return (
         <div>
-            <GlassmorphismPaper elevation={5}>
+            <PaperToUse elevation={5}>
                 <Box padding={{ sm: 6, xs: 2 }}>
                     <Typography variant="h3" align="center">{title}</Typography>
-                    <AnimeList title="Watched" filter="status = 'finished'" sort="+finish_time" />
+                    {listLayout.map(x => (
+                        <AnimeList key={x.title} title={x.title} filter={x.filter} sort={x.sort} />
+                    ))}
+                    {/* <AnimeList title="Watched" filter="status = 'finished'" sort="+finish_time" />
                     <AnimeList title="Watching" filter="status = 'in-progress'" sort="+start_time" />
-                    <AnimeList title="To Watch" filter="status = 'pending'" sort="+created" />
+                    <AnimeList title="To Watch" filter="status = 'pending'" sort="+created" /> */}
                 </Box>
-            </GlassmorphismPaper>
+            </PaperToUse>
 
             <AppMenu />
 

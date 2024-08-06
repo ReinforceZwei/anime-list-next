@@ -3,7 +3,6 @@
 import Grid from '@mui/material/Unstable_Grid2'
 import FormTextField from '../control/FormTextField'
 import FormSelect from '../control/FormSelect'
-import { DOWNLOAD_STATUS_OPTIONS, STATUS_OPTIONS } from '@/lib/redux/animeSlice'
 import { Box, IconButton, MenuItem, Typography, useTheme } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import { getStatusIcon } from './StatusMenuItem'
@@ -14,6 +13,7 @@ import { useGetTagsQuery } from '@/lib/redux/tagSlice'
 import getColor, { getMuiChipColor } from '../TagChip/getColor'
 import { useAppDispatch } from '@/lib/hooks'
 import { openAddTagModal } from '@/lib/redux/uiSlice'
+import { DOWNLOAD_STATUS_OPTIONS, STATUS_OPTIONS } from '@/types/anime'
 
 
 interface GeneralControlProps {

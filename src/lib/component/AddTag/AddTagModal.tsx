@@ -18,7 +18,6 @@ import { useState } from "react"
 import CloseIcon from '@mui/icons-material/Close';
 import { SubmitHandler, useForm } from "react-hook-form";
 import FormTextField from "../control/FormTextField";
-import { AnimeRecord, useAddAnimeMutation } from "@/lib/redux/animeSlice";
 import { useRouter } from "next/navigation";
 import FormSwitch from "../control/FormSwitch";
 import FormColorPicker from "../control/FormColorPicker";

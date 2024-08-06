@@ -2,7 +2,7 @@
 import { Typography } from "@mui/material"
 import AnimeListItem from '@/lib/component/AnimeList/AnimeListItem'
 import { getAnimes } from "@/lib/service/anime"
-import { AnimeRecord } from "@/lib/redux/animeSlice"
+import { AnimeRecord } from "@/types/anime"
 
 interface AnimeListClientProps {
     animes: AnimeRecord[]

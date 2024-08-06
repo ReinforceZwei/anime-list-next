@@ -1,5 +1,5 @@
 'use client'
-import { closeCard, openEditor, openPoster, useGetAnimeQuery } from "@/lib/redux/animeSlice"
+import { useGetAnimeQuery } from "@/lib/redux/animeSlice"
 import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Divider, Fab, IconButton, Rating, Skeleton, Tooltip, Typography, useTheme } from "@mui/material"
 import { alpha } from "@mui/material";
 import { fieldSorter } from '@/lib/vendor/sortHelper'
@@ -14,9 +14,10 @@ import FlagIcon from '@mui/icons-material/Flag';
 import { DateTime } from 'luxon'
 import { useGetImageBaseQuery, useLazyGetDetailsQuery, useLazySearchQuery } from "@/lib/redux/tmdbApi"
 import { useEffect, useMemo, useState } from "react"
-import { TvSeriesDetail } from "@/lib/service/types/tmdb"
 import { useAppDispatch } from "@/lib/hooks"
-import { TagRecord } from "@/lib/redux/tagSlice"
+import { TagRecord } from "@/types/tag";
+import { TvSeriesDetail } from "@/types/tmdb";
+import { closeAnimeCard, openEditAnimeModal, openPosterModal } from "@/lib/redux/uiSlice";
 
 
 interface AnimeCardProps {
@@ -66,7 +67,7 @@ export default function AnimeCard({ id }: AnimeCardProps) {
 
     const handlePoster = () => {
         if (posterUrl) {
-            dispatch(openPoster(posterUrl))
+            dispatch(openPosterModal(posterUrl))
         }
     }
 
@@ -107,7 +108,7 @@ export default function AnimeCard({ id }: AnimeCardProps) {
                         width: 32,
                         minHeight: 32,
                     }}
-                    onClick={() => dispatch(closeCard())}
+                    onClick={() => dispatch(closeAnimeCard())}
                 ><CloseIcon /></Fab>
             </Box>
 
@@ -152,7 +153,7 @@ export default function AnimeCard({ id }: AnimeCardProps) {
                     }}
                     size='small'
                     color='primary'
-                    onClick={() => dispatch(openEditor(id))}
+                    onClick={() => dispatch(openEditAnimeModal(id))}
                 ><EditIcon /></Fab>
 
                 {/* Title + Copy Button */}

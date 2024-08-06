@@ -1,8 +1,7 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { RecordModel } from "pocketbase";
 import { baseApi } from "./api";
 import { createBrowserClient } from "@/lib/pocketbase";
 import { generateCacheTagList } from '../vendor/rtkQueryUtils';
+import { TagRecord } from '@/types/tag';
 
 export const tagApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -82,48 +81,3 @@ export const {
     useDeleteTagMutation,
 } = tagApi
 
-export interface TagRecord extends RecordModel {
-    name: string
-    color?: string
-    weight?: number
-    user_id: string
-    display: boolean
-}
-
-// export interface TagState {
-//     openAddTag: boolean
-//     openManageTag: boolean
-// }
-
-// const initialState: TagState = {
-//     openAddTag: false,
-//     openManageTag: false,
-// }
-
-// export const tagSlice = createSlice({
-//     name: 'anime',
-//     initialState,
-//     reducers: {
-//         openAddTag: (state) => {
-//             state.openAddTag = true
-//         },
-//         closeAddTag: (state) => {
-//             state.openAddTag = false
-//         },
-//         openManageTag: (state) => {
-//             state.openManageTag = true
-//         },
-//         closeManageTag: (state) => {
-//             state.openManageTag = false
-//         }
-//     }
-// })
-
-// export const {
-//     openAddTag,
-//     closeAddTag,
-//     openManageTag,
-//     closeManageTag,
-// } = tagSlice.actions
-
-// export default tagSlice.reducer

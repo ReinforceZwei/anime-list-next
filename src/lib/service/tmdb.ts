@@ -1,5 +1,5 @@
 'use server'
-import { Configuration, SearchResult, TvSeriesDetail } from './types/tmdb'
+import { Configuration, SearchResult, TvSeriesDetail } from '@/types/tmdb'
 
 
 

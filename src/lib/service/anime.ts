@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers"
 import { createServerClient } from "../pocketbase"
-import { AnimeRecord } from "../redux/animeSlice"
+import { AnimeRecord } from "@/types/anime"
 
 export async function getAnimes(filter?: string, sort?: string): Promise<AnimeRecord[]> {
     const cookie = cookies()

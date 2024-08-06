@@ -18,13 +18,11 @@ import { useEffect, useState } from "react"
 import CloseIcon from '@mui/icons-material/Close';
 import { SubmitHandler, useForm } from "react-hook-form";
 import FormTextField from "../control/FormTextField";
-import { AnimeRecord, useAddAnimeMutation } from "@/lib/redux/animeSlice";
-import { useRouter } from "next/navigation";
 import FormSwitch from "../control/FormSwitch";
 import FormColorPicker from "../control/FormColorPicker";
 import TagChip from "../TagChip/TagChip";
 import MuiTagChip from "../TagChip/MuiTagChip";
-import { useAddTagMutation, useDeleteTagMutation, useGetTagQuery, useUpdateTagMutation } from "@/lib/redux/tagSlice";
+import { useDeleteTagMutation, useGetTagQuery, useUpdateTagMutation } from "@/lib/redux/tagSlice";
 import { useConfirm } from "material-ui-confirm";
 
 

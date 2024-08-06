@@ -1,8 +1,8 @@
 'use client'
 
-import { TagRecord } from "@/lib/redux/tagSlice"
 import { Box, Skeleton } from "@mui/material"
 import TagChip from "@/lib/component/TagChip/TagChip"
+import { TagRecord } from "@/types/tag"
 
 
 interface AnimeCardTagsProps {

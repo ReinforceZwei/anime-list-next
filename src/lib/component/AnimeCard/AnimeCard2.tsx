@@ -10,15 +10,15 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import FlagIcon from '@mui/icons-material/Flag';
 import { useGetImageBaseQuery, useLazyGetDetailsQuery, useLazySearchQuery } from "@/lib/redux/tmdbApi"
 import { useEffect, useMemo, useState } from "react"
-import { TvSeriesDetail } from "@/lib/service/types/tmdb"
 import { useAppDispatch } from "@/lib/hooks"
-import { TagRecord } from "@/lib/redux/tagSlice"
 import AnimeCardTitle from "./AnimeCardTitle";
 import AnimeCardTags from "./AnimeCardTags";
 import AnimeCardRating from "./AnimeCardRating";
 import AnimeCardDateTime from "./AnimeCardDateTime";
 import AnimeCardTextWithTitle from "./AnimeCardTextWithTitle";
 import { closeAnimeCard, openEditAnimeModal, openPosterModal } from "@/lib/redux/uiSlice";
+import { TagRecord } from "@/types/tag";
+import { TvSeriesDetail } from "@/types/tmdb";
 
 
 interface AnimeCard2Props {

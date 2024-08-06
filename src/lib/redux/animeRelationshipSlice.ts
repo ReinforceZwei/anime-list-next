@@ -1,7 +1,6 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { RecordModel } from "pocketbase";
 import { baseApi } from "./api";
 import { createBrowserClient } from "@/lib/pocketbase";
+import { AnimeRelationshipRecord } from '@/types/animeRelationship';
 
 
 export const animeRelationshipApi = baseApi.injectEndpoints({
@@ -25,10 +24,3 @@ export const animeRelationshipApi = baseApi.injectEndpoints({
 export const {
     useGetRelationshipsQuery,
 } = animeRelationshipApi
-
-
-
-export interface AnimeRelationshipRecord extends RecordModel {
-    relationship: string[]
-    user_id: string
-}

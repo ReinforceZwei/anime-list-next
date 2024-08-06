@@ -2,9 +2,9 @@
 
 import { useAppDispatch } from "@/lib/hooks";
 import PosterViewerModalHolder from "@/lib/modalHolder/PosterViewerModalHolder";
-import { closePoster, openPoster } from "@/lib/redux/animeSlice";
 import { Button, Fab } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add'
+import { closePosterModal, openPosterModal } from "@/lib/redux/uiSlice";
 
 
 export default function Page() {
@@ -13,9 +13,9 @@ export default function Page() {
 
     return (
         <div>
-            <Button onClick={() => dispatch(openPoster(src))}>OPEN</Button>
-            <Button onClick={() => dispatch(closePoster())}>RESET</Button>
-            <Fab onClick={() => dispatch(openPoster(src))}><AddIcon /></Fab>
+            <Button onClick={() => dispatch(openPosterModal(src))}>OPEN</Button>
+            <Button onClick={() => dispatch(closePosterModal())}>RESET</Button>
+            <Fab onClick={() => dispatch(openPosterModal(src))}><AddIcon /></Fab>
             <PosterViewerModalHolder />
         </div>
     )
