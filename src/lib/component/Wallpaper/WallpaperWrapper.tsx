@@ -1,5 +1,6 @@
 import { getBackgroundImageUrl, getUserSettings } from "@/lib/service/userSettings";
 import { CSSProperties, ReactNode } from "react";
+import WallpaperWrapperClient from "./WallpaperWrapperClient";
 
 
 
@@ -24,8 +25,8 @@ export default async function WallpaperWrapper(props: WallpaperWrapperProps) {
         backgroundAttachment: 'fixed',
     }
     return (
-        <div style={style}>
+        <WallpaperWrapperClient imageSrc={backgroundUrl}>
             {children}
-        </div>
+        </WallpaperWrapperClient>
     )
 }

@@ -22,6 +22,7 @@ export interface UiState {
     editAnimeModal: ModalState<AnimeId>
     addTagModal: ModalState
     manageTagModal: ModalState
+    settingsModal: ModalState
 }
 
 const initialState: UiState = {
@@ -31,6 +32,7 @@ const initialState: UiState = {
     editAnimeModal: { open: false },
     addTagModal: { open: false },
     manageTagModal: { open: false },
+    settingsModal: { open: false },
 }
 
 export const uiSlice = createSlice({
@@ -73,6 +75,12 @@ export const uiSlice = createSlice({
         closeManageTagModal: (state) => {
             state.manageTagModal = { open: false }
         },
+        openSettingsModal: (state) => {
+            state.settingsModal = { open: true }
+        },
+        closeSettingsModal: (state) => {
+            state.settingsModal = { open: false }
+        },
     }
 })
 
@@ -83,6 +91,7 @@ export const {
     openEditAnimeModal, closeEditAnimeModal,
     openAddTagModal, closeAddTagModal,
     openManageTagModal, closeManageTagModal,
+    openSettingsModal, closeSettingsModal,
 } = uiSlice.actions
 
 export default uiSlice.reducer

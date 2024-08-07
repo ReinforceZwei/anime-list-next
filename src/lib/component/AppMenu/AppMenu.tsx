@@ -4,7 +4,7 @@ import { Box, Fab, Menu, MenuItem, MenuList } from "@mui/material"
 import { useState } from "react"
 import ManageTagModalHolder from "@/lib/modalHolder/ManageTagModalHolder";
 import { useAppDispatch } from "@/lib/hooks";
-import { openManageTagModal } from "@/lib/redux/uiSlice";
+import { openManageTagModal, openSettingsModal } from "@/lib/redux/uiSlice";
 
 
 
@@ -21,6 +21,11 @@ export default function AppMenu() {
         setAnchorEl(null);
     };
 
+    const dispatchAppMenu = (action: { payload: undefined, type: string }) => {
+        handleClose()
+        dispatch(action)
+    }
+
     return (
         <Box>
             <Fab sx={{position: 'fixed', left: 10, top: 10}} size="medium" color="primary" onClick={handleClick}>
@@ -35,7 +40,8 @@ export default function AppMenu() {
             >
                 <MenuList dense disablePadding>
                     <MenuItem>HeHeXD</MenuItem>
-                    <MenuItem onClick={() => {handleClose();dispatch(openManageTagModal())}}>Tags</MenuItem>
+                    <MenuItem onClick={() => {dispatchAppMenu(openManageTagModal())}}>Tags</MenuItem>
+                    <MenuItem onClick={() => {dispatchAppMenu(openSettingsModal())}}>Settings</MenuItem>
                 </MenuList>
                 
             </Menu>

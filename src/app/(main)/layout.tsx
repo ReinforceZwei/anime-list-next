@@ -13,15 +13,13 @@ export default function MainLayout({
 }>) {
     return (
         <div>
-            <StoreProvider>
-                <MuiConfirmProvider>
-                    <WallpaperWrapper>
-                        <Container maxWidth={false} sx={{maxWidth: '700px'}} disableGutters>
-                            {children}
-                        </Container>
-                    </WallpaperWrapper>
-                </MuiConfirmProvider>
-            </StoreProvider>
+            <MuiConfirmProvider>
+                <WallpaperWrapper>
+                    <Container maxWidth={false} sx={{maxWidth: '700px'}} disableGutters>
+                        {children}
+                    </Container>
+                </WallpaperWrapper>
+            </MuiConfirmProvider>
         </div>
     )
 }

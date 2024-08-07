@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks'
 import { animeTouched, useGetAnimeQuery } from '@/lib/redux/animeSlice'
 import { CSSProperties, useCallback, useEffect, useMemo } from 'react'
 import { openAnimeCard } from '@/lib/redux/uiSlice'
+import TagChipReactive from '../TagChip/TagChipReactive'
 
 interface AnimeListItemProps {
     id: string
@@ -44,12 +45,14 @@ export default function AnimeListItem(props: AnimeListItemProps) {
     }
 
     let color = theme.palette.text.primary
+    let textDecoration = undefined
     if (myDownloadStatus == 'finished') {
         color = theme.downloadStatus.finished
     } else if (myStatus == 'finished') {
         color = theme.status.finished
     } else if (myStatus == 'abandon') {
         color = theme.status.abandon
+        textDecoration = 'line-through'
     }
 
     const sortedTags = useMemo(() => myTags.sort(fieldSorter(['weight', 'name'])), [myTags])
@@ -63,13 +66,14 @@ export default function AnimeListItem(props: AnimeListItemProps) {
     const style: CSSProperties = {
         color: color,
         cursor: 'pointer',
+        textDecoration: textDecoration
     }
     return (
         <li>
             <span style={style} onClick={handleOnClick} data-anime-id={id}>{myName}</span>
             { remark && <span style={{ color: theme.remark }}>（{remark}）</span> }
             { sortedTags && sortedTags.map(tag => (
-                <TagChip key={tag.id} name={tag.name} color={tag.color} />
+                <TagChipReactive key={tag.id} id={tag.id} name={tag.name} color={tag.color} />
             ))}
         </li>
     )

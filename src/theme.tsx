@@ -5,6 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { deepmerge } from '@mui/utils'
 import { useMemo } from 'react';
+import { useGetUserSettingsQuery } from './lib/redux/userSettingsSlice';
 
 declare module '@mui/material/styles' {
     interface Theme {
@@ -93,19 +94,20 @@ export default function CustomThemeProvider({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-
+    const { data: userSettings } = useGetUserSettingsQuery()
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)', {
         ssrMatchMedia: (query) => ({
             matches: query == '(prefers-color-scheme: dark)'
         })
     }) ? 'dark' : 'light'
-    const statusColor = prefersDarkMode == 'light' ? statusLightColorTheme : statusDarkColorTheme
+    const colorMode = userSettings?.color_mode || prefersDarkMode
+    const statusColor = colorMode == 'light' ? statusLightColorTheme : statusDarkColorTheme
     const theme = useMemo(() => createTheme(deepmerge(themeOptions, {
         palette: {
-            mode: prefersDarkMode,
+            mode: colorMode,
         },
         ...statusColor,
-    })), [prefersDarkMode])
+    })), [colorMode])
     
     return (
         <ThemeProvider theme={theme}>

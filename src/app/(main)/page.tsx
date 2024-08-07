@@ -14,6 +14,9 @@ import PosterViewerModalHolder from '@/lib/modalHolder/PosterViewerModalHolder';
 import GlassmorphismPaper from '@/lib/component/Wallpaper/GlassmorphismPaper';
 import { Metadata, ResolvingMetadata } from 'next';
 import { getUserSettings } from '@/lib/service/userSettings';
+import SettingsModalHolder from '@/lib/modalHolder/SettingsModalHolder';
+import AnimePaper from '@/lib/component/AnimeList/AnimePaper';
+import AnimeAppTitle from '@/lib/component/AnimeList/AnimeAppTitle';
 
 export async function generateMetadata(props: any, parent: ResolvingMetadata): Promise<Metadata> {
     const userSettings = await getUserSettings()
@@ -45,26 +48,21 @@ export default async function Home() {
         },
         {
             title: 'To Watch',
-            filter: "status = 'pending'",
+            filter: "status = 'pending' || status = 'abandon'",
             sort: '+created',
         },
     ]
-
-    const PaperToUse = useGlassEffect ? GlassmorphismPaper : Paper
     
     return (
         <div>
-            <PaperToUse elevation={5}>
+            <AnimePaper glassEffect={useGlassEffect}>
                 <Box padding={{ sm: 6, xs: 2 }}>
-                    <Typography variant="h3" align="center">{title}</Typography>
+                    <AnimeAppTitle title={title} />
                     {listLayout.map(x => (
                         <AnimeList key={x.title} title={x.title} filter={x.filter} sort={x.sort} />
                     ))}
-                    {/* <AnimeList title="Watched" filter="status = 'finished'" sort="+finish_time" />
-                    <AnimeList title="Watching" filter="status = 'in-progress'" sort="+start_time" />
-                    <AnimeList title="To Watch" filter="status = 'pending'" sort="+created" /> */}
                 </Box>
-            </PaperToUse>
+            </AnimePaper>
 
             <AppMenu />
 
@@ -73,6 +71,7 @@ export default async function Home() {
             <AddAnimeModalHolder />
             <AddTagModalHolder />
             <PosterViewerModalHolder />
+            <SettingsModalHolder />
         </div>
     );
 }
