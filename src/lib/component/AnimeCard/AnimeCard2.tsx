@@ -19,6 +19,7 @@ import AnimeCardTextWithTitle from "./AnimeCardTextWithTitle";
 import { closeAnimeCard, openEditAnimeModal, openPosterModal } from "@/lib/redux/uiSlice";
 import { TagRecord } from "@/types/tag";
 import { TvSeriesDetail } from "@/types/tmdb";
+import AnimeCardQuickAction from "./AnimeCardQuickAction";
 
 
 interface AnimeCard2Props {
@@ -176,9 +177,7 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
             </CardContent>
 
             <CardActions>
-                {/* <Button variant="contained">Pending <ArrowForwardIcon fontSize="small" /> Watching</Button> */}
-                <Button variant="contained" size='small' color="secondary" startIcon={<KeyboardDoubleArrowRightIcon />}>Watching</Button>
-                <Button variant="contained" size='small' color="secondary" startIcon={<FlagIcon />}>Finished</Button>
+                <AnimeCardQuickAction id={id} />
             </CardActions>
 
             </Box>

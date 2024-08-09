@@ -4,13 +4,14 @@ import PocketBase from "pocketbase";
 let singletonClient: PocketBase | null = null;
 
 export function createBrowserClient() {
-    if (!process.env.NEXT_PUBLIC_POCKETBASE_API_URL) {
-        throw new Error("Pocketbase API url not defined !");
+    let clientSideUrl: string
+    if (process.env.NEXT_PUBLIC_POCKETBASE_API_URL) {
+        clientSideUrl = process.env.NEXT_PUBLIC_POCKETBASE_API_URL
     }
 
     const createNewClient = () => {
         return new PocketBase(
-        process.env.NEXT_PUBLIC_POCKETBASE_API_URL
+            clientSideUrl
         );
     };
 
@@ -22,7 +23,7 @@ export function createBrowserClient() {
 
     singletonClient.authStore.onChange(() => {
         document.cookie = singletonClient!.authStore.exportToCookie({
-        httpOnly: false,
+            httpOnly: false,
         });
     });
 
@@ -30,7 +31,7 @@ export function createBrowserClient() {
 }
 
 export function createServerClient(cookieStore?: ReadonlyRequestCookies) {
-    if (!process.env.NEXT_PUBLIC_POCKETBASE_API_URL) {
+    if (!process.env.POCKETBASE_API_URL) {
         throw new Error("Pocketbase API url not defined !");
     }
   
@@ -41,7 +42,7 @@ export function createServerClient(cookieStore?: ReadonlyRequestCookies) {
     }
   
     const client = new PocketBase(
-        process.env.NEXT_PUBLIC_POCKETBASE_API_URL
+        process.env.POCKETBASE_API_URL
     );
   
     if (cookieStore) {

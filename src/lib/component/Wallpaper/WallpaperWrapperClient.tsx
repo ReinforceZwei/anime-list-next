@@ -7,7 +7,7 @@ import { CSSProperties, ReactNode } from "react"
 
 interface WallpaperWrapperClientProps {
     children: ReactNode
-    imageSrc: string
+    imageSrc?: string
 }
 
 export default function WallpaperWrapperClient(props: WallpaperWrapperClientProps) {
@@ -15,14 +15,15 @@ export default function WallpaperWrapperClient(props: WallpaperWrapperClientProp
 
     const { data: userSettings, isLoading } = useGetUserSettingsQuery()
 
-    let backgroundUrl: string = imageSrc
+    let backgroundUrl: string | undefined = imageSrc
     if (!isLoading && userSettings) {
         const pb = createBrowserClient()
         backgroundUrl = pb.files.getUrl(userSettings, userSettings.background_image)
     }
 
     const style: CSSProperties = {
-        backgroundImage: `url(${backgroundUrl})`,
+        ...(backgroundUrl && { backgroundImage: `url(${backgroundUrl})` }),
+        //backgroundImage: `url(${backgroundUrl})`,
         backgroundPosition: 'top',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',

@@ -18,11 +18,11 @@ const nextConfig = {
             beforeFiles: [
                 {
                     source: '/api/:path*',
-                    destination: `${process.env.NEXT_PUBLIC_POCKETBASE_API_URL}/api/:path*`
+                    destination: `${process.env.POCKETBASE_API_URL}/api/:path*`
                 },
                 {
                     source: '/_/:path*',
-                    destination: `${process.env.NEXT_PUBLIC_POCKETBASE_API_URL}/_/:path*/`
+                    destination: `${process.env.POCKETBASE_API_URL}/_/:path*/`
                 },
             ]
         }

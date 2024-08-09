@@ -6,6 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { deepmerge } from '@mui/utils'
 import { useMemo } from 'react';
 import { useGetUserSettingsQuery } from './lib/redux/userSettingsSlice';
+import { themeOptions } from './themeOptions';
 
 declare module '@mui/material/styles' {
     interface Theme {
@@ -39,25 +40,25 @@ declare module '@mui/material/styles' {
     }
 }
 
-const roboto = Noto_Sans_TC({
-    weight: ['300', '400', '500', '700'],
-    subsets: ['latin'],
-});
+// const roboto = Noto_Sans_TC({
+//     weight: ['300', '400', '500', '700'],
+//     subsets: ['latin'],
+// });
 
-export const themeOptions = {
-    palette: {
-        mode: 'light',
-        primary: {
-            main: '#f8bbd0',
-        },
-        secondary: {
-            main: '#f50057',
-        },
-    },
-    typography: {
-        fontFamily: roboto.style.fontFamily,
-    },
-} as Theme;
+// export const themeOptions = {
+//     palette: {
+//         mode: 'light',
+//         primary: {
+//             main: '#f8bbd0',
+//         },
+//         secondary: {
+//             main: '#f50057',
+//         },
+//     },
+//     typography: {
+//         fontFamily: roboto.style.fontFamily,
+//     },
+// } as Theme;
 
 export const statusLightColorTheme = {
     status: {
