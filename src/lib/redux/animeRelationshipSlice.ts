@@ -13,8 +13,8 @@ export const animeRelationshipApi = baseApi.injectEndpoints({
                         filter: `relationship ~ '${id}'`,
                     })
                     return { data }
-                } catch (error) {
-                    return { error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),

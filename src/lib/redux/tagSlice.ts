@@ -14,8 +14,8 @@ export const tagApi = baseApi.injectEndpoints({
                         sort: '+weight,+name'
                     })
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),
@@ -26,8 +26,8 @@ export const tagApi = baseApi.injectEndpoints({
                 try {
                     const data = await pb.collection<TagRecord>('tags').getOne(id)
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),
@@ -41,8 +41,8 @@ export const tagApi = baseApi.injectEndpoints({
                         user_id: pb.authStore.model?.id
                     })
                     return { data }
-                } catch (error) {
-                    return { error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),
@@ -53,8 +53,8 @@ export const tagApi = baseApi.injectEndpoints({
                 try {
                     const data = await pb.collection<TagRecord>('tags').update(tag.id!, tag)
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),
@@ -65,8 +65,8 @@ export const tagApi = baseApi.injectEndpoints({
                 try {
                     const data = await pb.collection<TagRecord>('tags').delete(id)
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),

@@ -1,6 +1,7 @@
 import { baseApi } from "./api";
 import { createBrowserClient } from "@/lib/pocketbase";
 import { UserSettingsRecord } from "@/types/userSettings";
+import { ClientResponseError } from "pocketbase";
 
 
 export const userSettingsApi = baseApi.injectEndpoints({
@@ -12,8 +13,8 @@ export const userSettingsApi = baseApi.injectEndpoints({
                 try {
                     const data = await pb.collection<UserSettingsRecord>('userSettings').getFirstListItem('')
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),
@@ -30,8 +31,8 @@ export const userSettingsApi = baseApi.injectEndpoints({
                     }
                     const data = await pb.collection<UserSettingsRecord>('userSettings').update(id, settings)
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),

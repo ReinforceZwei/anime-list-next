@@ -28,10 +28,17 @@ export default function WallpaperWrapperClient(props: WallpaperWrapperClientProp
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         backgroundAttachment: 'fixed',
+        position: 'fixed',
+        zIndex: -10,
+        height: '100%',
+        width: '100%',
     }
     return (
+        <>
         <div style={style}>
-            {children}
+            
         </div>
+        <div>{children}</div>
+        </>
     )
 }

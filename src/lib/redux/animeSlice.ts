@@ -14,8 +14,8 @@ export const animeApi = baseApi.injectEndpoints({
                         expand: 'tags,categories'
                     })
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),
@@ -26,8 +26,8 @@ export const animeApi = baseApi.injectEndpoints({
                 try {
                     const data = await pb.collection<AnimeRecord>('animes').update(anime.id, anime)
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),
@@ -41,8 +41,8 @@ export const animeApi = baseApi.injectEndpoints({
                         user_id: pb.authStore.model?.id,
                     })
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),
@@ -53,8 +53,8 @@ export const animeApi = baseApi.injectEndpoints({
                 try {
                     const data = await pb.collection<AnimeRecord>('animes').delete(id)
                     return { data }
-                } catch (error) {
-                    return { error: error }
+                } catch (error: any) {
+                    return { error: error.toJSON() }
                 }
             }
         }),

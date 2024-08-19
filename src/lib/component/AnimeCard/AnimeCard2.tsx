@@ -29,7 +29,7 @@ interface AnimeCard2Props {
 export default function AnimeCard2({ id }: AnimeCard2Props) {
     const dispatch = useAppDispatch()
     const theme = useTheme()
-    const { data: anime, isFetching: isLoading } = useGetAnimeQuery(id)
+    const { data: anime, isLoading } = useGetAnimeQuery(id)
     const tags: TagRecord[] = anime?.expand?.tags || []
 
     const sortedTags = tags.slice().sort(fieldSorter(['weight', 'name']))

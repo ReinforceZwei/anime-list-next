@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation"
 import { AuthProviderInfo } from "pocketbase"
 import FormTextField from "@/lib/component/control/FormTextField"
 import { LoadingButton } from "@mui/lab"
+import { useAppDispatch } from "@/lib/hooks"
+import { baseApi } from "@/lib/redux/api"
 
 
 type FormValues = {
@@ -22,6 +24,7 @@ type FormValues = {
 }
 
 export default function LoginPage() {
+    const dispatch = useAppDispatch()
     const pb = createBrowserClient()
     const router = useRouter()
     const [authMethods, setAuthMethods] = useState<AuthProviderInfo[]>([])
@@ -37,6 +40,7 @@ export default function LoginPage() {
     const { isSubmitting } = formState
 
     useEffect(() => {
+        dispatch(baseApi.util.resetApiState())
         let getAuthMethods = async () => {
             let methods = await pb.collection('users').listAuthMethods()
             setAuthMethods(methods.authProviders)
