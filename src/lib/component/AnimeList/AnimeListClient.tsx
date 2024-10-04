@@ -3,6 +3,9 @@ import { Typography } from "@mui/material"
 import AnimeListItem from '@/lib/component/AnimeList/AnimeListItem'
 import { getAnimes } from "@/lib/service/anime"
 import { AnimeRecord } from "@/types/anime"
+import { useAppDispatch } from "@/lib/hooks"
+import { useEffect } from "react"
+import { populateAnimes } from "@/lib/redux/animeSlice"
 
 interface AnimeListClientProps {
     animes: AnimeRecord[]
@@ -16,6 +19,11 @@ interface AnimeListClientProps {
 // at client side
 export default function AnimeListClient(props: AnimeListClientProps) {
     const { animes, title, filter, sort } = props
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(populateAnimes(animes))
+    }, [])
     //const pb = createServerClient(cookies())
 
     // const animes = await pb.collection('animes').getFullList({

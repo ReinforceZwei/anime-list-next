@@ -14,7 +14,7 @@ export default function MainLayout({
 }>) {
     return (
         <div>
-            <CustomThemeProvider>
+            {/* <CustomThemeProvider> */}
                 <MuiConfirmProvider>
                     <WallpaperWrapper>
                         <Container maxWidth={false} sx={{maxWidth: '700px'}} disableGutters>
@@ -22,7 +22,7 @@ export default function MainLayout({
                         </Container>
                     </WallpaperWrapper>
                 </MuiConfirmProvider>
-            </CustomThemeProvider>
+            {/* </CustomThemeProvider> */}
         </div>
     )
 }

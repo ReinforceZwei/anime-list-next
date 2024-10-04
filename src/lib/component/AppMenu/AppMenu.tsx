@@ -48,7 +48,7 @@ export default function AppMenu() {
                 disableScrollLock
             >
                 <MenuList dense disablePadding>
-                    <MenuItem>HeHeXD</MenuItem>
+                    <MenuItem onClick={() => {router.refresh()}}>HeHeXD</MenuItem>
                     <MenuItem onClick={() => {dispatchAppMenu(openManageTagModal())}}>Tags</MenuItem>
                     <MenuItem onClick={() => {dispatchAppMenu(openSettingsModal())}}>Settings</MenuItem>
                     <MenuItem onClick={() => {logout()}}>Logout</MenuItem>

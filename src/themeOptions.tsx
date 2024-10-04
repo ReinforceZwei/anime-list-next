@@ -2,7 +2,6 @@ import { Noto_Sans_TC } from 'next/font/google';
 import { Theme } from '@mui/material/styles';
 
 const roboto = Noto_Sans_TC({
-    weight: ['300', '400', '500', '700'],
     subsets: ['latin'],
 });
 

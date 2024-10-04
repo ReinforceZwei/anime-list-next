@@ -4,6 +4,7 @@ import { CssBaseline } from '@mui/material';
 import "./globals.css";
 import StoreProvider from "@/lib/StoreProvider";
 import StaticThemeProvider from "@/staticTheme";
+import CustomThemeProvider from "@/theme";
 
 export const metadata: Metadata = {
   title: "Anime List",
@@ -20,10 +21,10 @@ export default function RootLayout({
       
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <StoreProvider>
-            <StaticThemeProvider>
+            <CustomThemeProvider>
               <CssBaseline />
               {children}
-            </StaticThemeProvider>
+            </CustomThemeProvider>
           </StoreProvider>
         </AppRouterCacheProvider>
       </body>

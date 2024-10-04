@@ -75,6 +75,7 @@ export interface AnimeState {
     open: boolean
     openAddAnime: boolean
     touchedAnimeId: string[]
+    animes: AnimeRecord[] | null
 }
 
 const initialState: AnimeState = {
@@ -84,6 +85,7 @@ const initialState: AnimeState = {
     open: false,
     openAddAnime: false,
     touchedAnimeId: [],
+    animes: null,
 }
 
 export const animeSlice = createSlice({
@@ -95,11 +97,15 @@ export const animeSlice = createSlice({
                 state.touchedAnimeId.push(action.payload)
             }
         },
+        populateAnimes: (state, action: PayloadAction<AnimeRecord[]>) => {
+            state.animes = action.payload
+        },
     }
 })
 
 export const {
     animeTouched,
+    populateAnimes,
 } = animeSlice.actions
 
 export default animeSlice.reducer
