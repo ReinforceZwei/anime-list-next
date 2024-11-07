@@ -36,7 +36,7 @@ export default function AnimeListItem(props: AnimeListItemProps) {
         myName = anime.name
         myStatus = anime.status as string
         myDownloadStatus = anime.download_status as string
-        myTags = [...anime.expand?.tags || []] // prevent read-only error when sorting
+        myTags = [anime.expand?.tags || []]
     } else {
         myName = name
         myStatus = status
@@ -55,7 +55,7 @@ export default function AnimeListItem(props: AnimeListItemProps) {
         textDecoration = 'line-through'
     }
 
-    const sortedTags = useMemo(() => myTags.sort(fieldSorter(['weight', 'name'])), [myTags])
+    const sortedTags = useMemo(() => myTags.slice().sort(fieldSorter(['weight', 'name'])), [myTags])
 
     const handleOnClick = useCallback(() => {
         dispatch(openAnimeCard(id))

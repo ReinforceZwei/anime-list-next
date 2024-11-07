@@ -28,16 +28,15 @@ export default function LoginPage() {
     const pb = createBrowserClient()
     const router = useRouter()
     const [authMethods, setAuthMethods] = useState<AuthProviderInfo[]>([])
-    const [loginError, setLoginError] = useState('')
     
-    const { handleSubmit, reset, setValue, setFocus, control, formState } = useForm<FormValues>({
+    const { handleSubmit, reset, setValue, setFocus, setError, control, formState } = useForm<FormValues>({
         defaultValues: {
             username: '',
             password: '',
         }
     })
 
-    const { isSubmitting } = formState
+    const { isSubmitting, isSubmitSuccessful, errors } = formState
 
     useEffect(() => {
         dispatch(baseApi.util.resetApiState())
@@ -54,7 +53,10 @@ export default function LoginPage() {
             router.push('/')
         } catch (err: any) {
             console.log(err)
-            setLoginError(err?.message || 'Unknown error')
+            setError('root', {
+                type: 'custom',
+                message: err?.message || 'Unknown error',
+            })
         }
     }
 
@@ -119,12 +121,12 @@ export default function LoginPage() {
                                 />
                             </Grid>
                             <Grid xs={12} sx={{textAlign: 'center'}}>
-                                {/* <Button type='submit' variant="outlined">登入</Button> */}
-                                <LoadingButton type='submit' variant="outlined" loading={isSubmitting}>登入</LoadingButton>
+                                {/* Assume submit successful = loading new route */}
+                                <LoadingButton type='submit' variant="outlined" loading={isSubmitting || isSubmitSuccessful}>登入</LoadingButton>
                             </Grid>
-                            {loginError && (
+                            {errors?.root?.message && (
                                 <Grid xs={12}>
-                                    <Alert severity="error">登入失敗: {loginError}</Alert>
+                                    <Alert severity="error">登入失敗: {errors?.root?.message}</Alert>
                                 </Grid>
                             )}
                         </Grid>
