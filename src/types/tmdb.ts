@@ -14,14 +14,14 @@ export interface ImagesConfiguration {
 }
 
 
-export interface SearchResult {
+export interface SearchResultMulti {
     page:          number;
-    results:       Result[];
+    results:       (ResultTv | ResultMovie)[];
     total_pages:   number;
     total_results: number;
 }
 
-export interface Result {
+export interface ResultTv {
     backdrop_path:     string;
     id:                number;
     original_name:     string;
@@ -33,10 +33,27 @@ export interface Result {
     original_language: string;
     genre_ids:         number[];
     popularity:        number;
-    first_air_date:    Date;
+    first_air_date:    string;
     vote_average:      number;
     vote_count:        number;
     origin_country:    string[];
+}
+
+export interface ResultMovie {
+    adult:             boolean;
+    backdrop_path:     string;
+    genre_ids:         number[];
+    id:                number;
+    original_language: string;
+    original_title:    string;
+    overview:          string;
+    popularity:        number;
+    poster_path:       string;
+    release_date:      string;
+    title:             string;
+    video:             boolean;
+    vote_average:      number;
+    vote_count:        number;
 }
 
 

@@ -1,12 +1,12 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getImageBaseUrl, getTvDetails, multiSearch } from '@/lib/service/tmdb'
-import { SearchResult, TvSeriesDetail } from "@/types/tmdb";
+import { SearchResultMulti, TvSeriesDetail } from "@/types/tmdb";
 
 export const tmdbApi = createApi({
     reducerPath: 'tmdbApi',
     baseQuery: fakeBaseQuery(),
     endpoints: (builder) => ({
-        search: builder.query<SearchResult, string>({
+        multiSearch: builder.query<SearchResultMulti, string>({
             queryFn: async (name) => {
                 const data = await multiSearch(name)
                 return { data }
@@ -28,8 +28,8 @@ export const tmdbApi = createApi({
 })
 
 export const {
-    useSearchQuery,
-    useLazySearchQuery,
+    useMultiSearchQuery,
+    useLazyMultiSearchQuery,
     useGetDetailsQuery,
     useLazyGetDetailsQuery,
     useGetImageBaseQuery,

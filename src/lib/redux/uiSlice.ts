@@ -14,6 +14,7 @@ export type ModalState<T = void> = T extends void ? BaseModalState : ModalStateW
 
 type PosterImageSrc = string
 type AnimeId = string
+type SearchQuery = string | undefined
 
 export interface UiState {
     addAnimeModal: ModalState
@@ -23,6 +24,7 @@ export interface UiState {
     addTagModal: ModalState
     manageTagModal: ModalState
     settingsModal: ModalState
+    searchTmdbModal: ModalState<SearchQuery>
 }
 
 const initialState: UiState = {
@@ -33,6 +35,7 @@ const initialState: UiState = {
     addTagModal: { open: false },
     manageTagModal: { open: false },
     settingsModal: { open: false },
+    searchTmdbModal: { open: false },
 }
 
 export const uiSlice = createSlice({
@@ -81,6 +84,12 @@ export const uiSlice = createSlice({
         closeSettingsModal: (state) => {
             state.settingsModal = { open: false }
         },
+        openSearchTmdbModal: (state, action: PayloadAction<SearchQuery>) => {
+            state.searchTmdbModal = { open: true, payload: action.payload }
+        },
+        closeSearchTmdbModal: (state) => {
+            state.searchTmdbModal = { open: false }
+        },
     }
 })
 
@@ -92,6 +101,7 @@ export const {
     openAddTagModal, closeAddTagModal,
     openManageTagModal, closeManageTagModal,
     openSettingsModal, closeSettingsModal,
+    openSearchTmdbModal, closeSearchTmdbModal,
 } = uiSlice.actions
 
 export default uiSlice.reducer

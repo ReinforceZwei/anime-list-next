@@ -1,5 +1,5 @@
 'use server'
-import { Configuration, SearchResult, TvSeriesDetail } from '@/types/tmdb'
+import { Configuration, SearchResultMulti, TvSeriesDetail } from '@/types/tmdb'
 
 
 
@@ -33,7 +33,7 @@ export async function getImageBaseUrl(): Promise<string> {
     return imageBaseUrl
 }
 
-export async function multiSearch(query: string): Promise<SearchResult> {
+export async function multiSearch(query: string): Promise<SearchResultMulti> {
     const resp = await fetch(urlWithKey('https://api.themoviedb.org/3/search/multi', {
         language: 'zh-TW',
         query

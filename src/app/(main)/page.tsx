@@ -17,6 +17,7 @@ import { getUserSettings } from '@/lib/service/userSettings';
 import SettingsModalHolder from '@/lib/modalHolder/SettingsModalHolder';
 import AnimePaper from '@/lib/component/AnimeList/AnimePaper';
 import AnimeAppTitle from '@/lib/component/AnimeList/AnimeAppTitle';
+import SearchTmdbModalHolder from '@/lib/modalHolder/SearchTmdbModalHolder';
 
 export async function generateMetadata(props: any, parent: ResolvingMetadata): Promise<Metadata> {
     const userSettings = await getUserSettings()
@@ -72,6 +73,7 @@ export default async function Home() {
             <AddTagModalHolder />
             <PosterViewerModalHolder />
             <SettingsModalHolder />
+            <SearchTmdbModalHolder />
         </div>
     );
 }

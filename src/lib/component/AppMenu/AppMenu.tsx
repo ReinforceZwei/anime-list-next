@@ -4,7 +4,7 @@ import { Box, Fab, Menu, MenuItem, MenuList } from "@mui/material"
 import { useState } from "react"
 import ManageTagModalHolder from "@/lib/modalHolder/ManageTagModalHolder";
 import { useAppDispatch } from "@/lib/hooks";
-import { openManageTagModal, openSettingsModal } from "@/lib/redux/uiSlice";
+import { openManageTagModal, openSearchTmdbModal, openSettingsModal } from "@/lib/redux/uiSlice";
 import { createBrowserClient } from "@/lib/pocketbase";
 import { useRouter } from "next/navigation";
 
@@ -51,6 +51,7 @@ export default function AppMenu() {
                     <MenuItem onClick={() => {router.refresh()}}>HeHeXD</MenuItem>
                     <MenuItem onClick={() => {dispatchAppMenu(openManageTagModal())}}>Tags</MenuItem>
                     <MenuItem onClick={() => {dispatchAppMenu(openSettingsModal())}}>Settings</MenuItem>
+                    <MenuItem onClick={() => {dispatchAppMenu(openSearchTmdbModal())}}>Search TMDB</MenuItem>
                     <MenuItem onClick={() => {logout()}}>Logout</MenuItem>
                 </MenuList>
                 

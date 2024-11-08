@@ -8,7 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import FlagIcon from '@mui/icons-material/Flag';
-import { useGetImageBaseQuery, useLazyGetDetailsQuery, useLazySearchQuery } from "@/lib/redux/tmdbApi"
+import { useGetImageBaseQuery, useLazyGetDetailsQuery, useLazyMultiSearchQuery } from "@/lib/redux/tmdbApi"
 import { useEffect, useMemo, useState } from "react"
 import { useAppDispatch } from "@/lib/hooks"
 import AnimeCardTitle from "./AnimeCardTitle";
@@ -48,7 +48,7 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
     const tags: TagRecord[] = anime?.expand?.tags || []
     const sortedTags = tags.slice().sort(fieldSorter(['weight', 'name']))
 
-    const [search, result] = useLazySearchQuery()
+    const [search, result] = useLazyMultiSearchQuery()
     const [getDetail, details] = useLazyGetDetailsQuery()
     const { data: imageBase } = useGetImageBaseQuery()
     const [tmdbData, setTmdbData] = useState<TvSeriesDetail | null>(null)
