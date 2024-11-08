@@ -36,7 +36,7 @@ export default function AnimeListItem(props: AnimeListItemProps) {
         myName = anime.name
         myStatus = anime.status as string
         myDownloadStatus = anime.download_status as string
-        myTags = [anime.expand?.tags || []]
+        myTags = anime.expand?.tags || []
     } else {
         myName = name
         myStatus = status

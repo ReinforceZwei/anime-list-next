@@ -7,6 +7,7 @@ import { deepmerge } from '@mui/utils'
 import { useMemo } from 'react';
 import { useGetUserSettingsQuery } from './lib/redux/userSettingsSlice';
 import { themeOptions } from './themeOptions';
+import { createBrowserClient } from './lib/pocketbase';
 
 declare module '@mui/material/styles' {
     interface Theme {
@@ -95,7 +96,8 @@ export default function CustomThemeProvider({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const { data: userSettings } = useGetUserSettingsQuery()
+    const pb = createBrowserClient()
+    const { data: userSettings } = useGetUserSettingsQuery(undefined, { skip: !pb.authStore.isValid })
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)', {
         ssrMatchMedia: (query) => ({
             matches: query == '(prefers-color-scheme: dark)'

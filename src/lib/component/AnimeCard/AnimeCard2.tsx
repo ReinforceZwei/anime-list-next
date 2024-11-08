@@ -20,6 +20,7 @@ import { closeAnimeCard, openEditAnimeModal, openPosterModal } from "@/lib/redux
 import { TagRecord } from "@/types/tag";
 import { TvSeriesDetail } from "@/types/tmdb";
 import AnimeCardQuickAction from "./AnimeCardQuickAction";
+import { usePrevious } from "@/lib/vendor/reactHooks";
 
 
 interface AnimeCard2Props {
@@ -29,9 +30,22 @@ interface AnimeCard2Props {
 export default function AnimeCard2({ id }: AnimeCard2Props) {
     const dispatch = useAppDispatch()
     const theme = useTheme()
-    const { data: anime, isLoading } = useGetAnimeQuery(id)
-    const tags: TagRecord[] = anime?.expand?.tags || []
 
+    const { data: anime, isLoading, isFetching } = useGetAnimeQuery(id)
+
+    // Show as loading when:
+    // - first time open
+    // - card id changed
+    // same id updating wont show loading
+    const previousId = usePrevious(id)
+    const [isLoadingNewId, setIsLoadingNewId] = useState(isLoading)
+    useEffect(() => {
+        if (id != previousId || !isFetching) {
+            setIsLoadingNewId(isFetching)
+        }
+    }, [previousId, id, isFetching])
+
+    const tags: TagRecord[] = anime?.expand?.tags || []
     const sortedTags = tags.slice().sort(fieldSorter(['weight', 'name']))
 
     const [search, result] = useLazySearchQuery()
@@ -151,27 +165,27 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
                 ><EditIcon /></Fab>
 
                 {/* Title + Copy Button */}
-                <AnimeCardTitle loading={isLoading} title={anime?.name} />
+                <AnimeCardTitle loading={isLoadingNewId} title={anime?.name} />
                 
                 
                 {/* Tags/Categories */}
-                <AnimeCardTags loading={isLoading} tags={sortedTags} />
+                <AnimeCardTags loading={isLoadingNewId} tags={sortedTags} />
 
                 {/* Rating */}
-                <AnimeCardRating loading={isLoading} rating={anime?.rating} />
+                <AnimeCardRating loading={isLoadingNewId} rating={anime?.rating} />
 
                 {/* Date Time */}
                 <AnimeCardDateTime
-                    loading={isLoading}
+                    loading={isLoadingNewId}
                     createTime={anime?.created}
                     startTime={anime?.start_time}
                     finishTime={anime?.finish_time}
                 />
 
                 {/* Comment */}
-                <AnimeCardTextWithTitle loading={isLoading} title="感想" content={anime?.comment} />
+                <AnimeCardTextWithTitle loading={isLoadingNewId} title="感想" content={anime?.comment} />
 
-                <AnimeCardTextWithTitle loading={isLoading} title="備註" content={anime?.remark} />
+                <AnimeCardTextWithTitle loading={isLoadingNewId} title="備註" content={anime?.remark} />
 
                 {tmdbData && tmdbData.id}
             </CardContent>
