@@ -5,6 +5,7 @@ import PosterViewerModalHolder from "@/lib/modalHolder/PosterViewerModalHolder";
 import { Button, Fab } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add'
 import { closePosterModal, openPosterModal } from "@/lib/redux/uiSlice";
+import TmdbInfoCardModal from "@/lib/component/TmdbInfoCard/TmdbInfoCardModal";
 
 
 export default function Page() {
@@ -17,6 +18,8 @@ export default function Page() {
             <Button onClick={() => dispatch(closePosterModal())}>RESET</Button>
             <Fab onClick={() => dispatch(openPosterModal(src))}><AddIcon /></Fab>
             <PosterViewerModalHolder />
+
+            <TmdbInfoCardModal tmdbId={65844} mediaType="tv" />
         </div>
     )
 }

@@ -1,10 +1,12 @@
 import { useGetImageBaseQuery } from "@/lib/redux/tmdbApi";
 import { ResultMovie, ResultTv } from "@/types/tmdb";
-import { Card, CardHeader, CardMedia, ListItem, Paper } from "@mui/material";
+import { Card, CardActionArea, CardHeader, CardMedia, ListItem, Paper } from "@mui/material";
+import SearchResultPoster from "./SearchResultPoster";
+import { MultiSearchResult, TV, Movie } from "tmdb-ts";
 
 
 interface SearchResultListItemProps {
-    result: ResultTv | ResultMovie
+    result: MultiSearchResult
 }
 
 export default function SearchResultListItem(props: SearchResultListItemProps) {
@@ -12,31 +14,38 @@ export default function SearchResultListItem(props: SearchResultListItemProps) {
 
     const { data: tmdbImageBase } = useGetImageBaseQuery()
 
-    const isMovie = Boolean((result as ResultMovie).title)
-    const title = (result as ResultMovie).title ?? (result as ResultTv).name
-    const originalTitle = (result as ResultMovie).original_title ?? (result as ResultTv).original_name
+    if (result.media_type === 'person') {
+        // we dont handle person
+        return null
+    }
+
+    const isMovie = result.media_type === 'movie'
+    const title = isMovie ? (result as Movie).title : (result as TV).name
+    const originalTitle = isMovie ? (result as Movie).original_title : (result as TV).original_name
 
     const imageSrc = tmdbImageBase && result.poster_path ? `${tmdbImageBase}w780${result.poster_path}` : null
+
+    const handleOnClick = () => {
+
+    }
 
     return (
         <ListItem disableGutters>
             <Card sx={{
-                display: 'flex',
                 width: '100%',
             }}>
-                { imageSrc && (
-                    <CardMedia
-                        component="img"
-                        image={imageSrc}
-                        sx={{
-                            minWidth: '94px',
-                            width: '94px', // copied from tmdb ui
-                            height: '141px',
-                        }}
-                    />
-                )}
-                
-                <CardHeader title={title} subheader={originalTitle} />
+                <CardActionArea
+                    onClick={handleOnClick}
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'initial',
+                        width: '100%',
+                    }}
+                >
+                    <SearchResultPoster image={imageSrc} />
+                    
+                    <CardHeader title={title} subheader={originalTitle} />
+                </CardActionArea>
             </Card>
         </ListItem>
     )

@@ -1,7 +1,6 @@
 'use server'
-import { Configuration, SearchResultMulti, TvSeriesDetail } from '@/types/tmdb'
-
-
+//import { Configuration, SearchResultMulti, TvSeriesDetail } from '@/types/tmdb'
+import { TMDB, Configuration, Search, MultiSearchResult, TvShowDetails, AvailableLanguage } from 'tmdb-ts'
 
 function getApiKey() {
     const key = process.env.TMDB_API_KEY
@@ -11,16 +10,24 @@ function getApiKey() {
     return key
 }
 
-function urlWithKey(url: string, query = {}): URL {
-    const _url = new URL(url)
-    _url.search = new URLSearchParams({ api_key: getApiKey(), ...query }).toString()
-    return _url
+function getLanguage(): AvailableLanguage {
+    return 'zh-TW'
+}
+
+let client: TMDB | null = null
+function getClient(): TMDB {
+    if (client === null) {
+        client = new TMDB(getApiKey())
+    }
+    return client
 }
 
 async function getTmdbConfiguration(): Promise<Configuration> {
-    const resp = await fetch(urlWithKey('https://api.themoviedb.org/3/configuration'))
-    const json = await resp.json()
-    return json
+    return await getClient().configuration.getApiConfiguration()
+}
+
+export async function isTmdbAvailable() {
+    return Boolean(process.env.TMDB_API_KEY)
 }
 
 let imageBaseUrl: string | null = null
@@ -33,19 +40,17 @@ export async function getImageBaseUrl(): Promise<string> {
     return imageBaseUrl
 }
 
-export async function multiSearch(query: string): Promise<SearchResultMulti> {
-    const resp = await fetch(urlWithKey('https://api.themoviedb.org/3/search/multi', {
-        language: 'zh-TW',
-        query
-    }))
-    const json = await resp.json()
-    return json
+export async function multiSearch(query: string): Promise<Search<MultiSearchResult>> {
+    return await getClient().search.multi({
+        query,
+        language: getLanguage(),
+    })
 }
 
-export async function getTvDetails(id: number): Promise<TvSeriesDetail> {
-    const resp = await fetch(urlWithKey(`https://api.themoviedb.org/3/tv/${id}`, {
-        language: 'zh-TW',
-    }))
-    const json = await resp.json()
-    return json
+export async function getTvDetails(id: number): Promise<TvShowDetails> {
+    return await getClient().tvShows.details(id, undefined, getLanguage())
+}
+
+export async function getMovieDetails(id: number) {
+    return await getClient().movies.details(id, undefined, getLanguage())
 }

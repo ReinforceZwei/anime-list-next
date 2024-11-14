@@ -62,14 +62,14 @@ export interface TvSeriesDetail {
     backdrop_path:        string;
     created_by:           any[];
     episode_run_time:     number[];
-    first_air_date:       Date;
+    first_air_date:       string;
     genres:               Genre[];
     homepage:             string;
     id:                   number;
     in_production:        boolean;
     languages:            string[];
-    last_air_date:        Date;
-    last_episode_to_air:  LastEpisodeToAir;
+    last_air_date:        string;
+    last_episode_to_air:  Episode;
     name:                 string;
     next_episode_to_air:  null;
     networks:             Network[];
@@ -92,18 +92,47 @@ export interface TvSeriesDetail {
     vote_count:           number;
 }
 
+export interface MovieDetail {
+    adult: boolean
+    backdrop_path: string
+    belongs_to_collection: any
+    budget: number
+    genres: Genre[]
+    homepage: string
+    id: number
+    imdb_id: string
+    origin_country: string[]
+    original_language: string
+    original_title: string
+    overview: string
+    popularity: number
+    poster_path: string
+    production_companies: ProductionCompany[]
+    production_countries: ProductionCountry[]
+    release_date: string
+    revenue: number
+    runtime: number
+    spoken_languages: SpokenLanguage[]
+    status: string
+    tagline: string
+    title: string
+    video: boolean
+    vote_average: number
+    vote_count: number
+}
+
 export interface Genre {
     id:   number;
     name: string;
 }
 
-export interface LastEpisodeToAir {
+export interface Episode {
     id:              number;
     overview:        string;
     name:            string;
     vote_average:    number;
     vote_count:      number;
-    air_date:        Date;
+    air_date:        string;
     episode_number:  number;
     episode_type:    string;
     production_code: string;
@@ -111,6 +140,51 @@ export interface LastEpisodeToAir {
     season_number:   number;
     show_id:         number;
     still_path:      string;
+}
+
+export interface EpisodeDetail {
+    id:              number;
+    overview:        string;
+    name:            string;
+    vote_average:    number;
+    vote_count:      number;
+    air_date:        string;
+    episode_number:  number;
+    production_code: string;
+    runtime:         number;
+    season_number:   number;
+    show_id:         number;
+    still_path:      string;
+    crew:            Crew[];
+    guest_stars:     GuestStar[];
+}
+
+export interface Crew {
+    department: string
+    job: string
+    credit_id: string
+    adult: boolean
+    gender: number
+    id: number
+    known_for_department: string
+    name: string
+    original_name: string
+    popularity: number
+    profile_path: string
+}
+
+export interface GuestStar {
+    character: string
+    credit_id: string
+    order: number
+    adult: boolean
+    gender: number
+    id: number
+    known_for_department: string
+    name: string
+    original_name: string
+    popularity: number
+    profile_path: string
 }
 
 export interface Network {
@@ -125,8 +199,15 @@ export interface ProductionCountry {
     name:       string;
 }
 
+export interface ProductionCompany {
+    id: number
+    logo_path: string
+    name: string
+    origin_country: string
+}
+
 export interface Season {
-    air_date:      Date;
+    air_date:      string;
     episode_count: number;
     id:            number;
     name:          string;

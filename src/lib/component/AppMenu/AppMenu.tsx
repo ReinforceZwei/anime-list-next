@@ -24,7 +24,7 @@ export default function AppMenu() {
         setAnchorEl(null);
     };
 
-    const dispatchAppMenu = (action: { payload: undefined, type: string }) => {
+    const dispatchAppMenu = (action: { payload: any, type: string }) => {
         handleClose()
         dispatch(action)
     }

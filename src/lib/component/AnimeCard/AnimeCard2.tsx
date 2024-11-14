@@ -18,9 +18,9 @@ import AnimeCardDateTime from "./AnimeCardDateTime";
 import AnimeCardTextWithTitle from "./AnimeCardTextWithTitle";
 import { closeAnimeCard, openEditAnimeModal, openPosterModal } from "@/lib/redux/uiSlice";
 import { TagRecord } from "@/types/tag";
-import { TvSeriesDetail } from "@/types/tmdb";
 import AnimeCardQuickAction from "./AnimeCardQuickAction";
 import { usePrevious } from "@/lib/vendor/reactHooks";
+import { TvShowDetails } from "tmdb-ts";
 
 
 interface AnimeCard2Props {
@@ -51,7 +51,7 @@ export default function AnimeCard2({ id }: AnimeCard2Props) {
     const [search, result] = useLazyMultiSearchQuery()
     const [getDetail, details] = useLazyGetDetailsQuery()
     const { data: imageBase } = useGetImageBaseQuery()
-    const [tmdbData, setTmdbData] = useState<TvSeriesDetail | null>(null)
+    const [tmdbData, setTmdbData] = useState<TvShowDetails | null>(null)
     useEffect(() => {
         if (!isLoading && anime) {
             if (anime?.tmdb_id) {
