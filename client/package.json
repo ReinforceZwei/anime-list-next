@@ -14,11 +14,15 @@
     "@mantine/form": "^8.3.16",
     "@mantine/hooks": "^8.3.16",
     "@mantine/modals": "^8.3.16",
+    "@tanstack/react-router": "^1.166.6",
+    "@tanstack/react-router-devtools": "^1.166.6",
+    "pocketbase": "^0.26.8",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@tanstack/router-plugin": "^1.166.6",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
