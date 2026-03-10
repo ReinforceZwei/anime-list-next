@@ -21,6 +21,7 @@ pocketbase-get-schemas.sh animeRecords
 anime list (server) custom config (not Pocketbase config)
 
 - tmdb api key (required)
+- disable account register (when true, only one account can be created)
 
 ### `/routes`
 
