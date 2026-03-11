@@ -1,10 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import reactLogo from '../assets/react.svg'
+import reactLogo from '../../assets/react.svg'
 import viteLogo from '/vite.svg'
-import '../App.css'
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_auth/')({
   component: Index,
 })
 
