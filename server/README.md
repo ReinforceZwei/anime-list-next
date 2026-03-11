@@ -31,3 +31,15 @@ custom API routes
 - *anime record RESTful API for public access
 
 * RESTful API is intended for qb-auto to comsume. I dont want qb-auto to use Pocketbase record API (its too generic). qb-auto requires: search record, update record
+
+#### TMDb API
+
+Search API
+
+Path: `/api/tmdb/???`
+Search tmdb using multi-search
+
+Get detail by id
+
+Path: `/api/tmdb/???`
+Get detail by tmdb id

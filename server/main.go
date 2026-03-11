@@ -13,6 +13,7 @@ import (
 
 	"github.com/ReinforceZwei/anime-list-next/server/config"
 	_ "github.com/ReinforceZwei/anime-list-next/server/migrations"
+	"github.com/ReinforceZwei/anime-list-next/server/routes"
 )
 
 var (
@@ -47,7 +48,13 @@ func main() {
 		return e.Next()
 	})
 
+	tmdbRoutes, err := routes.NewTmdbRoutes(cfg.TmdbApiKey)
+	if err != nil {
+		log.Fatal("Failed to initialize TMDb client: ", err)
+	}
+
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
+		tmdbRoutes.Register(se)
 		return se.Next()
 	})
 

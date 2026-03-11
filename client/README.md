@@ -79,6 +79,26 @@ export const fetchAnimeList = (userId: string) =>
   pb.collection('anime').getList(1, 50, { filter: `user="${userId}"` });
 ```
 
+For custom server routes (e.g. TMDB proxy), use `pb.send` — it automatically attaches the auth token and throws on non-OK responses:
+
+```ts
+// api/tmdb.ts
+export const searchTmdb = (query: string) =>
+  pb.send<TmdbSearchItem[]>('/api/tmdb/search', { query: { query } })
+```
+
+`pb.send<T>(path, options)` accepts a `SendOptions` object, which extends the standard `RequestInit` (i.e. all native `fetch` options are valid). Commonly used fields:
+
+| Option | Type | Description |
+|---|---|---|
+| `method` | `string` | HTTP method. Defaults to `GET`. |
+| `headers` | `Record<string, string>` | Additional request headers. |
+| `body` | `any` | Request body — serialized automatically for JSON. |
+| `query` | `Record<string, any>` | Query parameters appended to the URL. |
+| `requestKey` | `string \| null` | Key for deduplicating/cancelling in-flight requests. Pass `null` to disable auto-cancel. |
+
+Any top-level key not recognised by `RequestInit` is also treated as a query parameter, but prefer using `query` explicitly for clarity.
+
 **`hooks/`** — This is where `useQuery` from TanStack Query wraps `api/` functions, and `pb.collection().subscribe()` is set up inside a `useEffect` to invalidate the query cache on real-time events:
 
 ```ts
