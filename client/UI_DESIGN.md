@@ -76,7 +76,7 @@ Select a result and create record.
 
 Show an edit form in popup modal.
 
-tmdb id and season number is immutable.
+tmdb id, season number and media type are immutable.
 
 Separate two tab: General and Other
 General:

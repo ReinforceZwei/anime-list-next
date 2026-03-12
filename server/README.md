@@ -36,10 +36,10 @@ custom API routes
 
 Search API
 
-Path: `/api/tmdb/???`
+Path: `/api/tmdb/search`
 Search tmdb using multi-search
 
 Get detail by id
 
-Path: `/api/tmdb/???`
+Path: `/api/tmdb/details`
 Get detail by tmdb id
