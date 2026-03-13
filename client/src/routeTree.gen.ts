@@ -14,6 +14,7 @@ import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as AuthTmdbRouteImport } from './routes/_auth/tmdb'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -39,17 +40,24 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthTmdbRoute = AuthTmdbRouteImport.update({
+  id: '/tmdb',
+  path: '/tmdb',
+  getParentRoute: () => AuthRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/register': typeof RegisterRoute
+  '/tmdb': typeof AuthTmdbRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/register': typeof RegisterRoute
+  '/tmdb': typeof AuthTmdbRoute
   '/': typeof AuthIndexRoute
 }
 export interface FileRoutesById {
@@ -58,14 +66,22 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/register': typeof RegisterRoute
+  '/_auth/tmdb': typeof AuthTmdbRoute
   '/_auth/': typeof AuthIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/logout' | '/register'
+  fullPaths: '/' | '/login' | '/logout' | '/register' | '/tmdb'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/logout' | '/register' | '/'
-  id: '__root__' | '/_auth' | '/login' | '/logout' | '/register' | '/_auth/'
+  to: '/login' | '/logout' | '/register' | '/tmdb' | '/'
+  id:
+    | '__root__'
+    | '/_auth'
+    | '/login'
+    | '/logout'
+    | '/register'
+    | '/_auth/tmdb'
+    | '/_auth/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -112,14 +128,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/tmdb': {
+      id: '/_auth/tmdb'
+      path: '/tmdb'
+      fullPath: '/tmdb'
+      preLoaderRoute: typeof AuthTmdbRouteImport
+      parentRoute: typeof AuthRoute
+    }
   }
 }
 
 interface AuthRouteChildren {
+  AuthTmdbRoute: typeof AuthTmdbRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthTmdbRoute: AuthTmdbRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
 

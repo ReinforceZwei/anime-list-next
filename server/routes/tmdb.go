@@ -10,12 +10,13 @@ import (
 )
 
 type TmdbSearchItem struct {
-	ID         int    `json:"id"`
-	MediaType  string `json:"mediaType"`
-	Title      string `json:"title"`
-	Overview   string `json:"overview"`
-	PosterPath string `json:"posterPath"`
-	Year       string `json:"year"`
+	ID            int    `json:"id"`
+	MediaType     string `json:"mediaType"`
+	Title         string `json:"title"`
+	OriginalTitle string `json:"originalTitle"`
+	Overview      string `json:"overview"`
+	PosterPath    string `json:"posterPath"`
+	Year          string `json:"year"`
 }
 
 type TmdbSeasonInfo struct {
@@ -27,13 +28,14 @@ type TmdbSeasonInfo struct {
 }
 
 type TmdbDetailResult struct {
-	ID         int              `json:"id"`
-	MediaType  string           `json:"mediaType"`
-	Title      string           `json:"title"`
-	Overview   string           `json:"overview"`
-	PosterPath string           `json:"posterPath"`
-	Year       string           `json:"year"`
-	Seasons    []TmdbSeasonInfo `json:"seasons,omitempty"`
+	ID            int              `json:"id"`
+	MediaType     string           `json:"mediaType"`
+	Title         string           `json:"title"`
+	OriginalTitle string           `json:"originalTitle"`
+	Overview      string           `json:"overview"`
+	PosterPath    string           `json:"posterPath"`
+	Year          string           `json:"year"`
+	Seasons       []TmdbSeasonInfo `json:"seasons,omitempty"`
 }
 
 type TmdbRoutes struct {
@@ -55,13 +57,21 @@ func (r *TmdbRoutes) Register(se *core.ServeEvent) {
 	g.GET("/detail", r.detail)
 }
 
+func langOptions(e *core.RequestEvent) map[string]string {
+	lang := e.Request.URL.Query().Get("language")
+	if lang == "" {
+		lang = "zh-TW"
+	}
+	return map[string]string{"language": lang}
+}
+
 func (r *TmdbRoutes) search(e *core.RequestEvent) error {
 	query := e.Request.URL.Query().Get("query")
 	if query == "" {
 		return e.JSON(http.StatusBadRequest, map[string]string{"error": "query param is required"})
 	}
 
-	results, err := r.client.GetSearchMulti(query, nil)
+	results, err := r.client.GetSearchMulti(query, langOptions(e))
 	if err != nil {
 		return e.JSON(http.StatusBadGateway, map[string]string{"error": err.Error()})
 	}
@@ -73,9 +83,11 @@ func (r *TmdbRoutes) search(e *core.RequestEvent) error {
 		}
 
 		title := result.Title
+		originalTitle := result.OriginalTitle
 		year := ""
 		if result.MediaType == "tv" {
 			title = result.Name
+			originalTitle = result.OriginalName
 			if len(result.FirstAirDate) >= 4 {
 				year = result.FirstAirDate[:4]
 			}
@@ -91,12 +103,13 @@ func (r *TmdbRoutes) search(e *core.RequestEvent) error {
 		}
 
 		items = append(items, TmdbSearchItem{
-			ID:         int(result.ID),
-			MediaType:  result.MediaType,
-			Title:      title,
-			Overview:   result.Overview,
-			PosterPath: posterPath,
-			Year:       year,
+			ID:            int(result.ID),
+			MediaType:     result.MediaType,
+			Title:         title,
+			OriginalTitle: originalTitle,
+			Overview:      result.Overview,
+			PosterPath:    posterPath,
+			Year:          year,
 		})
 	}
 
@@ -120,7 +133,7 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 	}
 
 	if mediaType == "movie" {
-		movie, err := r.client.GetMovieDetails(id, nil)
+		movie, err := r.client.GetMovieDetails(id, langOptions(e))
 		if err != nil {
 			return e.JSON(http.StatusBadGateway, map[string]string{"error": err.Error()})
 		}
@@ -136,17 +149,18 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 		}
 
 		return e.JSON(http.StatusOK, TmdbDetailResult{
-			ID:         int(movie.ID),
-			MediaType:  "movie",
-			Title:      movie.Title,
-			Overview:   movie.Overview,
-			PosterPath: posterPath,
-			Year:       year,
+			ID:            int(movie.ID),
+			MediaType:     "movie",
+			Title:         movie.Title,
+			OriginalTitle: movie.OriginalTitle,
+			Overview:      movie.Overview,
+			PosterPath:    posterPath,
+			Year:          year,
 		})
 	}
 
 	// TV
-	tv, err := r.client.GetTVDetails(id, nil)
+	tv, err := r.client.GetTVDetails(id, langOptions(e))
 	if err != nil {
 		return e.JSON(http.StatusBadGateway, map[string]string{"error": err.Error()})
 	}
@@ -177,12 +191,13 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 	}
 
 	return e.JSON(http.StatusOK, TmdbDetailResult{
-		ID:         int(tv.ID),
-		MediaType:  "tv",
-		Title:      tv.Name,
-		Overview:   tv.Overview,
-		PosterPath: posterPath,
-		Year:       year,
-		Seasons:    seasons,
+		ID:            int(tv.ID),
+		MediaType:     "tv",
+		Title:         tv.Name,
+		OriginalTitle: tv.OriginalName,
+		Overview:      tv.Overview,
+		PosterPath:    posterPath,
+		Year:          year,
+		Seasons:       seasons,
 	})
 }

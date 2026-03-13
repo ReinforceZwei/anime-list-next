@@ -64,14 +64,6 @@ Info card will show:
 
 Info card is singleton.
 
-### New record modal (or a generic search tmdb modal)
-
-A popup modal with a textbox. Search tmdb and show result with poster and title.
-
-// How to handle/display multiple season? Need to handle S1 already exist and user try to add S2
-
-Select a result and create record.
-
 ### Edit modal
 
 Show an edit form in popup modal.
@@ -91,3 +83,43 @@ General:
 Other:
 - started at time override
 - completed at time override
+
+### Search TMDb modal (with create record button)
+
+split into two panel: left and right
+
+left panel: search box and result
+```
+vstack
+  search box
+  result list
+    item
+      hstack
+        vstack
+          title
+          original title
+        media type chip
+        year chip
+```
+item can be selected on click. selected item will display in details at right panel.
+after search result return and right panel no selected result, default select first item
+
+right panel: result details (with seasons)
+```
+hstack
+  poster
+  vstack
+    title
+    original title
+    media type
+    description
+    season list (tv only)
+      item
+        hstack # or a better design
+          season name
+          episode count chip
+          year
+          create record button (or tick if record exist)
+    create record button (movie only, or tick if record exist)
+```
+
