@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useAnimeList } from '@/hooks/useAnimeList'
+import { useAnimeSections } from '@/hooks/useAnimeSections'
+import type { SectionDef } from '@/types/anime'
 import { Button } from '@mantine/core'
 import { modals } from '@mantine/modals'
 
@@ -7,8 +8,15 @@ export const Route = createFileRoute('/_auth/')({
   component: Index,
 })
 
+const SECTIONS: SectionDef[] = [
+  { key: 'watching',  label: 'Watching',  statuses: ['watching'],  sortBy: 'updated',     sortOrder: 'desc' },
+  { key: 'completed', label: 'Completed', statuses: ['completed'], sortBy: 'completedAt', sortOrder: 'desc' },
+  { key: 'planned',   label: 'Planned',   statuses: ['planned'],   sortBy: 'created',     sortOrder: 'asc'  },
+  { key: 'dropped',   label: 'Dropped',   statuses: ['dropped'],   sortBy: 'updated',     sortOrder: 'desc' },
+]
+
 function Index() {
-  const animes = useAnimeList()
+  const { sections, isLoading, isError, error } = useAnimeSections(SECTIONS)
 
   function openTmdbModal() {
     modals.openContextModal({
@@ -19,19 +27,25 @@ function Index() {
     })
   }
 
-  if (animes.isLoading) {
+  if (isLoading) {
     return <div>Loading...</div>
   }
 
-  if (animes.isError) {
-    return <div>Error: {animes.error.message}</div>
+  if (isError) {
+    return <div>Error: {error.message}</div>
   }
+
   return (
     <div>
       <Button onClick={openTmdbModal}>Search TMDb</Button>
-      {animes.data?.map((anime) => (
-        <div key={anime.id}>
-          {anime.customName || anime.cachedTitle || anime.tmdbId}
+      {sections.map(section => (
+        <div key={section.key}>
+          <h2>{section.label}</h2>
+          {section.items.map(anime => (
+            <div key={anime.id}>
+              {anime.customName || anime.cachedTitle || anime.tmdbId}
+            </div>
+          ))}
         </div>
       ))}
     </div>

@@ -1,5 +1,21 @@
 import type { RecordModel } from "pocketbase";
 
+export type SortableField = 'completedAt' | 'startedAt' | 'updated' | 'created' | 'rating'
+
+export interface SectionDef {
+  key: string
+  label: string
+  statuses: NonNullable<AnimeRecord['status']>[]
+  sortBy: SortableField
+  sortOrder?: 'asc' | 'desc'
+}
+
+export interface AnimeSection {
+  key: string
+  label: string
+  items: AnimeRecord[]
+}
+
 export interface AnimeRecord extends RecordModel {
   userId: string;
   tmdbId?: number;

@@ -25,6 +25,12 @@ func NewAnimeRecordsHooks(apiKey string) (*AnimeRecordsHooks, error) {
 func (h *AnimeRecordsHooks) Register(app core.App) {
 	app.OnRecordCreate("animeRecords").BindFunc(func(e *core.RecordEvent) error {
 		h.populateCachedTitle(e.Record)
+		if e.Record.GetString("status") == "" {
+			e.Record.Set("status", "planned")
+		}
+		if e.Record.GetString("downloadStatus") == "" {
+			e.Record.Set("downloadStatus", "pending")
+		}
 		return e.Next()
 	})
 }
