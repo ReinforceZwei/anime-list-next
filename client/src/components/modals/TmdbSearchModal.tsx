@@ -22,6 +22,7 @@ import { IconArrowLeft, IconCheck, IconPlus, IconSearch } from '@tabler/icons-re
 import type { ContextModalProps } from '@mantine/modals'
 import { useTmdbSearch, useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeExistsMap } from '@/hooks/useAnimeExistsMap'
+import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import type { TmdbSearchItem } from '@/types/tmdb'
 
 const PANEL_H = 520
@@ -46,6 +47,7 @@ export function TmdbSearchModal(_props: ContextModalProps) {
   const isMobile = useMediaQuery('(max-width: 780px)')
 
   const exists = useAnimeExistsMap()
+  const { createMutation } = useAnimeMutation()
   const { data: results, isFetching } = useTmdbSearch(debounced)
   const { data: detail, isFetching: detailFetching } = useTmdbDetail(
     selected?.mediaType ?? null,
@@ -177,7 +179,18 @@ export function TmdbSearchModal(_props: ContextModalProps) {
                 movieExists
                   ? <ExistsBadge />
                   : (
-                    <Button size="xs" variant="light" leftSection={<IconPlus size={13} />} mt={4} w="fit-content">
+                    <Button
+                      size="xs"
+                      variant="light"
+                      leftSection={<IconPlus size={13} />}
+                      mt={4}
+                      w="fit-content"
+                      loading={createMutation.isPending}
+                      onClick={() => createMutation.mutate({
+                        tmdbId: detail.id,
+                        tmdbMediaType: 'movie',
+                      })}
+                    >
                       Create Record
                     </Button>
                   )
@@ -212,7 +225,21 @@ export function TmdbSearchModal(_props: ContextModalProps) {
                       {seasonExistsMap.get(season.seasonNumber)
                         ? <ExistsBadge />
                         : (
-                          <Button size="xs" variant="light" leftSection={<IconPlus size={12} />}>
+                          <Button
+                            size="xs"
+                            variant="light"
+                            leftSection={<IconPlus size={12} />}
+                            loading={
+                              createMutation.isPending &&
+                              createMutation.variables?.tmdbSeasonNumber === season.seasonNumber
+                            }
+                            disabled={createMutation.isPending}
+                            onClick={() => createMutation.mutate({
+                              tmdbId: detail.id,
+                              tmdbMediaType: 'tv',
+                              tmdbSeasonNumber: season.seasonNumber,
+                            })}
+                          >
                             Add
                           </Button>
                         )

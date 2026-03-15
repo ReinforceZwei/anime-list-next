@@ -5,6 +5,7 @@ import { ModalsProvider } from '@mantine/modals'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import '@mantine/core/styles.css'
 import { modals } from '@/components/modals'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const queryClient = new QueryClient()
 
@@ -28,6 +29,7 @@ function RootLayout() {
             <Outlet />
           </div>
           <TanStackRouterDevtools />
+          <ReactQueryDevtools />
         </ModalsProvider>
       </MantineProvider>
     </QueryClientProvider>

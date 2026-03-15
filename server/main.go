@@ -12,6 +12,7 @@ import (
 	"github.com/pocketbase/pocketbase/tools/osutils"
 
 	"github.com/ReinforceZwei/anime-list-next/server/config"
+	"github.com/ReinforceZwei/anime-list-next/server/hooks"
 	_ "github.com/ReinforceZwei/anime-list-next/server/migrations"
 	"github.com/ReinforceZwei/anime-list-next/server/routes"
 )
@@ -47,6 +48,12 @@ func main() {
 		}
 		return e.Next()
 	})
+
+	animeHooks, err := hooks.NewAnimeRecordsHooks(cfg.TmdbApiKey)
+	if err != nil {
+		log.Fatal("Failed to initialize anime records hooks: ", err)
+	}
+	animeHooks.Register(app)
 
 	tmdbRoutes, err := routes.NewTmdbRoutes(cfg.TmdbApiKey)
 	if err != nil {

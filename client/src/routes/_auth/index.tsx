@@ -1,37 +1,39 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
-import reactLogo from '../../assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useAnimeList } from '@/hooks/useAnimeList'
+import { Button } from '@mantine/core'
+import { modals } from '@mantine/modals'
 
 export const Route = createFileRoute('/_auth/')({
   component: Index,
 })
 
 function Index() {
-  const [count, setCount] = useState(0)
+  const animes = useAnimeList()
 
+  function openTmdbModal() {
+    modals.openContextModal({
+      modal: 'tmdbSearch',
+      title: 'Search TMDb',
+      size: '56rem',
+      innerProps: {},
+    })
+  }
+
+  if (animes.isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (animes.isError) {
+    return <div>Error: {animes.error.message}</div>
+  }
   return (
     <div>
-      <div>
-        <a href="https://vite.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Button onClick={openTmdbModal}>Search TMDb</Button>
+      {animes.data?.map((anime) => (
+        <div key={anime.id}>
+          {anime.customName || anime.cachedTitle || anime.tmdbId}
+        </div>
+      ))}
     </div>
   )
 }
