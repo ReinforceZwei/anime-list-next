@@ -1,8 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useAnimeSections } from '@/hooks/useAnimeSections'
 import type { SectionDef } from '@/types/anime'
-import { Button } from '@mantine/core'
+import { Affix, Button } from '@mantine/core'
 import { modals } from '@mantine/modals'
+import AnimePaper from '@/components/AnimePaper/AnimePaper'
+import AppMenu from '@/components/AppMenu/AppMenu'
 
 export const Route = createFileRoute('/_auth/')({
   component: Index,
@@ -37,17 +39,23 @@ function Index() {
 
   return (
     <div>
-      <Button onClick={openTmdbModal}>Search TMDb</Button>
-      {sections.map(section => (
-        <div key={section.key}>
-          <h2>{section.label}</h2>
-          {section.items.map(anime => (
-            <div key={anime.id}>
-              {anime.customName || anime.cachedTitle || anime.tmdbId}
-            </div>
-          ))}
-        </div>
-      ))}
+      <AppMenu />
+      <AnimePaper>
+        <AnimePaper.Title>My Anime List</AnimePaper.Title>
+        {sections.map(section => (
+          <div key={section.key}>
+            <AnimePaper.Subtitle>{section.label}</AnimePaper.Subtitle>
+            <AnimePaper.List>
+              {section.items.map(anime => (
+                <AnimePaper.Item key={anime.id} record={anime} />
+              ))}
+            </AnimePaper.List>
+          </div>
+        ))}
+      </AnimePaper>
+      <Affix position={{ bottom: 20, right: 20 }}>
+        <Button onClick={openTmdbModal}>Search TMDb</Button>
+      </Affix>
     </div>
   )
 }

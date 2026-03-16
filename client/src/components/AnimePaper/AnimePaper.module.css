@@ -1,0 +1,12 @@
+.paper {
+  padding: 30px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+@media only screen and (min-width: 780px) {
+  .paper {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+}

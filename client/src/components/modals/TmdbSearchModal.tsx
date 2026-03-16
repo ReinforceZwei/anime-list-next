@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActionIcon,
   Badge,
@@ -16,6 +16,7 @@ import {
   TextInput,
   ThemeIcon,
   UnstyledButton,
+  useMantineTheme,
 } from '@mantine/core'
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks'
 import { IconArrowLeft, IconCheck, IconPlus, IconSearch } from '@tabler/icons-react'
@@ -43,8 +44,15 @@ export function TmdbSearchModal(_props: ContextModalProps) {
   const [debounced] = useDebouncedValue(query, 400)
   const [selected, setSelected] = useState<TmdbSearchItem | null>(null)
   const [mobileView, setMobileView] = useState<'search' | 'detail'>('search')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const isMobile = useMediaQuery('(max-width: 780px)')
+  const theme = useMantineTheme()
+  const colors = useMemo(() => theme.variantColorResolver({
+    color: theme.primaryColor,
+    theme,
+    variant: 'light',
+  }), [theme])
 
   const exists = useAnimeExistsMap()
   const { createMutation } = useAnimeMutation()
@@ -74,6 +82,12 @@ export function TmdbSearchModal(_props: ContextModalProps) {
     if (isMobile) setMobileView('detail')
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      inputRef.current?.focus()
+    }, 100)
+  }, [])
+
   // ── Shared panels ────────────────────────────────────────────────────────
 
   const searchPanel = (
@@ -94,6 +108,7 @@ export function TmdbSearchModal(_props: ContextModalProps) {
         value={query}
         onChange={(e) => setQuery(e.currentTarget.value)}
         size="sm"
+        ref={inputRef}
       />
 
       <ScrollArea flex={1} offsetScrollbars>
@@ -111,7 +126,7 @@ export function TmdbSearchModal(_props: ContextModalProps) {
               style={(theme) => ({
                 borderRadius: theme.radius.sm,
                 backgroundColor:
-                  selected?.id === item.id ? theme.colors.blue[0] : 'transparent',
+                  selected?.id === item.id ? colors.background : 'transparent',
               })}
             >
               <Group justify="space-between" align="flex-start" wrap="nowrap" gap="xs">

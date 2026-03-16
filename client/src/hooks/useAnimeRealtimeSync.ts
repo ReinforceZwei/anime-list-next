@@ -34,7 +34,7 @@ export function useAnimeRealtimeSync() {
       const latestCachedUpdated = cached.reduce((max, item) =>
         item.updated > max ? item.updated : max, cached[0].updated)
 
-      const result = await pb.collection<AnimeRecord>(Collections.Animes).getList(1, 1, { sort: '-updated' })
+      const result = await pb.collection<AnimeRecord>(Collections.Animes).getList(1, 1, { sort: '-updated', fields: 'updated' })
       const latestPbUpdated = result.items[0]?.updated
 
       if (latestPbUpdated && latestPbUpdated !== latestCachedUpdated) {

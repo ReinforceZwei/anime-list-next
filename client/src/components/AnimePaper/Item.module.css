@@ -1,0 +1,25 @@
+.completed {
+  color: var(--mantine-color-red-6);
+}
+
+.dropped {
+  color: var(--mantine-color-grape-7);
+  text-decoration: line-through;
+}
+
+.downloaded {
+  color: var(--mantine-color-green-6);
+}
+
+[data-mantine-color-scheme="dark"] .completed {
+  color: var(--mantine-color-red-4);
+}
+
+[data-mantine-color-scheme="dark"] .dropped {
+  color: var(--mantine-color-grape-4);
+  text-decoration: line-through;
+}
+
+[data-mantine-color-scheme="dark"] .downloaded {
+  color: var(--mantine-color-green-4);
+}

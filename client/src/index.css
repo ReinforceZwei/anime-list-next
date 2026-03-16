@@ -17,3 +17,7 @@ body:after {
   -o-background-size: cover;
   background-size: cover;
 }
+
+[data-mantine-color-scheme="dark"] body:after {
+  filter: brightness(0.55);
+}
