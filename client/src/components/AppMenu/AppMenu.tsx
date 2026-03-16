@@ -1,4 +1,5 @@
 import { ActionIcon, Affix, Menu, useMantineColorScheme } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
 
 
@@ -21,7 +22,9 @@ export default function AppMenu() {
           >
             {isDark ? 'Light mode' : 'Dark mode'}
           </Menu.Item>
-          <Menu.Item>Tags</Menu.Item>
+          <Menu.Item onClick={() => modals.openContextModal({ modal: 'manageTags', title: 'Manage Tags', innerProps: {} })}>
+            Tags
+          </Menu.Item>
           <Menu.Item>Settings</Menu.Item>
           <Menu.Item>Search TMDB</Menu.Item>
           <Menu.Item>Logout</Menu.Item>

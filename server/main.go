@@ -55,6 +55,9 @@ func main() {
 	}
 	animeHooks.Register(app)
 
+	lastUpdatesHooks := hooks.NewLastUpdatesHooks()
+	lastUpdatesHooks.Register(app)
+
 	tmdbRoutes, err := routes.NewTmdbRoutes(cfg.TmdbApiKey)
 	if err != nil {
 		log.Fatal("Failed to initialize TMDb client: ", err)

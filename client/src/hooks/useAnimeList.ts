@@ -13,7 +13,7 @@ export function useAnimeList() {
   }
 
   return useQuery({
-    queryKey: ['anime', userId],
+    queryKey: [Collections.Animes, userId],
     queryFn: () => pb.collection<AnimeRecord>(Collections.Animes).getFullList({ batch: BATCH_SIZE }),
     staleTime: Infinity,
     gcTime: Infinity,

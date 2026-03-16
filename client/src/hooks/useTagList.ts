@@ -13,7 +13,7 @@ export function useTagList() {
   }
 
   return useQuery({
-    queryKey: ['tags', userId],
+    queryKey: [Collections.Tags, userId],
     queryFn: () => pb.collection<TagRecord>(Collections.Tags).getFullList({ batch: BATCH_SIZE }),
     staleTime: Infinity,
     gcTime: Infinity,

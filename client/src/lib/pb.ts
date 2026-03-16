@@ -6,6 +6,7 @@ export const Collections = {
   Users: 'users',
   Animes: 'animeRecords',
   Tags: 'tags',
+  LastUpdates: 'lastUpdates',
 } as const
 
 export type CollectionName = (typeof Collections)[keyof typeof Collections]
