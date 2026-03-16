@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { pb } from '@/lib/pb'
-import { useAnimeRealtimeSync } from '@/hooks/useAnimeRealtimeSync'
+import { useAnimeRealtimeSync, useTagRealtimeSync } from '@/hooks/useAnimeRealtimeSync'
 
 export const Route = createFileRoute('/_auth')({
   beforeLoad: ({ location }) => {
@@ -16,5 +16,6 @@ export const Route = createFileRoute('/_auth')({
 
 function AuthLayout() {
   useAnimeRealtimeSync()
+  useTagRealtimeSync()
   return <Outlet />
 }

@@ -1,5 +1,16 @@
 import type { RecordModel } from "pocketbase";
 
+export interface TagRecord extends RecordModel {
+  userId: string;
+  name: string;
+  color?: string;
+  weight?: number;
+  hidden?: boolean;
+  deleted?: string;
+  created: string;
+  updated: string;
+}
+
 export type SortableField = 'completedAt' | 'startedAt' | 'updated' | 'created' | 'rating'
 
 export interface SectionDef {
