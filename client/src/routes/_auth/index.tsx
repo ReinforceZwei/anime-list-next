@@ -1,10 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useAnimeSections } from '@/hooks/useAnimeSections'
-import type { SectionDef } from '@/types/anime'
+import type { AnimeRecord, SectionDef } from '@/types/anime'
 import { Affix, Button } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import AnimePaper from '@/components/AnimePaper/AnimePaper'
 import AppMenu from '@/components/AppMenu/AppMenu'
+import AnimeCard from '@/components/InfoCard/AnimeCard'
+import { useState } from 'react'
 
 export const Route = createFileRoute('/_auth/')({
   component: Index,
@@ -19,6 +21,7 @@ const SECTIONS: SectionDef[] = [
 
 function Index() {
   const { sections, isLoading, isError, error } = useAnimeSections(SECTIONS)
+  const [selectedAnimeId, setSelectedAnimeId] = useState<string | null>(null)
 
   function openTmdbModal() {
     modals.openContextModal({
@@ -27,6 +30,10 @@ function Index() {
       size: '56rem',
       innerProps: {},
     })
+  }
+
+  function handleAnimeClick(anime: AnimeRecord) {
+    setSelectedAnimeId(anime.id)
   }
 
   if (isLoading) {
@@ -47,12 +54,15 @@ function Index() {
             <AnimePaper.Subtitle>{section.label}</AnimePaper.Subtitle>
             <AnimePaper.List>
               {section.items.map(anime => (
-                <AnimePaper.Item key={anime.id} record={anime} />
+                <AnimePaper.Item key={anime.id} record={anime} onClick={handleAnimeClick} />
               ))}
             </AnimePaper.List>
           </div>
         ))}
       </AnimePaper>
+      <Affix position={{ top: 20, right: 20 }}>
+        {selectedAnimeId && <AnimeCard animeId={selectedAnimeId} onClose={() => setSelectedAnimeId(null)} />}
+      </Affix>
       <Affix position={{ bottom: 20, right: 20 }}>
         <Button onClick={openTmdbModal}>Search TMDb</Button>
       </Affix>

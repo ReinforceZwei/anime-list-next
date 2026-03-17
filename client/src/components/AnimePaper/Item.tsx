@@ -9,9 +9,19 @@ function getItemClass(record: AnimeRecord): string | undefined {
   return undefined
 }
 
-export default function Item({ record }: { record: AnimeRecord }) {
+export default function Item({
+  record,
+  onClick,
+}: {
+  record: AnimeRecord
+  onClick?: (record: AnimeRecord) => void
+}) {
   return (
-    <List.Item className={getItemClass(record)} style={{ fontSize: '1.1rem' }}>
+    <List.Item
+      className={getItemClass(record)}
+      style={{ fontSize: '1.1rem' }}
+      onClick={onClick ? () => onClick(record) : undefined}
+    >
       {record.customName || record.cachedTitle || record.tmdbId}
     </List.Item>
   )
