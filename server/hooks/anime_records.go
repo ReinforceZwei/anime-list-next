@@ -5,6 +5,7 @@ import (
 
 	tmdb "github.com/cyruzin/golang-tmdb"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 const defaultLang = "zh-TW"
@@ -31,8 +32,62 @@ func (h *AnimeRecordsHooks) Register(app core.App) {
 		if e.Record.GetString("downloadStatus") == "" {
 			e.Record.Set("downloadStatus", "pending")
 		}
+		applyStatusDateLogic(e.Record, nil, e.Record.GetString("status"))
 		return e.Next()
 	})
+	app.OnRecordUpdate("animeRecords").BindFunc(func(e *core.RecordEvent) error {
+		record := e.Record
+		original := record.Original()
+
+		newStatus := record.GetString("status")
+		oldStatus := original.GetString("status")
+
+		if newStatus != oldStatus {
+			applyStatusDateLogic(record, original, newStatus)
+		}
+
+		return e.Next()
+	})
+}
+
+// applyStatusDateLogic auto-fills or clears startedAt/completedAt based on the
+// target status. original is nil when called from the create hook.
+func applyStatusDateLogic(record *core.Record, original *core.Record, status string) {
+	switch status {
+	case "watching":
+		if record.GetDateTime("startedAt").IsZero() {
+			record.Set("startedAt", types.NowDateTime())
+		}
+		// Clear completedAt if the DB had one (or unconditionally on create)
+		if original == nil || !original.GetDateTime("completedAt").IsZero() {
+			record.Set("completedAt", nil)
+		}
+
+	case "completed":
+		completedAt := record.GetDateTime("completedAt")
+		if completedAt.IsZero() {
+			completedAt = types.NowDateTime()
+			record.Set("completedAt", completedAt)
+		}
+		// Fill startedAt from DB if it was never set
+		if original == nil || original.GetDateTime("startedAt").IsZero() {
+			if record.GetDateTime("startedAt").IsZero() {
+				record.Set("startedAt", completedAt)
+			}
+		}
+
+	case "dropped":
+		if record.GetDateTime("completedAt").IsZero() {
+			record.Set("completedAt", types.NowDateTime())
+		}
+
+	case "planned":
+		// Reversal: clear stale dates (only meaningful on update)
+		if original != nil {
+			record.Set("startedAt", nil)
+			record.Set("completedAt", nil)
+		}
+	}
 }
 
 // populateCachedTitle fetches the title from TMDB and sets it on the record.
