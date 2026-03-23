@@ -1,19 +1,13 @@
 import { Skeleton, Stack, Text } from '@mantine/core'
+import dayjs from 'dayjs'
 import { useInfoCard } from './InfoCardContext'
 
 function formatDate(iso: string): string {
-  const d = new Date(iso)
-  return new Intl.DateTimeFormat(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(d)
+  return dayjs(iso).format('MMM D, YYYY h:mm A')
 }
 
 function daysBetween(a: string, b: string): number {
-  return Math.ceil((new Date(b).getTime() - new Date(a).getTime()) / 86_400_000)
+  return dayjs(b).diff(dayjs(a), 'day')
 }
 
 export default function InfoCardDateTime() {

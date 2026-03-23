@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mantine/core": "^8.3.16",
+    "@mantine/dates": "^8.3.16",
     "@mantine/form": "^8.3.16",
     "@mantine/hooks": "^8.3.16",
     "@mantine/modals": "^8.3.16",
@@ -19,6 +20,7 @@
     "@tanstack/react-query-devtools": "^5.91.3",
     "@tanstack/react-router": "^1.166.6",
     "@tanstack/react-router-devtools": "^1.166.6",
+    "dayjs": "^1.11.20",
     "pocketbase": "^0.26.8",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

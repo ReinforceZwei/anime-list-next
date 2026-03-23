@@ -42,13 +42,11 @@ export default function AnimeCard({ animeId, onClose }: AnimeCardProps) {
   const title = anime?.cachedTitle || anime?.customName
 
   function handleEdit() {
+    if (!anime) return
     modals.openContextModal({
       modal: 'editAnime',
       title: 'Edit anime',
-      innerProps: {
-        animeId,
-        initialTitle: title ?? '',
-      },
+      innerProps: { anime },
     })
   }
 
