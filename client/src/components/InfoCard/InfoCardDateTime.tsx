@@ -1,9 +1,10 @@
 import { Skeleton, Stack, Text } from '@mantine/core'
 import dayjs from 'dayjs'
+import 'dayjs/locale/zh-tw'
 import { useInfoCard } from './InfoCardContext'
 
 function formatDate(iso: string): string {
-  return dayjs(iso).format('MMM D, YYYY h:mm A')
+  return dayjs(iso).format('YYYY年M月D日 HH:mm')
 }
 
 function daysBetween(a: string, b: string): number {

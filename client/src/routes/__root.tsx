@@ -8,9 +8,13 @@ import '@mantine/dates/styles.css';
 import { modals } from '@/components/modals'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { theme } from '@/theme'
+import { DatesProvider } from '@mantine/dates'
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-tw'
 
 const queryClient = new QueryClient()
 const colorSchemeManager = localStorageColorSchemeManager({ key: 'color-scheme' })
+dayjs.locale('zh-tw')
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -20,20 +24,15 @@ function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider colorSchemeManager={colorSchemeManager} theme={theme}>
-        <ModalsProvider modals={modals}>
-          <div style={{
-            // backgroundImage: 'url(/21.jpg)',
-            // backgroundSize: 'cover',
-            // backgroundPosition: 'right',
-            // backgroundRepeat: 'no-repeat',
-            // height: '100vh',
-            // width: '100vw',
-          }}>
-            <Outlet />
-          </div>
-          <TanStackRouterDevtools />
-          <ReactQueryDevtools />
-        </ModalsProvider>
+        <DatesProvider settings={{ locale: 'zh-TW', firstDayOfWeek: 0 }}>
+          <ModalsProvider modals={modals}>
+            <div>
+              <Outlet />
+            </div>
+            <TanStackRouterDevtools />
+            <ReactQueryDevtools />
+          </ModalsProvider>
+        </DatesProvider>
       </MantineProvider>
     </QueryClientProvider>
   )

@@ -21,15 +21,17 @@ import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
 import type { AnimeRecord } from '@/types/anime'
+import dayjs from 'dayjs'
 
 type EditAnimeInnerProps = {
   anime: AnimeRecord
 }
 
-function isoToDate(iso: string | undefined): Date | null {
-  if (!iso) return null
-  const d = new Date(iso)
-  return isNaN(d.getTime()) ? null : d
+
+function parseLocalDateString(val: string | Date | null): Date | null {
+  if (!val) return null
+  if (val instanceof Date) return val
+  return dayjs(val).toDate()
 }
 
 export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<EditAnimeInnerProps>) {
@@ -49,8 +51,8 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
       comment: anime.comment ?? '',
       remark: anime.remark ?? '',
       tags: (anime.tags ?? []).filter((id) => knownTagIds.has(id)),
-      startedAt: isoToDate(anime.startedAt),
-      completedAt: isoToDate(anime.completedAt),
+      startedAt: anime.startedAt ? new Date(anime.startedAt) : null,
+      completedAt: anime.completedAt ? new Date(anime.completedAt) : null,
     },
   })
 
@@ -193,17 +195,15 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
               label="Started At"
               placeholder="Pick date and time"
               clearable
-              valueFormat="YYYY-MM-DD HH:mm"
               value={form.values.startedAt}
-              onChange={(val) => form.setFieldValue('startedAt', val as Date | null)}
+              onChange={(val) => form.setFieldValue('startedAt', parseLocalDateString(val as string | null))}
             />
             <DateTimePicker
               label="Completed At"
               placeholder="Pick date and time"
               clearable
-              valueFormat="YYYY-MM-DD HH:mm"
               value={form.values.completedAt}
-              onChange={(val) => form.setFieldValue('completedAt', val as Date | null)}
+              onChange={(val) => form.setFieldValue('completedAt', parseLocalDateString(val as string | null))}
             />
           </Stack>
         </Tabs.Panel>
