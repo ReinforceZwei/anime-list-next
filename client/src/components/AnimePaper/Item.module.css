@@ -1,25 +1,28 @@
 .completed {
-  color: var(--mantine-color-red-6);
+  color: var(--mantine-color-red-9);
 }
 
 .dropped {
   color: var(--mantine-color-grape-7);
+}
+
+.dropped span {
   text-decoration: line-through;
 }
 
 .downloaded {
-  color: var(--mantine-color-green-6);
+  color: var(--mantine-color-green-9);
 }
 
 [data-mantine-color-scheme="dark"] .completed {
-  color: var(--mantine-color-red-4);
+  color: var(--mantine-color-red-3);
 }
 
 [data-mantine-color-scheme="dark"] .dropped {
-  color: var(--mantine-color-grape-4);
+  color: var(--mantine-color-grape-3);
   text-decoration: line-through;
 }
 
 [data-mantine-color-scheme="dark"] .downloaded {
-  color: var(--mantine-color-green-4);
+  color: var(--mantine-color-green-2);
 }

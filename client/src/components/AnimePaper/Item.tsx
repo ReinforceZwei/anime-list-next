@@ -3,9 +3,9 @@ import { List } from "@mantine/core"
 import styles from "./Item.module.css"
 
 function getItemClass(record: AnimeRecord): string | undefined {
+  if (record.status === "dropped") return styles.dropped
   if (record.downloadStatus === "downloaded") return styles.downloaded
   if (record.status === "completed") return styles.completed
-  if (record.status === "dropped") return styles.dropped
   return undefined
 }
 
