@@ -63,8 +63,11 @@ func main() {
 		log.Fatal("Failed to initialize TMDb client: ", err)
 	}
 
+	importExportRoutes := routes.NewImportExportRoutes()
+
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 		tmdbRoutes.Register(se)
+		importExportRoutes.Register(se)
 		return se.Next()
 	})
 
