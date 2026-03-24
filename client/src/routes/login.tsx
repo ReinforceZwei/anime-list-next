@@ -37,7 +37,7 @@ function LoginPage() {
   const form = useForm({
     initialValues: { email: '', password: '' },
     validate: {
-      email: (v) => (/^\S+@\S+\.\S+$/.test(v) ? null : 'Invalid email'),
+      email: (v) => (v.length > 0 ? null : 'Email or username is required'),
       password: (v) => (v.length > 0 ? null : 'Password is required'),
     },
   })
@@ -49,7 +49,7 @@ function LoginPage() {
       await pb.collection('users').authWithPassword(values.email, values.password)
       await router.navigate({ to: redirectTo ?? '/' })
     } catch {
-      setError('Invalid email or password.')
+      setError('Invalid email/username or password.')
     } finally {
       setLoading(false)
     }
