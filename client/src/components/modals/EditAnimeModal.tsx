@@ -111,13 +111,11 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
 
         <Tabs.Panel value="general" pt="md">
           <Stack>
-            {!anime.tmdbId && (
-              <TextInput
-                label="Custom Name"
-                placeholder="Enter a name"
-                {...form.getInputProps('customName')}
-              />
-            )}
+            <TextInput
+              label="Custom Name"
+              placeholder="Enter a name"
+              {...form.getInputProps('customName')}
+            />
 
             <Select
               label="Status"
