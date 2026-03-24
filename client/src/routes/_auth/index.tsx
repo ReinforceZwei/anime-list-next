@@ -7,7 +7,8 @@ import { modals } from '@mantine/modals'
 import AnimePaper from '@/components/AnimePaper/AnimePaper'
 import AppMenu from '@/components/AppMenu/AppMenu'
 import AnimeCard from '@/components/InfoCard/AnimeCard'
-import { useMemo, useState } from 'react'
+import ElevatorWidget from '@/components/ElevatorWidget/ElevatorWidget'
+import { useMemo, useRef, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/')({
   component: Index,
@@ -25,6 +26,7 @@ function Index() {
   const { sections, isLoading, isError, error } = useAnimeSections(sectionDefs)
   const [selectedAnimeId, setSelectedAnimeId] = useState<string | null>(null)
   const pageTitle = prefs?.pageTitle || 'My Anime List'
+  const markerRefs = useRef<(HTMLParagraphElement | null)[]>([])
 
   function openTmdbModal() {
     modals.openContextModal({
@@ -52,9 +54,9 @@ function Index() {
       <AppMenu />
       <AnimePaper>
         <AnimePaper.Title>{pageTitle}</AnimePaper.Title>
-        {sections.map(section => (
+        {sections.map((section, i) => (
           <div key={section.key}>
-            <AnimePaper.Subtitle>{section.label}</AnimePaper.Subtitle>
+            <AnimePaper.Subtitle ref={el => { markerRefs.current[i] = el }}>{section.label}</AnimePaper.Subtitle>
             <AnimePaper.List>
               {section.items.map(anime => (
                 <AnimePaper.Item key={anime.id} record={anime} onClick={handleAnimeClick} />
@@ -69,6 +71,7 @@ function Index() {
       <Affix position={{ bottom: 20, right: 20 }}>
         <Button onClick={openTmdbModal}>Search TMDb</Button>
       </Affix>
+      <ElevatorWidget markerRefs={markerRefs.current} />
     </div>
   )
 }
