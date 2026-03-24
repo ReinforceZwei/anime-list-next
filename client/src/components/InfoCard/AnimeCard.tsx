@@ -25,7 +25,7 @@ export default function AnimeCard({ animeId, onClose }: AnimeCardProps) {
 
   const loading = listLoading || (!anime && !animeList)
 
-  const tmdbType = anime?.tmdbMediaType && anime.tmdbMediaType !== '' ? anime.tmdbMediaType : null
+  const tmdbType = anime?.tmdbMediaType ? anime.tmdbMediaType : null
   const tmdbId = anime?.tmdbId ?? null
   const { data: tmdbDetail } = useTmdbDetail(tmdbType, tmdbId)
 
@@ -89,6 +89,7 @@ export default function AnimeCard({ animeId, onClose }: AnimeCardProps) {
       tags={tags}
       loading={loading}
       posterUrl={posterUrl}
+      hasTmdbId={Boolean(tmdbId)}
       onClose={onClose}
       onEdit={handleEdit}
       onPosterClick={handlePosterClick}

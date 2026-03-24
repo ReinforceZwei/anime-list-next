@@ -32,6 +32,19 @@
   background-color: rgba(0, 0, 0, 0.15);
 }
 
+.posterPlaceholder {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 80px;
+  flex-shrink: 0;
+  background-color: light-dark(#e8e8e8, #242424);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: light-dark(#bbb, #555);
+}
+
 .closeButtonRow {
   position: fixed;
   z-index: 10;

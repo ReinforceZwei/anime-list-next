@@ -1,8 +1,17 @@
+import { IconPhotoOff } from '@tabler/icons-react'
 import { useInfoCard } from './InfoCardContext'
 import styles from './InfoCard.module.css'
 
 export default function InfoCardPoster() {
-  const { posterUrl, onPosterClick } = useInfoCard()
+  const { posterUrl, hasTmdbId, onPosterClick } = useInfoCard()
+
+  if (!hasTmdbId) {
+    return (
+      <div className={styles.posterPlaceholder}>
+        <IconPhotoOff size={28} stroke={1.5} />
+      </div>
+    )
+  }
 
   return (
     <div

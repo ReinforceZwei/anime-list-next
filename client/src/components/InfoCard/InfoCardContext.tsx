@@ -6,6 +6,7 @@ export interface InfoCardContextValue {
   tags: TagRecord[]
   loading: boolean
   posterUrl: string | null
+  hasTmdbId: boolean
   onClose: () => void
   onEdit: () => void
   onPosterClick: () => void

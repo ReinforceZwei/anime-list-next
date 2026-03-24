@@ -18,7 +18,7 @@ function Index() {
   const { data: prefs } = useUserPreferences()
   const sectionDefs = useMemo<SectionDef[]>(() => [
     { key: 'watching',  label: prefs?.watchingLabel  || 'Watching',  statuses: ['watching'],  sortBy: 'updated',     sortOrder: 'desc' },
-    { key: 'completed', label: prefs?.completedLabel || 'Completed', statuses: ['completed'], sortBy: 'completedAt', sortOrder: 'desc' },
+    { key: 'completed', label: prefs?.completedLabel || 'Completed', statuses: ['completed'], sortBy: 'completedAt', sortOrder: 'asc' },
     { key: 'planned',   label: prefs?.plannedLabel   || 'Planned',   statuses: ['planned'],   sortBy: 'created',     sortOrder: 'asc'  },
     { key: 'dropped',   label: prefs?.droppedLabel   || 'Dropped',   statuses: ['dropped'],   sortBy: 'updated',     sortOrder: 'desc' },
   ], [prefs])
