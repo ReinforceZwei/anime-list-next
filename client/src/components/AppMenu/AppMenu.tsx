@@ -1,11 +1,13 @@
 import { ActionIcon, Affix, Menu, useMantineColorScheme } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconMenu2, IconMoon, IconSun } from "@tabler/icons-react";
+import { IconLogout, IconMenu2, IconMoon, IconSettings, IconSun, IconTag } from "@tabler/icons-react";
+import { useNavigate } from "@tanstack/react-router";
 
 
 export default function AppMenu() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const isDark = colorScheme === 'dark'
+  const navigate = useNavigate()
 
   return (
     <Affix position={{ top: 10, left: 10 }}>
@@ -22,14 +24,25 @@ export default function AppMenu() {
           >
             {isDark ? 'Light mode' : 'Dark mode'}
           </Menu.Item>
-          <Menu.Item onClick={() => modals.openContextModal({ modal: 'manageTags', title: 'Manage Tags', innerProps: {} })}>
+          <Menu.Item
+            leftSection={<IconTag size={16} />}
+            onClick={() => modals.openContextModal({ modal: 'manageTags', title: 'Manage Tags', innerProps: {} })}
+          >
             Tags
           </Menu.Item>
-          <Menu.Item onClick={() => modals.openContextModal({ modal: 'preferences', title: 'Preferences', innerProps: {} })}>
+          <Menu.Item
+            leftSection={<IconSettings size={16} />}
+            onClick={() => modals.openContextModal({ modal: 'preferences', title: 'Preferences', innerProps: {} })}
+          >
             Settings
           </Menu.Item>
-          <Menu.Item>Search TMDB</Menu.Item>
-          <Menu.Item>Logout</Menu.Item>
+          <Menu.Item
+            leftSection={<IconLogout size={16} />}
+            color="red"
+            onClick={() => navigate({ to: '/logout' })}
+          >
+            Logout
+          </Menu.Item>
         </Menu.Dropdown>
       </Menu>
     </Affix>

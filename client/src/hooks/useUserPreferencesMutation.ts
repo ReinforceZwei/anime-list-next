@@ -1,5 +1,5 @@
 import { pb, Collections } from "@/lib/pb";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import type { UserPreferencesRecord } from "@/types/anime";
 
 type PbInternals = 'collectionId' | 'collectionName' | 'created' | 'updated' | 'expand'
