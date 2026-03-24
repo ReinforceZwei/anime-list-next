@@ -1,5 +1,5 @@
 import { pb, Collections } from "@/lib/pb";
-import type { AnimeRecord, TagRecord } from "@/types/anime";
+import type { AnimeRecord, TagRecord, UserPreferencesRecord } from "@/types/anime";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import type { RecordModel } from "pocketbase";
@@ -36,6 +36,43 @@ function useCollectionRealtimeSync<T extends RecordModel>(
       unsub.then(fn => fn());
     }
   // queryKey is an array — JSON-serialize it so the effect only re-runs when its contents change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collection, JSON.stringify(queryKey)]);
+}
+
+// Variant for collections whose query caches a single record (T | null) instead of a list.
+function useSingleRecordRealtimeSync<T extends RecordModel>(
+  collection: string,
+  queryKey: unknown[],
+) {
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    console.debug(`useSingleRecordRealtimeSync(${collection}): Subscribing...`)
+    const unsub = pb.collection(collection).subscribe<T>('*', (data) => {
+      console.debug(`useSingleRecordRealtimeSync(${collection}): Realtime event received:`, data)
+      switch (data.action) {
+        case 'create':
+          queryClient.setQueryData(queryKey, data.record);
+          break;
+        case 'update':
+          queryClient.setQueryData(queryKey, (old: T | null) =>
+            old?.id === data.record.id ? data.record : old,
+          );
+          break;
+        case 'delete':
+          queryClient.setQueryData(queryKey, null);
+          break;
+        default:
+          console.warn(`useSingleRecordRealtimeSync(${collection}): Unknown action from realtime subscription:`, data.action);
+          break;
+      }
+    });
+
+    return () => {
+      console.debug(`useSingleRecordRealtimeSync(${collection}): Unsubscribing...`)
+      unsub.then(fn => fn());
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collection, JSON.stringify(queryKey)]);
 }
@@ -98,9 +135,15 @@ export function useLastUpdateRealtimeSync() {
   useCollectionRealtimeSync<LastUpdateRecord>(Collections.LastUpdates, [Collections.LastUpdates, userId])
 }
 
+export function useUserPreferencesRealtimeSync() {
+  const userId = pb.authStore.record?.id
+  useSingleRecordRealtimeSync<UserPreferencesRecord>(Collections.UserPreferences, [Collections.UserPreferences, userId])
+}
+
 export function useRealtimeSync() {
   useAnimeRealtimeSync()
   useTagRealtimeSync()
   useLastUpdateRealtimeSync()
+  useUserPreferencesRealtimeSync()
   useStaleDetectionSync()
 }

@@ -27,6 +27,15 @@ export interface AnimeSection {
   items: AnimeRecord[]
 }
 
+export interface UserPreferencesRecord extends RecordModel {
+  userId: string
+  pageTitle?: string
+  watchingLabel?: string
+  completedLabel?: string
+  plannedLabel?: string
+  droppedLabel?: string
+}
+
 export interface AnimeRecord extends RecordModel {
   userId: string;
   tmdbId?: number;

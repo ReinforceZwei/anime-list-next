@@ -1,27 +1,30 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useAnimeSections } from '@/hooks/useAnimeSections'
+import { useUserPreferences } from '@/hooks/useUserPreferences'
 import type { AnimeRecord, SectionDef } from '@/types/anime'
 import { Affix, Button } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import AnimePaper from '@/components/AnimePaper/AnimePaper'
 import AppMenu from '@/components/AppMenu/AppMenu'
 import AnimeCard from '@/components/InfoCard/AnimeCard'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/')({
   component: Index,
 })
 
-const SECTIONS: SectionDef[] = [
-  { key: 'watching',  label: 'Watching',  statuses: ['watching'],  sortBy: 'updated',     sortOrder: 'desc' },
-  { key: 'completed', label: 'Completed', statuses: ['completed'], sortBy: 'completedAt', sortOrder: 'desc' },
-  { key: 'planned',   label: 'Planned',   statuses: ['planned'],   sortBy: 'created',     sortOrder: 'asc'  },
-  { key: 'dropped',   label: 'Dropped',   statuses: ['dropped'],   sortBy: 'updated',     sortOrder: 'desc' },
-]
-
 function Index() {
-  const { sections, isLoading, isError, error } = useAnimeSections(SECTIONS)
+  const { data: prefs } = useUserPreferences()
+  const sectionDefs = useMemo<SectionDef[]>(() => [
+    { key: 'watching',  label: prefs?.watchingLabel  || 'Watching',  statuses: ['watching'],  sortBy: 'updated',     sortOrder: 'desc' },
+    { key: 'completed', label: prefs?.completedLabel || 'Completed', statuses: ['completed'], sortBy: 'completedAt', sortOrder: 'desc' },
+    { key: 'planned',   label: prefs?.plannedLabel   || 'Planned',   statuses: ['planned'],   sortBy: 'created',     sortOrder: 'asc'  },
+    { key: 'dropped',   label: prefs?.droppedLabel   || 'Dropped',   statuses: ['dropped'],   sortBy: 'updated',     sortOrder: 'desc' },
+  ], [prefs])
+
+  const { sections, isLoading, isError, error } = useAnimeSections(sectionDefs)
   const [selectedAnimeId, setSelectedAnimeId] = useState<string | null>(null)
+  const pageTitle = prefs?.pageTitle || 'My Anime List'
 
   function openTmdbModal() {
     modals.openContextModal({
@@ -48,7 +51,7 @@ function Index() {
     <div>
       <AppMenu />
       <AnimePaper>
-        <AnimePaper.Title>My Anime List</AnimePaper.Title>
+        <AnimePaper.Title>{pageTitle}</AnimePaper.Title>
         {sections.map(section => (
           <div key={section.key}>
             <AnimePaper.Subtitle>{section.label}</AnimePaper.Subtitle>

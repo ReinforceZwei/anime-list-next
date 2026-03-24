@@ -25,7 +25,9 @@ export default function AppMenu() {
           <Menu.Item onClick={() => modals.openContextModal({ modal: 'manageTags', title: 'Manage Tags', innerProps: {} })}>
             Tags
           </Menu.Item>
-          <Menu.Item>Settings</Menu.Item>
+          <Menu.Item onClick={() => modals.openContextModal({ modal: 'preferences', title: 'Preferences', innerProps: {} })}>
+            Settings
+          </Menu.Item>
           <Menu.Item>Search TMDB</Menu.Item>
           <Menu.Item>Logout</Menu.Item>
         </Menu.Dropdown>

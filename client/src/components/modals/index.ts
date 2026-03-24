@@ -3,6 +3,7 @@ import { EditAnimeModal } from './EditAnimeModal'
 import { TmdbSearchModal } from './TmdbSearchModal'
 import { ManageTagsModal } from './ManageTagsModal'
 import { TagFormModal } from './TagFormModal'
+import { PreferencesModal } from './PreferencesModal'
 
 export const modals = {
   addAnime: AddAnimeModal,
@@ -10,6 +11,7 @@ export const modals = {
   tmdbSearch: TmdbSearchModal,
   manageTags: ManageTagsModal,
   tagForm: TagFormModal,
+  preferences: PreferencesModal,
 }
 
 declare module '@mantine/modals' {
