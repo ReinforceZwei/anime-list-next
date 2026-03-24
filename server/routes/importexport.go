@@ -40,6 +40,8 @@ type ExportAnimeRecord struct {
 	Remark           string   `json:"remark"`
 	Tags             []string `json:"tags"`
 	Deleted          string   `json:"deleted"`
+	Created          string   `json:"created"`
+	Updated          string   `json:"updated"`
 }
 
 // ExportData is the top-level JSON envelope for import/export.
@@ -119,6 +121,8 @@ func (r *ImportExportRoutes) exportHandler(e *core.RequestEvent) error {
 			Remark:           a.GetString("remark"),
 			Tags:             a.GetStringSlice("tags"),
 			Deleted:          a.GetString("deleted"),
+			Created:          a.GetString("created"),
+			Updated:          a.GetString("updated"),
 		})
 	}
 
@@ -161,97 +165,110 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 		return e.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find tags collection"})
 	}
 
-	// tagIdMap maps exported tag IDs → real PocketBase tag IDs.
-	tagIdMap := make(map[string]string, len(data.Tags))
-	importedTags := 0
-
-	for _, tag := range data.Tags {
-		existing, err := e.App.FindFirstRecordByFilter(
-			"tags",
-			"userId = {:userId} && name = {:name}",
-			dbx.Params{"userId": userId, "name": tag.Name},
-		)
-		if err != nil {
-			// Not found — create new tag.
-			newTag := core.NewRecord(tagCol)
-			newTag.Set("userId", userId)
-			newTag.Set("name", tag.Name)
-			newTag.Set("color", tag.Color)
-			newTag.Set("weight", tag.Weight)
-			newTag.Set("hidden", tag.Hidden)
-			newTag.Set("deleted", tag.Deleted)
-			if err := e.App.Save(newTag); err != nil {
-				return e.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to create tag: " + tag.Name})
-			}
-			tagIdMap[tag.ID] = newTag.Id
-			importedTags++
-		} else {
-			tagIdMap[tag.ID] = existing.Id
-		}
-	}
-
 	animeCol, err := e.App.FindCollectionByNameOrId("animeRecords")
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find animeRecords collection"})
 	}
 
+	// tagIdMap maps exported tag IDs → real PocketBase tag IDs.
+	tagIdMap := make(map[string]string, len(data.Tags))
+	importedTags := 0
 	importedRecords := 0
 
-	for _, anime := range data.AnimeRecords {
-		// Remap exported tag IDs to real IDs, dropping any that have no mapping.
-		remappedTags := make([]string, 0, len(anime.Tags))
-		for _, oldId := range anime.Tags {
-			if newId, ok := tagIdMap[oldId]; ok {
-				remappedTags = append(remappedTags, newId)
+	if err := e.App.RunInTransaction(func(txApp core.App) error {
+		for _, tag := range data.Tags {
+			existing, err := txApp.FindFirstRecordByFilter(
+				"tags",
+				"userId = {:userId} && name = {:name}",
+				dbx.Params{"userId": userId, "name": tag.Name},
+			)
+			if err != nil {
+				// Not found — create new tag.
+				newTag := core.NewRecord(tagCol)
+				newTag.Set("userId", userId)
+				newTag.Set("name", tag.Name)
+				newTag.Set("color", tag.Color)
+				newTag.Set("weight", tag.Weight)
+				newTag.Set("hidden", tag.Hidden)
+				newTag.Set("deleted", tag.Deleted)
+				if err := txApp.Save(newTag); err != nil {
+					txApp.Logger().Error("failed to save tag during import", "tag", tag.Name, "error", err)
+					return err
+				}
+				tagIdMap[tag.ID] = newTag.Id
+				importedTags++
+			} else {
+				tagIdMap[tag.ID] = existing.Id
 			}
 		}
 
-		// Locate an existing record to update, or prepare a new one.
-		var record *core.Record
-		if anime.TmdbID != 0 {
-			record, _ = e.App.FindFirstRecordByFilter(
-				"animeRecords",
-				"userId={:u} && tmdbMediaType={:mt} && tmdbId={:id} && tmdbSeasonNumber={:sn}",
-				dbx.Params{
-					"u":  userId,
-					"mt": anime.TmdbMediaType,
-					"id": anime.TmdbID,
-					"sn": anime.TmdbSeasonNumber,
-				},
-			)
-		} else if anime.CustomName != "" {
-			record, _ = e.App.FindFirstRecordByFilter(
-				"animeRecords",
-				"userId={:u} && customName={:name}",
-				dbx.Params{"u": userId, "name": anime.CustomName},
-			)
+		for _, anime := range data.AnimeRecords {
+			// Remap exported tag IDs to real IDs, dropping any that have no mapping.
+			remappedTags := make([]string, 0, len(anime.Tags))
+			for _, oldId := range anime.Tags {
+				if newId, ok := tagIdMap[oldId]; ok {
+					remappedTags = append(remappedTags, newId)
+				}
+			}
+
+			// Locate an existing record to update, or prepare a new one.
+			var record *core.Record
+			if anime.TmdbID != 0 {
+				record, _ = txApp.FindFirstRecordByFilter(
+					"animeRecords",
+					"userId={:u} && tmdbMediaType={:mt} && tmdbId={:id} && tmdbSeasonNumber={:sn}",
+					dbx.Params{
+						"u":  userId,
+						"mt": anime.TmdbMediaType,
+						"id": anime.TmdbID,
+						"sn": anime.TmdbSeasonNumber,
+					},
+				)
+			} else if anime.CustomName != "" {
+				record, _ = txApp.FindFirstRecordByFilter(
+					"animeRecords",
+					"userId={:u} && customName={:name}",
+					dbx.Params{"u": userId, "name": anime.CustomName},
+				)
+			}
+
+			if record == nil {
+				record = core.NewRecord(animeCol)
+				record.Set("userId", userId)
+			}
+
+			record.Set("tmdbId", anime.TmdbID)
+			record.Set("tmdbSeasonNumber", anime.TmdbSeasonNumber)
+			record.Set("tmdbMediaType", anime.TmdbMediaType)
+			record.Set("customName", anime.CustomName)
+			record.Set("cachedTitle", anime.CachedTitle)
+			record.Set("cachedSeasonName", anime.CachedSeasonName)
+			record.Set("status", anime.Status)
+			record.Set("downloadStatus", anime.DownloadStatus)
+			setOptionalDate(record, "startedAt", anime.StartedAt)
+			setOptionalDate(record, "completedAt", anime.CompletedAt)
+			record.Set("rating", anime.Rating)
+			record.Set("comment", anime.Comment)
+			record.Set("remark", anime.Remark)
+			record.Set("tags", remappedTags)
+			record.Set("deleted", anime.Deleted)
+			setOptionalDate(record, "created", anime.Created)
+			setOptionalDate(record, "updated", anime.Updated)
+
+			if err := txApp.Save(record); err != nil {
+				txApp.Logger().Error("failed to save anime record during import",
+					"tmdbId", anime.TmdbID,
+					"customName", anime.CustomName,
+					"error", err,
+				)
+				return err
+			}
+			importedRecords++
 		}
 
-		if record == nil {
-			record = core.NewRecord(animeCol)
-			record.Set("userId", userId)
-		}
-
-		record.Set("tmdbId", anime.TmdbID)
-		record.Set("tmdbSeasonNumber", anime.TmdbSeasonNumber)
-		record.Set("tmdbMediaType", anime.TmdbMediaType)
-		record.Set("customName", anime.CustomName)
-		record.Set("cachedTitle", anime.CachedTitle)
-		record.Set("cachedSeasonName", anime.CachedSeasonName)
-		record.Set("status", anime.Status)
-		record.Set("downloadStatus", anime.DownloadStatus)
-		setOptionalDate(record, "startedAt", anime.StartedAt)
-		setOptionalDate(record, "completedAt", anime.CompletedAt)
-		record.Set("rating", anime.Rating)
-		record.Set("comment", anime.Comment)
-		record.Set("remark", anime.Remark)
-		record.Set("tags", remappedTags)
-		record.Set("deleted", anime.Deleted)
-
-		if err := e.App.Save(record); err != nil {
-			return e.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to save anime record"})
-		}
-		importedRecords++
+		return nil
+	}); err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]string{"error": "import failed: " + err.Error()})
 	}
 
 	return e.JSON(http.StatusOK, ImportResult{
