@@ -20,10 +20,13 @@ export default function Item({
     <List.Item
       className={getItemClass(record)}
       style={{ fontSize: '1.1rem' }}
-      styles={onClick ? { itemLabel: { cursor: 'pointer' } } : undefined}
-      onClick={onClick ? () => onClick(record) : undefined}
     >
-      {record.customName || record.cachedTitle || record.tmdbId}
+      <span
+        style={onClick ? { cursor: 'pointer' } : undefined}
+        onClick={onClick ? () => onClick(record) : undefined}
+      >
+        {record.customName || record.cachedTitle || record.tmdbId}
+      </span>
     </List.Item>
   )
 }
