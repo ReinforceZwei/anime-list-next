@@ -8,7 +8,7 @@ body:after {
   left: 0;
   right: 0;
   z-index: -10;
-  background: url(21.jpg);
+  background: url(/21.jpg);
   background-position: right;
   background-repeat: no-repeat;
   background-attachment: scroll;
