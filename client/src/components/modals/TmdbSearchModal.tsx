@@ -19,14 +19,20 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks'
-import { IconArrowLeft, IconCheck, IconPlus, IconSearch } from '@tabler/icons-react'
+import { modals as mantineModals } from '@mantine/modals'
+import { IconArrowLeft, IconCheck, IconLink, IconPlus, IconSearch } from '@tabler/icons-react'
 import type { ContextModalProps } from '@mantine/modals'
 import { useTmdbSearch, useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeExistsMap } from '@/hooks/useAnimeExistsMap'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
+import { useAnimeList } from '@/hooks/useAnimeList'
 import type { TmdbSearchItem } from '@/types/tmdb'
 
 const PANEL_H = 520
+
+type TmdbSearchInnerProps =
+  | { mode?: 'create' }
+  | { mode: 'link'; animeId: string; initialQuery?: string }
 
 function ExistsBadge() {
   return (
@@ -39,8 +45,12 @@ function ExistsBadge() {
   )
 }
 
-export function TmdbSearchModal(_props: ContextModalProps) {
-  const [query, setQuery] = useState('')
+export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<TmdbSearchInnerProps>) {
+  const mode = innerProps.mode ?? 'create'
+  const linkProps = mode === 'link' ? (innerProps as { mode: 'link'; animeId: string; initialQuery?: string }) : null
+  const animeId = linkProps?.animeId ?? null
+
+  const [query, setQuery] = useState(linkProps?.initialQuery ?? '')
   const [debounced] = useDebouncedValue(query, 400)
   const [selected, setSelected] = useState<TmdbSearchItem | null>(null)
   const [mobileView, setMobileView] = useState<'search' | 'detail'>('search')
@@ -55,7 +65,13 @@ export function TmdbSearchModal(_props: ContextModalProps) {
   }), [theme])
 
   const exists = useAnimeExistsMap()
-  const { createMutation } = useAnimeMutation()
+  const { createMutation, updateMutation } = useAnimeMutation()
+  const { data: animeList } = useAnimeList()
+  const targetAnime = useMemo(
+    () => animeId ? animeList?.find((a) => a.id === animeId) : undefined,
+    [animeList, animeId],
+  )
+
   const { data: results, isFetching } = useTmdbSearch(debounced)
   const { data: detail, isFetching: detailFetching } = useTmdbDetail(
     selected?.mediaType ?? null,
@@ -87,6 +103,14 @@ export function TmdbSearchModal(_props: ContextModalProps) {
       inputRef.current?.focus()
     }, 100)
   }, [])
+
+  function handleLink(tmdbId: number, tmdbMediaType: 'tv' | 'movie', tmdbSeasonNumber?: number) {
+    if (!targetAnime) return
+    updateMutation.mutate(
+      { ...targetAnime, tmdbId, tmdbMediaType, tmdbSeasonNumber },
+      { onSuccess: () => context.closeModal(id) },
+    )
+  }
 
   // ── Shared panels ────────────────────────────────────────────────────────
 
@@ -147,6 +171,21 @@ export function TmdbSearchModal(_props: ContextModalProps) {
           ))}
         </Stack>
       </ScrollArea>
+
+      {mode === 'create' && (
+        <Button
+          variant="subtle"
+          size="xs"
+          color="dimmed"
+          onClick={() => mantineModals.openContextModal({
+            modal: 'addAnime',
+            title: 'Add without TMDb',
+            innerProps: {},
+          })}
+        >
+          Add without TMDb
+        </Button>
+      )}
     </Stack>
   )
 
@@ -191,24 +230,39 @@ export function TmdbSearchModal(_props: ContextModalProps) {
                 </Spoiler>
               )}
               {detail.mediaType === 'movie' && (
-                movieExists
-                  ? <ExistsBadge />
-                  : (
+                mode === 'link'
+                  ? (
                     <Button
                       size="xs"
                       variant="light"
-                      leftSection={<IconPlus size={13} />}
+                      leftSection={<IconLink size={13} />}
                       mt={4}
                       w="fit-content"
-                      loading={createMutation.isPending}
-                      onClick={() => createMutation.mutate({
-                        tmdbId: detail.id,
-                        tmdbMediaType: 'movie',
-                      })}
+                      loading={updateMutation.isPending}
+                      disabled={!targetAnime}
+                      onClick={() => handleLink(detail.id, 'movie')}
                     >
-                      Create Record
+                      Link
                     </Button>
                   )
+                  : movieExists
+                    ? <ExistsBadge />
+                    : (
+                      <Button
+                        size="xs"
+                        variant="light"
+                        leftSection={<IconPlus size={13} />}
+                        mt={4}
+                        w="fit-content"
+                        loading={createMutation.isPending}
+                        onClick={() => createMutation.mutate({
+                          tmdbId: detail.id,
+                          tmdbMediaType: 'movie',
+                        })}
+                      >
+                        Create Record
+                      </Button>
+                    )
               )}
             </Stack>
           </Group>
@@ -237,27 +291,43 @@ export function TmdbSearchModal(_props: ContextModalProps) {
                       {season.airDate && (
                         <Text size="xs" c="dimmed">{season.airDate.slice(0, 4)}</Text>
                       )}
-                      {seasonExistsMap.get(season.seasonNumber)
-                        ? <ExistsBadge />
-                        : (
+                      {mode === 'link'
+                        ? (
                           <Button
                             size="xs"
                             variant="light"
-                            leftSection={<IconPlus size={12} />}
+                            leftSection={<IconLink size={12} />}
                             loading={
-                              createMutation.isPending &&
-                              createMutation.variables?.tmdbSeasonNumber === season.seasonNumber
+                              updateMutation.isPending &&
+                              updateMutation.variables?.tmdbSeasonNumber === season.seasonNumber
                             }
-                            disabled={createMutation.isPending}
-                            onClick={() => createMutation.mutate({
-                              tmdbId: detail.id,
-                              tmdbMediaType: 'tv',
-                              tmdbSeasonNumber: season.seasonNumber,
-                            })}
+                            disabled={updateMutation.isPending || !targetAnime}
+                            onClick={() => handleLink(detail.id, 'tv', season.seasonNumber)}
                           >
-                            Add
+                            Link
                           </Button>
                         )
+                        : seasonExistsMap.get(season.seasonNumber)
+                          ? <ExistsBadge />
+                          : (
+                            <Button
+                              size="xs"
+                              variant="light"
+                              leftSection={<IconPlus size={12} />}
+                              loading={
+                                createMutation.isPending &&
+                                createMutation.variables?.tmdbSeasonNumber === season.seasonNumber
+                              }
+                              disabled={createMutation.isPending}
+                              onClick={() => createMutation.mutate({
+                                tmdbId: detail.id,
+                                tmdbMediaType: 'tv',
+                                tmdbSeasonNumber: season.seasonNumber,
+                              })}
+                            >
+                              Add
+                            </Button>
+                          )
                       }
                     </Group>
                   </Group>

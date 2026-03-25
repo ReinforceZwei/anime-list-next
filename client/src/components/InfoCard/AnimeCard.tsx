@@ -47,6 +47,8 @@ export default function AnimeCard({ animeId, onClose }: AnimeCardProps) {
       modal: 'editAnime',
       title: 'Edit anime',
       innerProps: { anime },
+      closeOnClickOutside: false,
+      closeOnEscape: false,
     })
   }
 

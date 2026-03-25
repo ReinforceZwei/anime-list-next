@@ -1,10 +1,12 @@
 import { Button, Stack, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import type { ContextModalProps } from '@mantine/modals'
-
-// this modal is just a scaffolding, do not treat the content as actual implementation
+import { useAnimeMutation } from '@/hooks/useAnimeMutation'
+import { useEffect, useRef } from 'react'
 
 export function AddAnimeModal({ context, id }: ContextModalProps) {
+  const { createMutation } = useAnimeMutation()
+  const inputRef = useRef<HTMLInputElement>(null)
   const form = useForm({
     initialValues: { title: '' },
     validate: {
@@ -12,17 +14,32 @@ export function AddAnimeModal({ context, id }: ContextModalProps) {
     },
   })
 
+  useEffect(() => {
+    setTimeout(() => {
+      inputRef.current?.focus()
+    }, 100)
+  }, [])
+
   function handleSubmit(values: { title: string }) {
-    // TODO: call createAnime mutation here
-    console.log('add anime', values)
-    context.closeModal(id)
+    createMutation.mutate(
+      { customName: values.title },
+      { onSuccess: () => context.closeModal(id) },
+    )
   }
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <Stack>
-        <TextInput label="Title" placeholder="Anime title" {...form.getInputProps('title')} />
-        <Button type="submit">Add</Button>
+        <TextInput
+          label="Title"
+          placeholder="Anime title"
+          data-autofocus
+          ref={inputRef}
+          {...form.getInputProps('title')}
+        />
+        <Button type="submit" loading={createMutation.isPending}>
+          Add
+        </Button>
       </Stack>
     </form>
   )
