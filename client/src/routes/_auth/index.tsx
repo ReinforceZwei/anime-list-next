@@ -54,7 +54,9 @@ function Index() {
 
   return (
     <div>
-      <AppMenu />
+      <Affix position={{ top: 10, left: 10 }}>
+        <AppMenu />
+      </Affix>
       <AnimePaper>
         <AnimePaper.Title>{pageTitle}</AnimePaper.Title>
         {sections.map((section, i) => (
