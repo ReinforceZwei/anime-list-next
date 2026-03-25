@@ -12,12 +12,15 @@ function getItemClass(record: AnimeRecord): string | undefined {
 export default function Item({
   record,
   onClick,
+  itemRef,
 }: {
   record: AnimeRecord
   onClick?: (record: AnimeRecord) => void
+  itemRef?: (el: HTMLElement | null) => void
 }) {
   return (
     <List.Item
+      ref={itemRef}
       className={getItemClass(record)}
       style={{ fontSize: '1.1rem' }}
     >

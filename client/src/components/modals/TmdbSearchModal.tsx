@@ -31,8 +31,8 @@ import type { TmdbSearchItem } from '@/types/tmdb'
 const PANEL_H = 520
 
 type TmdbSearchInnerProps =
-  | { mode?: 'create' }
-  | { mode: 'link'; animeId: string; initialQuery?: string }
+  | { mode?: 'create'; onSaved?: (id: string) => void }
+  | { mode: 'link'; animeId: string; initialQuery?: string; onSaved?: (id: string) => void }
 
 function ExistsBadge() {
   return (
@@ -49,6 +49,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
   const mode = innerProps.mode ?? 'create'
   const linkProps = mode === 'link' ? (innerProps as { mode: 'link'; animeId: string; initialQuery?: string }) : null
   const animeId = linkProps?.animeId ?? null
+  const onSaved = innerProps.onSaved
 
   const [query, setQuery] = useState(linkProps?.initialQuery ?? '')
   const [debounced] = useDebouncedValue(query, 400)
@@ -180,7 +181,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
           onClick={() => mantineModals.openContextModal({
             modal: 'addAnime',
             title: 'Add without TMDb',
-            innerProps: {},
+            innerProps: { onSaved },
           })}
         >
           Add without TMDb
@@ -255,10 +256,10 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
                         mt={4}
                         w="fit-content"
                         loading={createMutation.isPending}
-                        onClick={() => createMutation.mutate({
-                          tmdbId: detail.id,
-                          tmdbMediaType: 'movie',
-                        })}
+                        onClick={() => createMutation.mutate(
+                          { tmdbId: detail.id, tmdbMediaType: 'movie' },
+                          { onSuccess: (record) => onSaved?.(record.id) },
+                        )}
                       >
                         Create Record
                       </Button>
@@ -319,11 +320,10 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
                                 createMutation.variables?.tmdbSeasonNumber === season.seasonNumber
                               }
                               disabled={createMutation.isPending}
-                              onClick={() => createMutation.mutate({
-                                tmdbId: detail.id,
-                                tmdbMediaType: 'tv',
-                                tmdbSeasonNumber: season.seasonNumber,
-                              })}
+                              onClick={() => createMutation.mutate(
+                                { tmdbId: detail.id, tmdbMediaType: 'tv', tmdbSeasonNumber: season.seasonNumber },
+                                { onSuccess: (record) => onSaved?.(record.id) },
+                              )}
                             >
                               Add
                             </Button>

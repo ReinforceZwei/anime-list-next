@@ -4,7 +4,12 @@ import type { ContextModalProps } from '@mantine/modals'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useEffect, useRef } from 'react'
 
-export function AddAnimeModal({ context, id }: ContextModalProps) {
+type AddAnimeInnerProps = {
+  onSaved?: (id: string) => void
+}
+
+export function AddAnimeModal({ context, id, innerProps }: ContextModalProps<AddAnimeInnerProps>) {
+  const { onSaved } = innerProps
   const { createMutation } = useAnimeMutation()
   const inputRef = useRef<HTMLInputElement>(null)
   const form = useForm({
@@ -23,7 +28,12 @@ export function AddAnimeModal({ context, id }: ContextModalProps) {
   function handleSubmit(values: { title: string }) {
     createMutation.mutate(
       { customName: values.title },
-      { onSuccess: () => context.closeModal(id) },
+      {
+        onSuccess: (record) => {
+          context.closeAll()
+          onSaved?.(record.id)
+        },
+      },
     )
   }
 

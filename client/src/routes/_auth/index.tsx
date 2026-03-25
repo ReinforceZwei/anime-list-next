@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useAnimeSections } from '@/hooks/useAnimeSections'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
+import { useScrollToRecord } from '@/hooks/useScrollToRecord'
 import type { AnimeRecord, SectionDef } from '@/types/anime'
 import { Affix, Button } from '@mantine/core'
 import { modals } from '@mantine/modals'
@@ -27,13 +28,14 @@ function Index() {
   const [selectedAnimeId, setSelectedAnimeId] = useState<string | null>(null)
   const pageTitle = prefs?.pageTitle || 'My Anime List'
   const markerRefs = useRef<(HTMLParagraphElement | null)[]>([])
+  const { getRef, jumpTo } = useScrollToRecord()
 
   function openTmdbModal() {
     modals.openContextModal({
       modal: 'tmdbSearch',
       title: 'Search TMDb',
       size: '56rem',
-      innerProps: {},
+      innerProps: { onSaved: jumpTo },
     })
   }
 
@@ -59,14 +61,14 @@ function Index() {
             <AnimePaper.Subtitle ref={el => { markerRefs.current[i] = el }}>{section.label}</AnimePaper.Subtitle>
             <AnimePaper.List>
               {section.items.map(anime => (
-                <AnimePaper.Item key={anime.id} record={anime} onClick={handleAnimeClick} />
+                <AnimePaper.Item key={anime.id} record={anime} onClick={handleAnimeClick} itemRef={getRef(anime.id)} />
               ))}
             </AnimePaper.List>
           </div>
         ))}
       </AnimePaper>
       <Affix position={{ top: 20, right: 20 }}>
-        {selectedAnimeId && <AnimeCard animeId={selectedAnimeId} onClose={() => setSelectedAnimeId(null)} />}
+        {selectedAnimeId && <AnimeCard animeId={selectedAnimeId} onClose={() => setSelectedAnimeId(null)} onJumpTo={jumpTo} />}
       </Affix>
       <Affix position={{ bottom: 20, right: 20 }}>
         <Button onClick={openTmdbModal}>Search TMDb</Button>

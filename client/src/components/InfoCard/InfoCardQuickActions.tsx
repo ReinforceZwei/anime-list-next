@@ -33,7 +33,7 @@ function getActions(
   if (status === 'watching') {
     actions.push({ label: 'Mark completed', icon: <IconCheck size={14} />, color: 'teal', targetStatus: 'completed' })
   }
-  if (!status || status === '') {
+  if (!status) {
     actions.push({ label: 'Plan to watch', icon: <IconCalendar size={14} />, color: 'gray', targetStatus: 'planned' })
   }
 

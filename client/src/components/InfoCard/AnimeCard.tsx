@@ -11,9 +11,13 @@ import InfoCard from './InfoCard'
 interface AnimeCardProps {
   animeId: string
   onClose: () => void
+  /**
+   * Function to jump to the anime card in the anime list
+   */
+  onJumpTo?: (id: string) => void
 }
 
-export default function AnimeCard({ animeId, onClose }: AnimeCardProps) {
+export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps) {
   const { data: animeList, isLoading: listLoading } = useAnimeList()
   const tagMap = useTagMap()
   const { updateMutation } = useAnimeMutation()
@@ -46,7 +50,7 @@ export default function AnimeCard({ animeId, onClose }: AnimeCardProps) {
     modals.openContextModal({
       modal: 'editAnime',
       title: 'Edit anime',
-      innerProps: { anime },
+      innerProps: { anime, onSaved: onJumpTo },
       closeOnClickOutside: false,
       closeOnEscape: false,
     })
@@ -77,7 +81,10 @@ export default function AnimeCard({ animeId, onClose }: AnimeCardProps) {
     const patch: Partial<AnimeRecord> = { status: targetStatus }
     if (targetStatus === 'watching' && !anime.startedAt) patch.startedAt = now
     if (targetStatus === 'completed' && !anime.completedAt) patch.completedAt = now
-    updateMutation.mutate({ ...anime, ...patch })
+    updateMutation.mutate(
+      { ...anime, ...patch },
+      { onSuccess: (record) => onJumpTo?.(record.id) },
+    )
   }
 
   function handleDownloadStatusChange(targetStatus: NonNullable<AnimeRecord['downloadStatus']>) {

@@ -25,6 +25,7 @@ import dayjs from 'dayjs'
 
 type EditAnimeInnerProps = {
   anime: AnimeRecord
+  onSaved?: (id: string) => void
 }
 
 
@@ -35,7 +36,7 @@ function parseLocalDateString(val: string | Date | null): Date | null {
 }
 
 export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<EditAnimeInnerProps>) {
-  const { anime } = innerProps
+  const { anime, onSaved } = innerProps
   const { updateMutation } = useAnimeMutation()
   const { data: tagList } = useTagList()
 
@@ -57,6 +58,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
   })
 
   function handleSubmit(values: typeof form.values) {
+    const statusChanged = values.status !== anime.status
     updateMutation.mutate(
       {
         ...anime,
@@ -71,7 +73,12 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
         startedAt: values.startedAt?.toISOString(),
         completedAt: values.completedAt?.toISOString(),
       },
-      { onSuccess: () => context.closeModal(id) },
+      {
+        onSuccess: (record) => {
+          context.closeModal(id)
+          if (statusChanged) onSaved?.(record.id)
+        },
+      },
     )
   }
 
@@ -85,7 +92,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      {anime.tmdbId && (anime.cachedTitle || anime.cachedSeasonName) && (
+      {Boolean(anime.tmdbId) && (anime.cachedTitle || anime.cachedSeasonName) && (
         <>
           <Stack gap={2} mb="xs">
             {anime.cachedTitle && (
