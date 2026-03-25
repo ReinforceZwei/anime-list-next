@@ -13,12 +13,11 @@ import (
 // ExportTag holds the exported representation of a tag.
 // The ID field serves as a reference key within the export file only.
 type ExportTag struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	Color   string `json:"color"`
-	Weight  int    `json:"weight"`
-	Hidden  bool   `json:"hidden"`
-	Deleted string `json:"deleted"`
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Color  string `json:"color"`
+	Weight int    `json:"weight"`
+	Hidden bool   `json:"hidden"`
 }
 
 // ExportAnimeRecord holds the exported representation of an anime record.
@@ -39,7 +38,6 @@ type ExportAnimeRecord struct {
 	Comment          string   `json:"comment"`
 	Remark           string   `json:"remark"`
 	Tags             []string `json:"tags"`
-	Deleted          string   `json:"deleted"`
 	Created          string   `json:"created"`
 	Updated          string   `json:"updated"`
 }
@@ -94,12 +92,11 @@ func (r *ImportExportRoutes) exportHandler(e *core.RequestEvent) error {
 	exportTags := make([]ExportTag, 0, len(tagRecords))
 	for _, t := range tagRecords {
 		exportTags = append(exportTags, ExportTag{
-			ID:      t.Id,
-			Name:    t.GetString("name"),
-			Color:   t.GetString("color"),
-			Weight:  t.GetInt("weight"),
-			Hidden:  t.GetBool("hidden"),
-			Deleted: t.GetString("deleted"),
+			ID:     t.Id,
+			Name:   t.GetString("name"),
+			Color:  t.GetString("color"),
+			Weight: t.GetInt("weight"),
+			Hidden: t.GetBool("hidden"),
 		})
 	}
 
@@ -120,7 +117,6 @@ func (r *ImportExportRoutes) exportHandler(e *core.RequestEvent) error {
 			Comment:          a.GetString("comment"),
 			Remark:           a.GetString("remark"),
 			Tags:             a.GetStringSlice("tags"),
-			Deleted:          a.GetString("deleted"),
 			Created:          a.GetString("created"),
 			Updated:          a.GetString("updated"),
 		})
@@ -190,7 +186,6 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 				newTag.Set("color", tag.Color)
 				newTag.Set("weight", tag.Weight)
 				newTag.Set("hidden", tag.Hidden)
-				newTag.Set("deleted", tag.Deleted)
 				if err := txApp.Save(newTag); err != nil {
 					txApp.Logger().Error("failed to save tag during import", "tag", tag.Name, "error", err)
 					return err
@@ -251,7 +246,6 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 			record.Set("comment", anime.Comment)
 			record.Set("remark", anime.Remark)
 			record.Set("tags", remappedTags)
-			record.Set("deleted", anime.Deleted)
 			setOptionalDate(record, "created", anime.Created)
 			setOptionalDate(record, "updated", anime.Updated)
 

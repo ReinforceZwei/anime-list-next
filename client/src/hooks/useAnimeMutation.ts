@@ -6,10 +6,10 @@ import type { AnimeRecord } from "@/types/anime";
 // makes keyof RecordModel resolve to `string`, which would wipe the entire type).
 type PbInternals = 'collectionId' | 'collectionName' | 'created' | 'updated' | 'expand'
 
-// Excludes PocketBase internals, userId (injected by hook), and soft-delete field.
+// Excludes PocketBase internals and userId (injected by hook).
 // id is kept so callers can optionally specify a custom record id on create.
-export type AnimeCreateInput = Omit<AnimeRecord, PbInternals | 'userId' | 'deleted'>
-export type AnimeUpdateInput = Omit<AnimeRecord, PbInternals | 'userId' | 'deleted'> & { id: string }
+export type AnimeCreateInput = Omit<AnimeRecord, PbInternals | 'userId'>
+export type AnimeUpdateInput = Omit<AnimeRecord, PbInternals | 'userId'> & { id: string }
 export type AnimeDeleteInput = { id: string }
 
 /** Minimal payload for quick-creating a record straight from a TMDB search result. */

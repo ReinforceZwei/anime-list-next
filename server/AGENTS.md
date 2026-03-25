@@ -2,7 +2,7 @@
 
 ## Package Identity
 
-PocketBase-based backend written in Go. Extends PocketBase with custom API routes (TMDb proxy, import/export) and record lifecycle hooks (auto-populate cached TMDb titles, auto-set status timestamps, soft-delete). The compiled binary (`server.exe`) is the self-contained server.
+PocketBase-based backend written in Go. Extends PocketBase with custom API routes (TMDb proxy, import/export) and record lifecycle hooks (auto-populate cached TMDb titles, auto-set status timestamps). The compiled binary (`server.exe`) is the self-contained server.
 
 ## Setup & Run
 
@@ -69,8 +69,6 @@ Collections (managed by PocketBase migrations):
 - `userPreferences` — per-user UI preferences (labels, page title)
 
 Field naming convention: `lowerCamelCase` — matches the JavaScript client.
-
-All editable collections have a `deleted` datetime field — **soft delete only**. When "deleting" a record, set `deleted` to the current datetime; never call PocketBase's hard-delete in application code.
 
 ### Migrations
 

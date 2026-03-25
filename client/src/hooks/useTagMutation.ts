@@ -6,10 +6,10 @@ import type { TagRecord } from "@/types/anime";
 // makes keyof RecordModel resolve to `string`, which would wipe the entire type).
 type PbInternals = 'collectionId' | 'collectionName' | 'created' | 'updated' | 'expand'
 
-// Excludes PocketBase internals, userId (injected by hook), and soft-delete field.
+// Excludes PocketBase internals and userId (injected by hook).
 // id is kept so callers can optionally specify a custom record id on create.
-export type TagCreateInput = Omit<TagRecord, PbInternals | 'userId' | 'deleted'>
-export type TagUpdateInput = Omit<TagRecord, PbInternals | 'userId' | 'deleted'> & { id: string }
+export type TagCreateInput = Omit<TagRecord, PbInternals | 'userId'>
+export type TagUpdateInput = Omit<TagRecord, PbInternals | 'userId'> & { id: string }
 export type TagDeleteInput = { id: string }
 
 export function useTagMutation() {

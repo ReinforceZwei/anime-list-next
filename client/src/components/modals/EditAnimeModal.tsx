@@ -40,7 +40,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
   const { updateMutation } = useAnimeMutation()
   const { data: tagList } = useTagList()
 
-  const availableTags = (tagList ?? []).filter((t) => !t.deleted)
+  const availableTags = tagList ?? []
   const knownTagIds = new Set(availableTags.map((t) => t.id))
 
   const form = useForm({

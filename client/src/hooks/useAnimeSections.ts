@@ -25,7 +25,7 @@ export function useAnimeSections(sectionDefs: SectionDef[]) {
       key: def.key,
       label: def.label,
       items: sortItems(
-        data.filter(item => !item.deleted && def.statuses.includes(item.status ?? '')),
+        data.filter(item => def.statuses.includes(item.status ?? '')),
         def.sortBy,
         def.sortOrder ?? 'desc',
       ),

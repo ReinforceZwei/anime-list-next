@@ -6,7 +6,6 @@ export interface ExportTag {
   color: string
   weight: number
   hidden: boolean
-  deleted: string
 }
 
 export interface ExportAnimeRecord {
@@ -24,7 +23,6 @@ export interface ExportAnimeRecord {
   comment: string
   remark: string
   tags: string[]
-  deleted: string
 }
 
 export interface ExportData {

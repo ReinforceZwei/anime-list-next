@@ -6,7 +6,6 @@ export interface TagRecord extends RecordModel {
   color?: string;
   weight?: number;
   hidden?: boolean;
-  deleted?: string;
   created: string;
   updated: string;
 }
@@ -57,5 +56,4 @@ export interface AnimeRecord extends RecordModel {
   tags?: string[];
   created: string;
   updated: string;
-  deleted?: string;
 }

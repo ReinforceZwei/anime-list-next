@@ -25,7 +25,6 @@ cd client && npm install && npm run dev
 ## Universal Conventions
 
 - Schema field names use `lowerCamelCase` (aligns with JavaScript/PocketBase JS SDK)
-- All collections have a `deleted` datetime field — soft-delete, never hard-delete records
 - Secrets go in `server/.env` (loaded by godotenv) and `client/.env.local` — never commit either
 - No test suite exists yet; manually verify changes in the browser
 

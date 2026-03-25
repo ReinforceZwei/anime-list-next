@@ -8,7 +8,7 @@ type AddAnimeInnerProps = {
   onSaved?: (id: string) => void
 }
 
-export function AddAnimeModal({ context, id, innerProps }: ContextModalProps<AddAnimeInnerProps>) {
+export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnimeInnerProps>) {
   const { onSaved } = innerProps
   const { createMutation } = useAnimeMutation()
   const inputRef = useRef<HTMLInputElement>(null)
