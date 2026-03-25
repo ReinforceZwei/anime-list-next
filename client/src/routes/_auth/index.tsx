@@ -3,8 +3,9 @@ import { useAnimeSections } from '@/hooks/useAnimeSections'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useScrollToRecord } from '@/hooks/useScrollToRecord'
 import type { AnimeRecord, SectionDef } from '@/types/anime'
-import { Affix, Button } from '@mantine/core'
+import { Affix, Button, Center, Stack, Loader, Paper, ThemeIcon, Text } from '@mantine/core'
 import { modals } from '@mantine/modals'
+import { IconAlertTriangle } from '@tabler/icons-react'
 import AnimePaper from '@/components/AnimePaper/AnimePaper'
 import AppMenu from '@/components/AppMenu/AppMenu'
 import AnimeCard from '@/components/InfoCard/AnimeCard'
@@ -45,11 +46,30 @@ function Index() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <Center h="100vh">
+        <Loader size="xl" type="dots" />
+      </Center>
+    )
   }
 
   if (isError) {
-    return <div>Error: {error.message}</div>
+    return (
+      <Center h="100vh">
+        <Paper p="xl" radius="md" withBorder w={360} style={{ textAlign: 'center' }}>
+          <Stack align="center" gap="md">
+            <ThemeIcon size={48} radius="xl" color="red" variant="light">
+              <IconAlertTriangle size={26} />
+            </ThemeIcon>
+            <Text fw={600} size="lg">Something went wrong</Text>
+            <Text c="dimmed" size="sm">{error.message}</Text>
+            <Button variant="light" color="red" fullWidth onClick={() => window.location.reload()}>
+              Reload
+            </Button>
+          </Stack>
+        </Paper>
+      </Center>
+    )
   }
 
   return (
