@@ -1,4 +1,4 @@
-import { ActionIcon, Affix, Menu, useMantineColorScheme } from "@mantine/core";
+import { ActionIcon, Menu, useMantineColorScheme } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconLogout, IconMenu2, IconMoon, IconSettings, IconSun, IconTag } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
