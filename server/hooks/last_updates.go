@@ -22,9 +22,9 @@ func (h *LastUpdatesHooks) Register(app core.App) {
 		h.upsertLastUpdated(e.App, e.Record)
 		return e.Next()
 	}
-	app.OnRecordAfterCreateSuccess("animeRecords", "tags").BindFunc(handler)
-	app.OnRecordAfterUpdateSuccess("animeRecords", "tags").BindFunc(handler)
-	app.OnRecordAfterDeleteSuccess("animeRecords", "tags").BindFunc(handler)
+	app.OnRecordAfterCreateSuccess("animeRecords", "tags", "userPreferences").BindFunc(handler)
+	app.OnRecordAfterUpdateSuccess("animeRecords", "tags", "userPreferences").BindFunc(handler)
+	app.OnRecordAfterDeleteSuccess("animeRecords", "tags", "userPreferences").BindFunc(handler)
 }
 
 func (h *LastUpdatesHooks) upsertLastUpdated(app core.App, record *core.Record) {
