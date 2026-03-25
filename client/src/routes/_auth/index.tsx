@@ -9,6 +9,7 @@ import AnimePaper from '@/components/AnimePaper/AnimePaper'
 import AppMenu from '@/components/AppMenu/AppMenu'
 import AnimeCard from '@/components/InfoCard/AnimeCard'
 import ElevatorWidget from '@/components/ElevatorWidget/ElevatorWidget'
+import { LocalSearch } from '@/components/LocalSearch/LocalSearch'
 import { useMemo, useRef, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/')({
@@ -67,10 +68,13 @@ function Index() {
           </div>
         ))}
       </AnimePaper>
-      <Affix position={{ top: 20, right: 20 }}>
+      <Affix position={{ top: 10, right: 10 }}>
+        <LocalSearch jumpTo={jumpTo} />
+      </Affix>
+      <Affix position={{ top: 10, right: 10 }}>
         {selectedAnimeId && <AnimeCard animeId={selectedAnimeId} onClose={() => setSelectedAnimeId(null)} onJumpTo={jumpTo} />}
       </Affix>
-      <Affix position={{ bottom: 20, right: 20 }}>
+      <Affix position={{ bottom: 10, right: 10 }}>
         <Button onClick={openTmdbModal}>Search TMDb</Button>
       </Affix>
       <ElevatorWidget markerRefs={markerRefs.current} />
