@@ -6,6 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 function getAppVersion(): string {
+  if (process.env.APP_VERSION) return process.env.APP_VERSION
   try {
     return execSync('git describe --tags --always').toString().trim()
   } catch {
