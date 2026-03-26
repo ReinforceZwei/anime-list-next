@@ -21,45 +21,45 @@ Between releases, `git describe` produces a snapshot string like `v1.2.3-4-gabcd
 
 ## Release Workflow
 
-Because `client/` is a subdirectory of the repo, `npm version` can fail to create the git commit and tag when other files in the repo are unstaged. To avoid this, the version bump and the git tag are done as separate explicit steps.
+> **Why scripts?** Running `npm version` inside `client/` (a subdirectory) is a [known npm bug](https://stackoverflow.com/q/75965870) — it updates `package.json` but silently skips the git commit and tag. The helper scripts below work around this by running npm with `--no-git-tag-version` and handling git themselves.
 
-### 1. Commit all changes
-
-From the repo root, commit everything that should be part of this release:
+### 1. Commit all pending changes
 
 ```sh
 git add .
 git commit -m "feat: describe your change"
 ```
 
-### 2. Bump the version in package.json (without git)
+### 2. Run the release script
 
-Run this from the `client/` directory. The `--no-git-tag-version` flag updates `package.json` only — no commit or tag is created yet.
+From the **repo root**, pick the right bump type:
 
+**macOS / Linux:**
 ```sh
-cd client
-
-npm version patch --no-git-tag-version   # bug fix
-npm version minor --no-git-tag-version   # new feature
-npm version major --no-git-tag-version   # breaking change
+./release.sh patch   # bug fix:        v1.2.3 → v1.2.4
+./release.sh minor   # new feature:    v1.2.3 → v1.3.0
+./release.sh major   # breaking change: v1.2.3 → v2.0.0
 ```
 
-### 3. Commit the version bump and create the tag
+> First run: `chmod +x release.sh`
 
-Back at the repo root:
-
-```sh
-cd ..
-git add client/package.json client/package-lock.json
-git commit -m "chore: release v1.3.0"
-git tag v1.3.0
+**Windows (PowerShell):**
+```powershell
+.\release.ps1 patch
+.\release.ps1 minor
+.\release.ps1 major
 ```
 
-### 4. Push commits and the new tag
+The script will:
+1. Verify the working tree is clean (exits early if not)
+2. Bump the version in `client/package.json` (no git ops)
+3. Create a commit: `chore: release vX.X.X`
+4. Create the git tag: `vX.X.X`
+
+### 3. Push
 
 ```sh
-git push
-git push --tags
+git push && git push --tags
 ```
 
 Pushing the tag triggers the GitHub Actions build.
