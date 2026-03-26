@@ -21,28 +21,41 @@ Between releases, `git describe` produces a snapshot string like `v1.2.3-4-gabcd
 
 ## Release Workflow
 
+Because `client/` is a subdirectory of the repo, `npm version` can fail to create the git commit and tag when other files in the repo are unstaged. To avoid this, the version bump and the git tag are done as separate explicit steps.
+
 ### 1. Commit all changes
+
+From the repo root, commit everything that should be part of this release:
 
 ```sh
 git add .
 git commit -m "feat: describe your change"
 ```
 
-### 2. Bump the version
+### 2. Bump the version in package.json (without git)
 
-Run this from the `client/` directory. It updates `package.json`, commits the change, and creates the git tag in one step.
+Run this from the `client/` directory. The `--no-git-tag-version` flag updates `package.json` only — no commit or tag is created yet.
 
 ```sh
 cd client
 
-npm version patch   # bug fix
-npm version minor   # new feature
-npm version major   # breaking change
+npm version patch --no-git-tag-version   # bug fix
+npm version minor --no-git-tag-version   # new feature
+npm version major --no-git-tag-version   # breaking change
 ```
 
-This produces a commit like `"v1.3.0"` and a tag `v1.3.0`.
+### 3. Commit the version bump and create the tag
 
-### 3. Push commits and the new tag
+Back at the repo root:
+
+```sh
+cd ..
+git add client/package.json client/package-lock.json
+git commit -m "chore: release v1.3.0"
+git tag v1.3.0
+```
+
+### 4. Push commits and the new tag
 
 ```sh
 git push
