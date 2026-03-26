@@ -19,7 +19,7 @@ COPY client/ ./
 RUN npm run build
 
 # ── Server build ─────────────────────────────────────────────────────────────
-FROM --platform=$BUILDPLATFORM golang:1.24-alpine AS server-builder
+FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS server-builder
 
 ARG APP_VERSION
 ARG COMMIT
