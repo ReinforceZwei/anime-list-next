@@ -8,7 +8,9 @@ function formatDate(iso: string): string {
 }
 
 function daysBetween(a: string, b: string): number {
-  return dayjs(b).diff(dayjs(a), 'day')
+  // dayjs default truncate the result to zero decimal places
+  // but we want to round up to the nearest integer, i.e. 11.1 -> 12
+  return Math.ceil(dayjs(b).diff(dayjs(a), 'day', true))
 }
 
 export default function InfoCardDateTime() {
