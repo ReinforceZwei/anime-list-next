@@ -1,11 +1,23 @@
+import { execSync } from 'child_process'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
+function getAppVersion(): string {
+  try {
+    return execSync('git describe --tags --always').toString().trim()
+  } catch {
+    return 'dev'
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify(getAppVersion()),
+  },
   plugins: [
     tanstackRouter({
       target: 'react',
