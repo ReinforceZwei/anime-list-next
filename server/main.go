@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+	"github.com/pocketbase/pocketbase/tools/hook"
 	"github.com/pocketbase/pocketbase/tools/osutils"
 
 	"github.com/ReinforceZwei/anime-list-next/server/config"
@@ -69,6 +72,18 @@ func main() {
 		tmdbRoutes.Register(se)
 		importExportRoutes.Register(se)
 		return se.Next()
+	})
+
+	// Serve static files from pb_public (replicates the behaviour of the
+	// official PocketBase binary, which ships this handler at priority 999).
+	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
+		Func: func(e *core.ServeEvent) error {
+			if !e.Router.HasRoute(http.MethodGet, "/{path...}") {
+				e.Router.GET("/{path...}", apis.Static(os.DirFS("./pb_public"), true))
+			}
+			return e.Next()
+		},
+		Priority: 999,
 	})
 
 	if err := app.Start(); err != nil {
