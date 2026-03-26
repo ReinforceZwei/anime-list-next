@@ -1,88 +1,118 @@
-# Anime list next
+# Anime List Next
 
-Rewrite old [anime list](https://github.com/ReinforceZwei/anime-list) using Pocketbase + React.
+A personal anime watchlist app — rebuilt from scratch using PocketBase + React.
 
----
+Rewrite of the original [anime-list](https://github.com/ReinforceZwei/anime-list) (Python/Flask + MariaDB) with a focus on real-time sync, TMDb integration, and a single self-contained binary.
 
-New client deeply integrate with TMDb for managing records, instead of relying on manual name input.
+## Features
 
-Old client doesnt support real time update. Need to refresh browser to see changes from other device. New client implement real time event (backed by Pocketbase) to reflect latest change, no more browser refresh and reduce network usage.
+- **TMDb integration** — search and link anime/series by title; posters, season info, and metadata are fetched automatically
+- **Real-time sync** — changes from any device appear instantly via PocketBase subscriptions, no page refresh needed
+- **Tags & ratings** — organise records with custom tags; add comments and star ratings
+- **Import / Export** — back up or migrate your full watchlist as a JSON file
+- **Single Docker image** — frontend is embedded in the server binary; one container, no separate web server
 
-## Technical Stack
+## Tech Stack
 
-### Backend: 
+| Layer | Tech |
+|---|---|
+| Backend | Go, [PocketBase](https://pocketbase.io) |
+| Frontend | Vite, React 19, Mantine UI, Tanstack Router |
+| TMDb | [golang-tmdb](https://github.com/cyruzin/golang-tmdb) |
 
-Go, Pocketbase as framework
+## Try it out
 
-[golang-tmdb](https://github.com/cyruzin/golang-tmdb) for TMDb integration
+_A demo instance might be available in the future, but not now._
 
-(optional, future plan) LLM integration for better search result (same logic from [qb-auto](https://github.com/ReinforceZwei/qb-auto), Brave Search + Wikipedia)
+## Self-hosting
 
-### Client:
+### Docker Compose (recommended)
 
-Vite + React, MUI, React Router, Pocketbase SDK, Indexed DB wrapper (TBC)
+Pull the pre-built image from GHCR. `amd64` and `arm64` are available.
 
-## Backend design
+```yaml
+services:
+  anime-list:
+    image: ghcr.io/reinforcezwei/anime-list-next:latest
+    environment:
+      TMDB_API_KEY: "your_tmdb_v3_api_key"
+      DISABLE_REGISTER: "false"   # set to "true" to lock registration after first user
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./pb_data:/app/pb_data
+    restart: unless-stopped
+```
 
-For record CRUD, use Pocketbase collection.
+Then open `http://localhost:8090`.
 
-Custom API route for TMDb integration (multi-search, get details, get poster url)
+Data is persisted in `./pb_data`. Back this directory up regularly.
 
-Since need to support delta change, delete will be soft delete. All collection will have `deleted` datetime field.
+> **TMDB_API_KEY** is required. Get a free v3 API key from [themoviedb.org](https://www.themoviedb.org/settings/api).
 
-Schema field name use `lowerCamelCase` (align with Javascript)
+### Manual install
 
-Need public RESTful API access (anime record operation)
+Requirements: [Go 1.25+](https://go.dev/dl/) and [Node.js 22+](https://nodejs.org/)
 
-## Series season relationship design
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/ReinforceZwei/anime-list-next.git
+   cd anime-list-next
+   ```
+2. Create `server/.env`:
+   ```
+   TMDB_API_KEY=your_tmdb_v3_api_key
+   DISABLE_REGISTER=false
+   ```
+3. Build and run the server:
+   ```sh
+   cd server
+   go run . serve
+   ```
+4. In a separate terminal, build the frontend and copy it into the server's public folder:
+   ```sh
+   cd client
+   npm install
+   npm run build
+   cp -r dist/ ../server/pb_public/
+   ```
+5. Open `http://localhost:8090`
 
-Initial idea: tmdbId + seasonId
+### PocketBase superuser
 
-Same tmdbId = same series
+There is no default superuser on a fresh install. On first startup, PocketBase prints a one-time URL in the console that lets you create the initial superuser through the Admin UI (`/_/`):
 
-## Client design
+```
+Server started at http://0.0.0.0:8090
+├─ REST API: http://0.0.0.0:8090/api/
+└─ Admin UI: http://0.0.0.0:8090/_/
 
-### Pages
+To create your first admin account, navigate to:
+http://0.0.0.0:8090/_/?superusers#...
+```
 
-- Login page: just a login page
-- Main page: anime list (watch list)
-- Setting page: setting page
-- Logout page: no UI, only perform logout logic then redirect to login
+Creating a superuser is optional for normal app use — it's only needed if you want to manage collections or settings through the Admin UI.
 
-#### Main page (UI)
+### Environment variables
 
-A paper-like container at center, document-like list with multiple sections (watched, wish list).
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `TMDB_API_KEY` | Yes | — | TMDb v3 API key (backend-only, never exposed to clients) |
+| `DISABLE_REGISTER` | No | `false` | When `true`, blocks new registrations once the first user exists |
+| `PB_PORT` | No | `8090` | Port the server listens on |
 
-List item display anime title with different color representing status.
+## Development
 
-Clickable item, display a floating info card on right side
+See [DEVELOPMENT.md](DEVELOPMENT.md) for the full development guide including versioning, release workflow, and build flags.
 
-### Workflow
+```sh
+# Backend
+cd server
+cp .env.example .env   # fill in TMDB_API_KEY
+go run . serve
 
-How user will use the app
-
-#### Create record
-
-1. Click "add" button and pop a dialog with title textbox
-2. User type/paste anime title into the textbox
-3. Perform search, return search result with TMDb ID
-4. User choose from the result, confirming series and season number
-5. Record is created
-
-#### View record
-
-1. User scroll/search the list
-2. User click on the item
-3. Show a info card with details
-4. User perform various action on the info card (view poster, edit info, copy title, update status)
-
-Common action
-- Update download status to complete
-- View full screen poster
-- Mark anime as watched
-- Write comment and rating
-- Copy anime title
-
-### Fast initial load
-
-I want to speed up initial render, as fast as server-side render, avoid long blank screen. Need to consider performance optimization when implementing client.
+# Frontend (separate terminal)
+cd client
+npm install
+npm run dev
+```
