@@ -1,0 +1,56 @@
+import { Button, Stack, TextInput } from '@mantine/core'
+import { useForm } from '@mantine/form'
+import type { ContextModalProps } from '@mantine/modals'
+import { useAnimeMutation } from '@/hooks/useAnimeMutation'
+import { useEffect, useRef } from 'react'
+
+type AddAnimeInnerProps = {
+  onSaved?: (id: string) => void
+}
+
+export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnimeInnerProps>) {
+  const { onSaved } = innerProps
+  const { createMutation } = useAnimeMutation()
+  const inputRef = useRef<HTMLInputElement>(null)
+  const form = useForm({
+    initialValues: { title: '' },
+    validate: {
+      title: (v) => (v.trim().length === 0 ? '請輸入標題' : null),
+    },
+  })
+
+  useEffect(() => {
+    setTimeout(() => {
+      inputRef.current?.focus()
+    }, 100)
+  }, [])
+
+  function handleSubmit(values: { title: string }) {
+    createMutation.mutate(
+      { customName: values.title },
+      {
+        onSuccess: (record) => {
+          context.closeAll()
+          onSaved?.(record.id)
+        },
+      },
+    )
+  }
+
+  return (
+    <form onSubmit={form.onSubmit(handleSubmit)}>
+      <Stack>
+        <TextInput
+          label="標題"
+          placeholder="動畫標題"
+          data-autofocus
+          ref={inputRef}
+          {...form.getInputProps('title')}
+        />
+        <Button type="submit" loading={createMutation.isPending}>
+          加入
+        </Button>
+      </Stack>
+    </form>
+  )
+}

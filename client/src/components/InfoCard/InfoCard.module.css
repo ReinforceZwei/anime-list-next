@@ -1,0 +1,81 @@
+.card {
+  position: relative;
+  width: 350px;
+  max-height: 98vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none;
+}
+
+.card::-webkit-scrollbar {
+  display: none;
+}
+
+.posterWrapper {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 467px;
+  flex-shrink: 0;
+  background-color: light-dark(#e0e0e0, #2a2a2a);
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.4s ease;
+  cursor: pointer;
+}
+
+.posterWrapper:hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.posterPlaceholder {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 80px;
+  flex-shrink: 0;
+  background-color: light-dark(#e8e8e8, #242424);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: light-dark(#bbb, #555);
+}
+
+.closeButtonRow {
+  position: fixed;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-end;
+  padding-inline-end: 8px;
+  /* row takes no vertical space — overlays the poster */
+  height: 0;
+  right: 12px;
+}
+
+.content {
+  flex: 1;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: light-dark(rgba(255, 255, 255, 0.55), rgba(30, 30, 30, 0.55));
+  position: relative;
+  padding: var(--mantine-spacing-md);
+}
+
+.quickActionsBar {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: light-dark(rgba(255, 255, 255, 0.7), rgba(30, 30, 30, 0.7));
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  border-top: 1px solid light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
+}
+
+.editButton {
+  position: absolute;
+  top: 0;
+  right: var(--mantine-spacing-md);
+  transform: translateY(-50%);
+}

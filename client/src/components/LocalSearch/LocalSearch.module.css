@@ -1,0 +1,23 @@
+.container {
+  position: relative;
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  padding: var(--mantine-spacing-sm);
+  z-index: 100;
+}
+
+.resultItem {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: var(--mantine-radius-sm);
+  transition: background-color 80ms ease;
+}
+
+.resultItem:hover {
+  background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5));
+}

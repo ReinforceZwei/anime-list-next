@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Anime list next
 
-## Getting Started
+Rewrite old [anime list](https://github.com/ReinforceZwei/anime-list) using Pocketbase + React.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+New client deeply integrate with TMDb for managing records, instead of relying on manual name input.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Old client doesnt support real time update. Need to refresh browser to see changes from other device. New client implement real time event (backed by Pocketbase) to reflect latest change, no more browser refresh and reduce network usage.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technical Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Backend: 
 
-## Learn More
+Go, Pocketbase as framework
 
-To learn more about Next.js, take a look at the following resources:
+[golang-tmdb](https://github.com/cyruzin/golang-tmdb) for TMDb integration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+(optional, future plan) LLM integration for better search result (same logic from [qb-auto](https://github.com/ReinforceZwei/qb-auto), Brave Search + Wikipedia)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Client:
 
-## Deploy on Vercel
+Vite + React, MUI, React Router, Pocketbase SDK, Indexed DB wrapper (TBC)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Backend design
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+For record CRUD, use Pocketbase collection.
+
+Custom API route for TMDb integration (multi-search, get details, get poster url)
+
+Since need to support delta change, delete will be soft delete. All collection will have `deleted` datetime field.
+
+Schema field name use `lowerCamelCase` (align with Javascript)
+
+Need public RESTful API access (anime record operation)
+
+## Series season relationship design
+
+Initial idea: tmdbId + seasonId
+
+Same tmdbId = same series
+
+## Client design
+
+### Pages
+
+- Login page: just a login page
+- Main page: anime list (watch list)
+- Setting page: setting page
+- Logout page: no UI, only perform logout logic then redirect to login
+
+#### Main page (UI)
+
+A paper-like container at center, document-like list with multiple sections (watched, wish list).
+
+List item display anime title with different color representing status.
+
+Clickable item, display a floating info card on right side
+
+### Workflow
+
+How user will use the app
+
+#### Create record
+
+1. Click "add" button and pop a dialog with title textbox
+2. User type/paste anime title into the textbox
+3. Perform search, return search result with TMDb ID
+4. User choose from the result, confirming series and season number
+5. Record is created
+
+#### View record
+
+1. User scroll/search the list
+2. User click on the item
+3. Show a info card with details
+4. User perform various action on the info card (view poster, edit info, copy title, update status)
+
+Common action
+- Update download status to complete
+- View full screen poster
+- Mark anime as watched
+- Write comment and rating
+- Copy anime title
+
+### Fast initial load
+
+I want to speed up initial render, as fast as server-side render, avoid long blank screen. Need to consider performance optimization when implementing client.

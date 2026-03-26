@@ -1,0 +1,14 @@
+.container {
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: rgba(180, 180, 180, 0.3);
+  backdrop-filter: blur(2px);
+  padding: 4px;
+  z-index: 100;
+}
+
+[data-mantine-color-scheme='dark'] .container {
+  background-color: rgba(80, 80, 80, 0.35);
+}

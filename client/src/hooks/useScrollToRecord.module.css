@@ -1,0 +1,15 @@
+@keyframes highlightBlink {
+  0%   { background-color: transparent; }
+  20%  { background-color: var(--scroll-blink-color, var(--mantine-color-yellow-3)); }
+  80%  { background-color: var(--scroll-blink-color, var(--mantine-color-yellow-3)); }
+  100% { background-color: transparent; }
+}
+
+.blink {
+  animation: highlightBlink 1s ease-in-out;
+  border-radius: 4px;
+}
+
+[data-mantine-color-scheme="dark"] .blink {
+  --scroll-blink-color: var(--mantine-color-yellow-8);
+}
