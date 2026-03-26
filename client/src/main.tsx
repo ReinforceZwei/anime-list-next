@@ -1,8 +1,11 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { registerSW } from 'virtual:pwa-register'
 import { routeTree } from './routeTree.gen'
 import './index.css'
+
+registerSW({ immediate: true })
 
 const router = createRouter({ routeTree })
 
