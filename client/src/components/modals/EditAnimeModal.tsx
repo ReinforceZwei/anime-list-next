@@ -85,7 +85,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
   function openManageTags() {
     modals.openContextModal({
       modal: 'manageTags',
-      title: 'Manage Tags',
+      title: '管理標籤',
       innerProps: {},
     })
   }
@@ -112,43 +112,43 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
 
       <Tabs defaultValue="general">
         <Tabs.List>
-          <Tabs.Tab value="general">General</Tabs.Tab>
-          <Tabs.Tab value="other">Other</Tabs.Tab>
+          <Tabs.Tab value="general">一般</Tabs.Tab>
+          <Tabs.Tab value="other">其他</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="general" pt="md">
           <Stack>
             <TextInput
-              label="Custom Name"
-              placeholder="Enter a name"
+              label="自訂名稱"
+              placeholder="輸入名稱"
               {...form.getInputProps('customName')}
             />
 
             <Select
-              label="Status"
+              label="觀看狀態"
               data={[
-                { value: '', label: 'None' },
-                { value: 'planned', label: 'Planned' },
-                { value: 'watching', label: 'Watching' },
-                { value: 'completed', label: 'Completed' },
-                { value: 'dropped', label: 'Dropped' },
+                { value: '', label: '無' },
+                { value: 'planned', label: '待看' },
+                { value: 'watching', label: '觀看中' },
+                { value: 'completed', label: '已看完' },
+                { value: 'dropped', label: '棄番' },
               ]}
               {...form.getInputProps('status')}
             />
 
             <Select
-              label="Download Status"
+              label="下載狀態"
               data={[
-                { value: '', label: 'None' },
-                { value: 'pending', label: 'Pending' },
-                { value: 'downloading', label: 'Downloading' },
-                { value: 'downloaded', label: 'Downloaded' },
+                { value: '', label: '無' },
+                { value: 'pending', label: '等待下載' },
+                { value: 'downloading', label: '下載中' },
+                { value: 'downloaded', label: '已下載' },
               ]}
               {...form.getInputProps('downloadStatus')}
             />
 
             <Stack gap={4}>
-              <Text size="sm" fw={500}>Rating</Text>
+              <Text size="sm" fw={500}>評分</Text>
               <Rating
                 count={10}
                 value={form.values.rating}
@@ -157,33 +157,33 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
             </Stack>
 
             <Textarea
-              label="Comment"
-              placeholder="Add a comment..."
+              label="心得"
+              placeholder="輸入心得…"
               autosize
               minRows={2}
               {...form.getInputProps('comment')}
             />
 
             <TextInput
-              label="Remark"
-              placeholder="Add a remark..."
+              label="備註"
+              placeholder="輸入備註…"
               {...form.getInputProps('remark')}
             />
 
             <Group gap="xs" align="flex-end">
               <TagMultiSelect
-                label="Tags"
-                placeholder="Pick tags"
+                label="標籤"
+                placeholder="選擇標籤"
                 data={availableTags}
                 value={form.values.tags}
                 onChange={(ids) => form.setFieldValue('tags', ids)}
                 style={{ flex: 1 }}
               />
-              <Tooltip label="Manage tags" withArrow>
+              <Tooltip label="管理標籤" withArrow>
                 <ActionIcon
                   variant="default"
                   size="lg"
-                  aria-label="Manage tags"
+                  aria-label="管理標籤"
                   mb={1}
                   onClick={openManageTags}
                 >
@@ -197,15 +197,15 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
         <Tabs.Panel value="other" pt="md">
           <Stack>
             <DateTimePicker
-              label="Started At"
-              placeholder="Pick date and time"
+              label="開始時間"
+              placeholder="選擇日期與時間"
               clearable
               value={form.values.startedAt}
               onChange={(val) => form.setFieldValue('startedAt', parseLocalDateString(val as string | null))}
             />
             <DateTimePicker
-              label="Completed At"
-              placeholder="Pick date and time"
+              label="完成時間"
+              placeholder="選擇日期與時間"
               clearable
               value={form.values.completedAt}
               onChange={(val) => form.setFieldValue('completedAt', parseLocalDateString(val as string | null))}
@@ -216,10 +216,10 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
 
       <Group justify="flex-end" mt="lg">
         <Button variant="default" onClick={() => context.closeModal(id)}>
-          Cancel
+          取消
         </Button>
         <Button type="submit" loading={updateMutation.isPending}>
-          Save
+          儲存
         </Button>
       </Group>
     </form>

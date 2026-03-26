@@ -72,7 +72,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
       const result = await importData(file)
       setImportResult(result)
     } catch (err) {
-      setImportError(err instanceof Error ? err.message : 'Import failed')
+      setImportError(err instanceof Error ? err.message : '匯入失敗')
     } finally {
       setIsImporting(false)
       resetFileRef.current?.()
@@ -83,10 +83,10 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
     <Tabs defaultValue="general">
       <Tabs.List mb="md">
         <Tabs.Tab value="general" leftSection={<IconSettings size={14} />}>
-          General
+          一般
         </Tabs.Tab>
         <Tabs.Tab value="importexport" leftSection={<IconDownload size={14} />}>
-          Import / Export
+          匯入／匯出
         </Tabs.Tab>
       </Tabs.List>
 
@@ -94,34 +94,34 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             <TextInput
-              label="Page Title"
-              placeholder="My Anime List"
-              description="The main heading shown at the top of your list"
+              label="頁面標題"
+              placeholder="我的動畫清單"
+              description="顯示在清單頂部的主標題"
               {...form.getInputProps('pageTitle')}
             />
-            <Divider label="Section Names" labelPosition="left" />
+            <Divider label="區塊名稱" labelPosition="left" />
             <TextInput
-              label="Watching"
-              placeholder="Watching"
+              label="觀看中"
+              placeholder="觀看中"
               {...form.getInputProps('watchingLabel')}
             />
             <TextInput
-              label="Completed"
-              placeholder="Completed"
+              label="已看完"
+              placeholder="已看完"
               {...form.getInputProps('completedLabel')}
             />
             <TextInput
-              label="Planned"
-              placeholder="Planned"
+              label="待看"
+              placeholder="待看"
               {...form.getInputProps('plannedLabel')}
             />
             <TextInput
-              label="Dropped"
-              placeholder="Dropped"
+              label="棄番"
+              placeholder="棄番"
               {...form.getInputProps('droppedLabel')}
             />
             <Button type="submit" loading={saveMutation.isPending}>
-              Save
+              儲存
             </Button>
           </Stack>
         </form>
@@ -131,10 +131,10 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
         <Stack>
           <div>
             <Text fw={500} size="sm" mb={4}>
-              Export
+              匯出
             </Text>
             <Text size="xs" c="dimmed" mb="xs">
-              Download all your anime records and tags as a JSON file.
+              將所有動畫紀錄與標籤下載為 JSON 檔。
             </Text>
             <Button
               leftSection={<IconDownload size={16} />}
@@ -142,7 +142,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
               loading={isExporting}
               onClick={handleExport}
             >
-              Export data
+              匯出資料
             </Button>
           </div>
 
@@ -150,11 +150,10 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
 
           <div>
             <Text fw={500} size="sm" mb={4}>
-              Import
+              匯入
             </Text>
             <Text size="xs" c="dimmed" mb="xs">
-              Restore from a previously exported JSON file. Existing records with the same ID will be
-              updated.
+              從先前匯出的 JSON 檔還原。相同 ID 的既有紀錄將被更新。
             </Text>
             <Group>
               <FileButton resetRef={resetFileRef} onChange={handleImport} accept="application/json">
@@ -165,7 +164,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
                     variant="default"
                     loading={isImporting}
                   >
-                    Choose file
+                    選擇檔案
                   </Button>
                 )}
               </FileButton>
@@ -173,9 +172,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
 
             {importResult && (
               <Alert mt="sm" icon={<IconInfoCircle size={16} />} color="green" variant="light">
-                Imported {importResult.importedRecords} anime record
-                {importResult.importedRecords !== 1 ? 's' : ''} and {importResult.importedTags} tag
-                {importResult.importedTags !== 1 ? 's' : ''}.
+                已匯入 {importResult.importedRecords} 筆動畫紀錄與 {importResult.importedTags} 個標籤。
               </Alert>
             )}
 

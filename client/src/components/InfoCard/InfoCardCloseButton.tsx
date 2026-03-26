@@ -14,7 +14,7 @@ export default function InfoCardCloseButton() {
         variant="filled"
         color="dark"
         onClick={onClose}
-        aria-label="Close info card"
+        aria-label="關閉資訊卡"
         mt={8}
       >
         <IconX size={14} />

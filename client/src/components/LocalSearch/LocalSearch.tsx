@@ -47,7 +47,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
         size="lg"
         radius="lg"
         onClick={() => setOpened((o) => !o)}
-        aria-label="Search anime"
+        aria-label="搜尋動畫"
       >
         <IconSearch size={18} />
       </ActionIcon>
@@ -55,7 +55,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
         <Paper shadow="xl" withBorder className={classes.panel}>
           <TextInput
             ref={inputRef}
-            placeholder="Search by title..."
+            placeholder="依標題搜尋…"
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
             rightSection={
@@ -65,7 +65,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
                   color="gray"
                   size="sm"
                   onClick={() => setQuery('')}
-                  aria-label="Clear search"
+                  aria-label="清除搜尋"
                 >
                   <IconX size={14} />
                 </ActionIcon>
@@ -76,7 +76,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
             <ScrollArea.Autosize mah={320} mt="xs">
               <Stack gap={0}>
                 {results.map((anime) => {
-                  const primary = anime.customName || anime.cachedTitle || '(Untitled)'
+                  const primary = anime.customName || anime.cachedTitle || '（無標題）'
                   const secondary =
                     anime.cachedSeasonName && anime.cachedSeasonName !== primary
                       ? anime.cachedSeasonName
@@ -103,7 +103,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
           )}
           {query.trim() && results.length === 0 && (
             <Text size="sm" c="dimmed" mt="xs" ta="center">
-              No results
+              沒有結果
             </Text>
           )}
         </Paper>

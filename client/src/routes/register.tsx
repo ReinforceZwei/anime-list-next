@@ -31,11 +31,11 @@ function RegisterPage() {
   const form = useForm({
     initialValues: { email: '', name: '', password: '', confirmPassword: '' },
     validate: {
-      email: (v) => (/^\S+@\S+\.\S+$/.test(v) ? null : 'Invalid email'),
-      name: (v) => (v.trim().length > 0 ? null : 'Name is required'),
-      password: (v) => (v.length >= 8 ? null : 'Password must be at least 8 characters'),
+      email: (v) => (/^\S+@\S+\.\S+$/.test(v) ? null : '電子郵件格式不正確'),
+      name: (v) => (v.trim().length > 0 ? null : '請輸入名稱'),
+      password: (v) => (v.length >= 8 ? null : '密碼至少需要 8 個字元'),
       confirmPassword: (v, values) =>
-        v === values.password ? null : 'Passwords do not match',
+        v === values.password ? null : '兩次輸入的密碼不一致',
     },
   })
 
@@ -58,7 +58,7 @@ function RegisterPage() {
       await router.navigate({ to: '/' })
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : 'Registration failed. Please try again.'
+        err instanceof Error ? err.message : '註冊失敗，請稍後再試。'
       setError(message)
     } finally {
       setLoading(false)
@@ -69,37 +69,37 @@ function RegisterPage() {
     <Center h="100vh">
       <Box w={400}>
         <Title ta="center" mb="xs">
-          Create an account
+          建立帳號
         </Title>
         <Text c="dimmed" size="sm" ta="center" mb="lg">
-          Fill in the details below to get started
+          填寫以下資料即可開始
         </Text>
 
         <Paper withBorder shadow="md" p="xl" radius="md">
           <form onSubmit={form.onSubmit(handleSubmit)}>
             <TextInput
-              label="Email"
+              label="電子郵件"
               placeholder="you@example.com"
               required
               {...form.getInputProps('email')}
             />
             <TextInput
-              label="Name"
-              placeholder="Your display name"
+              label="名稱"
+              placeholder="顯示名稱"
               required
               mt="md"
               {...form.getInputProps('name')}
             />
             <PasswordInput
-              label="Password"
-              placeholder="At least 8 characters"
+              label="密碼"
+              placeholder="至少 8 個字元"
               required
               mt="md"
               {...form.getInputProps('password')}
             />
             <PasswordInput
-              label="Confirm password"
-              placeholder="Repeat your password"
+              label="確認密碼"
+              placeholder="再次輸入密碼"
               required
               mt="md"
               {...form.getInputProps('confirmPassword')}
@@ -112,15 +112,15 @@ function RegisterPage() {
             )}
 
             <Button type="submit" fullWidth mt="xl" loading={loading}>
-              Create account
+              建立帳號
             </Button>
           </form>
         </Paper>
 
         <Text c="dimmed" size="xs" ta="center" mt="md">
-          Already have an account?{' '}
+          已經有帳號了？{' '}
           <Anchor size="xs" component={Link} to="/login">
-            Sign in
+            登入
           </Anchor>
         </Text>
       </Box>

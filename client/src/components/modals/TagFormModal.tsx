@@ -21,7 +21,7 @@ export function TagFormModal({ context, id, innerProps }: ContextModalProps<TagF
       hidden: tag?.hidden ?? false,
     },
     validate: {
-      name: (v) => v.trim().length === 0 ? 'Name is required' : null,
+      name: (v) => v.trim().length === 0 ? '請輸入名稱' : null,
     },
   })
 
@@ -45,13 +45,13 @@ export function TagFormModal({ context, id, innerProps }: ContextModalProps<TagF
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <Stack>
         <TextInput
-          label="Name"
-          placeholder="e.g. Action"
+          label="名稱"
+          placeholder="例如：動作"
           {...form.getInputProps('name')}
         />
         <ColorInput
-          label="Color"
-          placeholder="Pick a color"
+          label="顏色"
+          placeholder="選擇顏色"
           swatches={[
             '#fa5252', '#e64980', '#be4bdb', '#7950f2',
             '#4c6ef5', '#228be6', '#15aabf', '#12b886',
@@ -60,19 +60,19 @@ export function TagFormModal({ context, id, innerProps }: ContextModalProps<TagF
           {...form.getInputProps('color')}
         />
         <NumberInput
-          label="Weight"
-          description="Controls display order — lower weight appears first"
-          placeholder="e.g. 10"
+          label="權重"
+          description="決定顯示順序，數字越小越前面"
+          placeholder="例如：10"
           min={0}
           {...form.getInputProps('weight')}
         />
         <Switch
-          label="Hidden"
-          description="Hide this tag from the main view"
+          label="隱藏"
+          description="在主要清單中隱藏此標籤"
           {...form.getInputProps('hidden', { type: 'checkbox' })}
         />
         <Button type="submit" loading={isPending}>
-          {isEdit ? 'Save Changes' : 'Create Tag'}
+          {isEdit ? '儲存變更' : '建立標籤'}
         </Button>
       </Stack>
     </form>

@@ -15,7 +15,7 @@ export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnim
   const form = useForm({
     initialValues: { title: '' },
     validate: {
-      title: (v) => (v.trim().length === 0 ? 'Title is required' : null),
+      title: (v) => (v.trim().length === 0 ? '請輸入標題' : null),
     },
   })
 
@@ -41,14 +41,14 @@ export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnim
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <Stack>
         <TextInput
-          label="Title"
-          placeholder="Anime title"
+          label="標題"
+          placeholder="動畫標題"
           data-autofocus
           ref={inputRef}
           {...form.getInputProps('title')}
         />
         <Button type="submit" loading={createMutation.isPending}>
-          Add
+          加入
         </Button>
       </Stack>
     </form>

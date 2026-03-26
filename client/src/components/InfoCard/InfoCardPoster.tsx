@@ -11,7 +11,7 @@ export default function InfoCardPoster() {
     return (
       <div className={styles.posterPlaceholder}>
         <IconPhotoOff size={28} stroke={1.5} />
-        <Tooltip label="Link to TMDb" position="bottom" withArrow>
+        <Tooltip label="連結至 TMDb" position="bottom" withArrow>
           <ActionIcon
             variant="subtle"
             size="sm"
@@ -19,7 +19,7 @@ export default function InfoCardPoster() {
               if (!anime?.id) return
               modals.openContextModal({
                 modal: 'tmdbSearch',
-                title: 'Link to TMDb',
+                title: '連結至 TMDb',
                 size: '56rem',
                 innerProps: { mode: 'link', animeId: anime.id, initialQuery: anime.customName ?? '' },
               })
@@ -38,7 +38,7 @@ export default function InfoCardPoster() {
       style={posterUrl ? { backgroundImage: `url(${posterUrl})` } : undefined}
       onClick={posterUrl ? onPosterClick : undefined}
       role={posterUrl ? 'button' : undefined}
-      aria-label={posterUrl ? 'View fullscreen poster' : undefined}
+      aria-label={posterUrl ? '全螢幕檢視海報' : undefined}
       tabIndex={posterUrl ? 0 : undefined}
       onKeyDown={posterUrl ? (e) => e.key === 'Enter' && onPosterClick() : undefined}
     />

@@ -26,13 +26,13 @@ export default function InfoCardTitle() {
         {title}
       </Text>
       {title && (
-        <Tooltip label={copied ? 'Copied!' : 'Copy title'} withArrow position="top">
+        <Tooltip label={copied ? '已複製！' : '複製標題'} withArrow position="top">
           <ActionIcon
             size="sm"
             variant="subtle"
             color={copied ? 'teal' : 'gray'}
             onClick={handleCopy}
-            aria-label="Copy title"
+            aria-label="複製標題"
             style={{ flexShrink: 0, marginTop: 3 }}
           >
             {copied ? <IconCheck size={13} /> : <IconCopy size={13} />}

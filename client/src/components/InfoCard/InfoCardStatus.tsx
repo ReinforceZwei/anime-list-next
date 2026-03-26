@@ -2,10 +2,10 @@ import { Badge, Group, Skeleton } from '@mantine/core'
 import { useInfoCard } from './InfoCardContext'
 
 const STATUS_LABEL: Record<string, string> = {
-  planned: 'Planned',
-  watching: 'Watching',
-  completed: 'Completed',
-  dropped: 'Dropped',
+  planned: '待看',
+  watching: '觀看中',
+  completed: '已看完',
+  dropped: '棄番',
 }
 
 const STATUS_COLOR: Record<string, string> = {
@@ -16,9 +16,9 @@ const STATUS_COLOR: Record<string, string> = {
 }
 
 const DOWNLOAD_LABEL: Record<string, string> = {
-  pending: 'Pending',
-  downloading: 'Downloading',
-  downloaded: 'Downloaded',
+  pending: '等待下載',
+  downloading: '下載中',
+  downloaded: '已下載',
 }
 
 const DOWNLOAD_COLOR: Record<string, string> = {

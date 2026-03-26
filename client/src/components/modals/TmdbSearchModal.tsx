@@ -40,7 +40,7 @@ function ExistsBadge() {
       <ThemeIcon size="xs" radius="xl" color="teal" variant="light">
         <IconCheck size={10} />
       </ThemeIcon>
-      <Text size="xs" c="teal" fw={500}>Added</Text>
+      <Text size="xs" c="teal" fw={500}>已加入</Text>
     </Group>
   )
 }
@@ -127,7 +127,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
       }}
     >
       <TextInput
-        placeholder="Search movies & TV shows…"
+        placeholder="搜尋電影與電視劇…"
         leftSection={<IconSearch size={14} />}
         rightSection={isFetching ? <Loader size="xs" /> : null}
         value={query}
@@ -139,7 +139,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
       <ScrollArea flex={1} offsetScrollbars>
         {results?.length === 0 && (
           <Center py="lg">
-            <Text size="sm" c="dimmed">No results</Text>
+            <Text size="sm" c="dimmed">沒有結果</Text>
           </Center>
         )}
         <Stack gap={2}>
@@ -163,7 +163,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
                 </Stack>
                 <Stack gap={4} align="flex-end" style={{ flexShrink: 0 }}>
                   <Badge size="xs" variant="light" color={item.mediaType === 'tv' ? 'blue' : 'grape'}>
-                    {item.mediaType === 'tv' ? 'TV' : 'Movie'}
+                    {item.mediaType === 'tv' ? '電視劇' : '電影'}
                   </Badge>
                   {item.year && <Text size="xs" c="dimmed">{item.year}</Text>}
                 </Stack>
@@ -180,11 +180,11 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
           color="dimmed"
           onClick={() => mantineModals.openContextModal({
             modal: 'addAnime',
-            title: 'Add without TMDb',
+            title: '不經 TMDb 新增',
             innerProps: { onSaved },
           })}
         >
-          Add without TMDb
+          不經 TMDb 新增
         </Button>
       )}
     </Stack>
@@ -194,7 +194,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
     <Box flex={1} h="100%" pl={isMobile ? 0 : 'md'} style={{ minWidth: 0 }}>
       {!selected ? (
         <Center h="100%">
-          <Text size="sm" c="dimmed">Search and select a title</Text>
+          <Text size="sm" c="dimmed">搜尋並選擇作品</Text>
         </Center>
       ) : detailFetching ? (
         <Center h="100%"><Loader /></Center>
@@ -221,12 +221,12 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
               )}
               <Group gap="xs">
                 <Badge variant="light" color={detail.mediaType === 'tv' ? 'blue' : 'grape'}>
-                  {detail.mediaType === 'tv' ? 'TV' : 'Movie'}
+                  {detail.mediaType === 'tv' ? '電視劇' : '電影'}
                 </Badge>
                 {detail.year && <Text size="sm" c="dimmed">{detail.year}</Text>}
               </Group>
               {detail.overview && (
-                <Spoiler maxHeight={60} showLabel="Show more" hideLabel="Show less">
+                <Spoiler maxHeight={60} showLabel="顯示更多" hideLabel="顯示較少">
                   <Text size="sm" c="dimmed">{detail.overview}</Text>
                 </Spoiler>
               )}
@@ -243,7 +243,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
                       disabled={!targetAnime}
                       onClick={() => handleLink(detail.id, 'movie')}
                     >
-                      Link
+                      連結
                     </Button>
                   )
                   : movieExists
@@ -261,7 +261,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
                           { onSuccess: (record) => onSaved?.(record.id) },
                         )}
                       >
-                        Create Record
+                        建立紀錄
                       </Button>
                     )
               )}
@@ -270,7 +270,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
 
           {detail.mediaType === 'tv' && detail.seasons && (
             <>
-              <Divider my="md" label="Seasons" labelPosition="left" />
+              <Divider my="md" label="分季" labelPosition="left" />
               <Stack gap="xs">
                 {detail.seasons.map((season) => (
                   <Group
@@ -288,7 +288,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
                       {season.name}
                     </Text>
                     <Group gap="xs" style={{ flexShrink: 0 }}>
-                      <Badge size="xs" variant="outline">{season.episodeCount} eps</Badge>
+                      <Badge size="xs" variant="outline">{season.episodeCount} 集</Badge>
                       {season.airDate && (
                         <Text size="xs" c="dimmed">{season.airDate.slice(0, 4)}</Text>
                       )}
@@ -305,7 +305,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
                             disabled={updateMutation.isPending || !targetAnime}
                             onClick={() => handleLink(detail.id, 'tv', season.seasonNumber)}
                           >
-                            Link
+                            連結
                           </Button>
                         )
                         : seasonExistsMap.get(season.seasonNumber)
@@ -325,7 +325,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
                                 { onSuccess: (record) => onSaved?.(record.id) },
                               )}
                             >
-                              Add
+                              加入
                             </Button>
                           )
                       }

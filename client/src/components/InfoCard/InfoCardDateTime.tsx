@@ -26,19 +26,19 @@ export default function InfoCardDateTime() {
     <Stack gap={2} mb="xs">
       {created && (
         <Text size="xs" c="dimmed">
-          Added {formatDate(created)}
+          加入於 {formatDate(created)}
         </Text>
       )}
       {startedAt && (
         <Text size="xs" c="yellow.6">
-          Started {formatDate(startedAt)}
+          開始於 {formatDate(startedAt)}
         </Text>
       )}
       {completedAt && (
         <Text size="xs" c="teal.5">
-          Completed {formatDate(completedAt)}
+          完成於 {formatDate(completedAt)}
           {startedAt && (
-            <Text span c="dimmed"> ({daysBetween(startedAt, completedAt)} days)</Text>
+            <Text span c="dimmed">（{daysBetween(startedAt, completedAt)} 天）</Text>
           )}
         </Text>
       )}

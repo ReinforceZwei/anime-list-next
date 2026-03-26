@@ -24,7 +24,7 @@ export function ManageTagsModal(_props: ContextModalProps) {
   function openCreateForm() {
     modals.openContextModal({
       modal: 'tagForm',
-      title: 'New Tag',
+      title: '新增標籤',
       innerProps: {},
     })
   }
@@ -32,20 +32,20 @@ export function ManageTagsModal(_props: ContextModalProps) {
   function openEditForm(tag: TagRecord) {
     modals.openContextModal({
       modal: 'tagForm',
-      title: 'Edit Tag',
+      title: '編輯標籤',
       innerProps: { tag },
     })
   }
 
   function confirmDelete(tag: TagRecord) {
     modals.openConfirmModal({
-      title: 'Delete tag',
+      title: '刪除標籤',
       children: (
         <Text size="sm">
-          Delete "{tag.name}"? This cannot be undone.
+          確定要刪除「{tag.name}」嗎？此操作無法復原。
         </Text>
       ),
-      labels: { confirm: 'Delete', cancel: 'Cancel' },
+      labels: { confirm: '刪除', cancel: '取消' },
       confirmProps: { color: 'red' },
       onConfirm: () => deleteMutation.mutate({ id: tag.id }),
     })
@@ -59,7 +59,7 @@ export function ManageTagsModal(_props: ContextModalProps) {
           leftSection={<IconPlus size={13} />}
           onClick={openCreateForm}
         >
-          New Tag
+          新增標籤
         </Button>
       </Group>
 
@@ -69,7 +69,7 @@ export function ManageTagsModal(_props: ContextModalProps) {
         </Center>
       ) : !tags || tags.length === 0 ? (
         <Center py="xl">
-          <Text size="sm" c="dimmed">No tags yet. Create one to get started.</Text>
+          <Text size="sm" c="dimmed">尚無標籤，請先新增一個。</Text>
         </Center>
       ) : (
         <ScrollArea.Autosize mah={400} offsetScrollbars>
@@ -95,11 +95,11 @@ export function ManageTagsModal(_props: ContextModalProps) {
                   <Text size="sm" fw={500} lineClamp={1}>{tag.name}</Text>
                   {tag.weight !== undefined && (
                     <Badge size="xs" variant="outline" color="gray">
-                      weight {tag.weight}
+                      權重 {tag.weight}
                     </Badge>
                   )}
                   {tag.hidden && (
-                    <Badge size="xs" variant="light" color="gray">hidden</Badge>
+                    <Badge size="xs" variant="light" color="gray">隱藏</Badge>
                   )}
                 </Group>
 
@@ -107,7 +107,7 @@ export function ManageTagsModal(_props: ContextModalProps) {
                   <ActionIcon
                     variant="subtle"
                     size="sm"
-                    aria-label="Edit tag"
+                    aria-label="編輯標籤"
                     onClick={() => openEditForm(tag)}
                   >
                     <IconEdit size={14} />
@@ -116,7 +116,7 @@ export function ManageTagsModal(_props: ContextModalProps) {
                     variant="subtle"
                     size="sm"
                     color="red"
-                    aria-label="Delete tag"
+                    aria-label="刪除標籤"
                     loading={deleteMutation.isPending && deleteMutation.variables?.id === tag.id}
                     onClick={() => confirmDelete(tag)}
                   >

@@ -49,7 +49,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
     if (!anime) return
     modals.openContextModal({
       modal: 'editAnime',
-      title: 'Edit anime',
+      title: '編輯動畫',
       innerProps: { anime, onSaved: onJumpTo },
       closeOnClickOutside: false,
       closeOnEscape: false,
@@ -112,8 +112,8 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
         <InfoCard.Tags />
         <InfoCard.Rating />
         <InfoCard.DateTime />
-        <InfoCard.TextSection label="Comment" contentKey="comment" />
-        <InfoCard.TextSection label="Remarks" contentKey="remark" />
+        <InfoCard.TextSection label="心得" contentKey="comment" />
+        <InfoCard.TextSection label="備註" contentKey="remark" />
       </InfoCard.Content>
       <InfoCard.QuickActions
         onStatusChange={handleStatusChange}

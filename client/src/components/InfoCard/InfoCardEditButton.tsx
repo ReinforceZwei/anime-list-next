@@ -14,7 +14,7 @@ export default function InfoCardEditButton() {
         variant="filled"
         color="blue"
         onClick={onEdit}
-        aria-label="Edit anime"
+        aria-label="編輯動畫"
       >
         <IconEdit size={16} />
       </ActionIcon>
