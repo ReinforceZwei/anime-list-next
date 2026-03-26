@@ -16,7 +16,7 @@ import { DateTimePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import { modals } from '@mantine/modals'
 import type { ContextModalProps } from '@mantine/modals'
-import { IconTags } from '@tabler/icons-react'
+import { IconTags, IconTrash } from '@tabler/icons-react'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
@@ -26,6 +26,7 @@ import dayjs from 'dayjs'
 type EditAnimeInnerProps = {
   anime: AnimeRecord
   onSaved?: (id: string) => void
+  onDeleted?: () => void
 }
 
 
@@ -36,8 +37,8 @@ function parseLocalDateString(val: string | Date | null): Date | null {
 }
 
 export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<EditAnimeInnerProps>) {
-  const { anime, onSaved } = innerProps
-  const { updateMutation } = useAnimeMutation()
+  const { anime, onSaved, onDeleted } = innerProps
+  const { updateMutation, deleteMutation } = useAnimeMutation()
   const { data: tagList } = useTagList()
 
   const availableTags = tagList ?? []
@@ -80,6 +81,28 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
         },
       },
     )
+  }
+
+  function handleDelete() {
+    modals.openConfirmModal({
+      title: '刪除動畫',
+      children: (
+        <Text size="sm">
+          確定要刪除此動畫嗎？此操作無法復原。
+        </Text>
+      ),
+      labels: { confirm: '刪除', cancel: '取消' },
+      confirmProps: { color: 'red' },
+      onConfirm: () => {
+        // mutate() callbacks are observer-bound and silently dropped when called
+        // from a nested modal context. mutateAsync() returns a plain Promise so
+        // .then() always fires regardless of observer lifecycle.
+        deleteMutation.mutateAsync({ id: anime.id }).then(() => {
+          modals.closeAll()
+          onDeleted?.()
+        })
+      },
+    })
   }
 
   function openManageTags() {
@@ -215,6 +238,19 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
       </Tabs>
 
       <Group justify="flex-end" mt="lg">
+        <Tooltip label="刪除動畫" withArrow>
+          <ActionIcon
+            color="red"
+            variant="subtle"
+            size="lg"
+            aria-label="刪除動畫"
+            loading={deleteMutation.isPending}
+            onClick={handleDelete}
+            mr="auto"
+          >
+            <IconTrash size={18} />
+          </ActionIcon>
+        </Tooltip>
         <Button variant="default" onClick={() => context.closeModal(id)}>
           取消
         </Button>

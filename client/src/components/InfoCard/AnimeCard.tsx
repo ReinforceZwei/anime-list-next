@@ -50,7 +50,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
     modals.openContextModal({
       modal: 'editAnime',
       title: '編輯動畫',
-      innerProps: { anime, onSaved: onJumpTo },
+      innerProps: { anime, onSaved: onJumpTo, onDeleted: onClose },
       closeOnClickOutside: false,
       closeOnEscape: false,
     })
