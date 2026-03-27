@@ -1,6 +1,7 @@
 import { pb, Collections } from "@/lib/pb";
 import { useMutation } from "@tanstack/react-query";
 import type { AnimeRecord } from "@/types/anime";
+import { showErrorNotification } from "@/lib/notifications";
 
 // PocketBase internals excluded explicitly (RecordModel has an index signature that
 // makes keyof RecordModel resolve to `string`, which would wipe the entire type).
@@ -26,14 +27,17 @@ export function useAnimeMutation() {
   }
   const createMutation = useMutation({
     mutationFn: (anime: AnimeCreateInput) => pb.collection(Collections.Animes).create({ ...anime, userId }),
+    onError: showErrorNotification,
   })
 
   const updateMutation = useMutation({
     mutationFn: (anime: AnimeUpdateInput) => pb.collection(Collections.Animes).update(anime.id, anime),
+    onError: showErrorNotification,
   })
 
   const deleteMutation = useMutation({
     mutationFn: (input: AnimeDeleteInput) => pb.collection(Collections.Animes).delete(input.id),
+    onError: showErrorNotification,
   })
 
   return { createMutation, updateMutation, deleteMutation }

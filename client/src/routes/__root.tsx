@@ -28,7 +28,7 @@ function RootLayout() {
       <MantineProvider colorSchemeManager={colorSchemeManager} theme={theme}>
         <DatesProvider settings={{ locale: 'zh-TW', firstDayOfWeek: 0 }}>
           <ModalsProvider modals={modals}>
-            <Notifications />
+            <Notifications position='top-left' />
             <div>
               <Outlet />
             </div>

@@ -101,10 +101,9 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
         // mutate() callbacks are observer-bound and silently dropped when called
         // from a nested modal context. mutateAsync() returns a plain Promise so
         // .then() always fires regardless of observer lifecycle.
-        deleteMutation.mutateAsync({ id: anime.id }).then(() => {
-          modals.closeAll()
-          onDeleted?.()
-        })
+        deleteMutation.mutateAsync({ id: anime.id })
+          .then(() => { modals.closeAll(); onDeleted?.() })
+          .catch(() => {})
       },
     })
   }

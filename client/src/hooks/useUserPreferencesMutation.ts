@@ -1,6 +1,7 @@
 import { pb, Collections } from "@/lib/pb";
 import { useMutation } from "@tanstack/react-query";
 import type { UserPreferencesRecord } from "@/types/anime";
+import { showErrorNotification } from "@/lib/notifications";
 
 type PbInternals = 'collectionId' | 'collectionName' | 'created' | 'updated' | 'expand'
 
@@ -24,6 +25,7 @@ export function useUserPreferencesMutation() {
         .collection<UserPreferencesRecord>(Collections.UserPreferences)
         .create({ ...input, userId })
     },
+    onError: showErrorNotification,
   })
 
   return { saveMutation }

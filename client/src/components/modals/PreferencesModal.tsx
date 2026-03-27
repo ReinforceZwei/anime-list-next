@@ -18,6 +18,7 @@ import { IconDownload, IconInfoCircle, IconSettings, IconUpload } from '@tabler/
 import { exportData, importData, type ImportResult } from '@/api/importexport'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
+import { showErrorNotification } from '@/lib/notifications'
 
 export function PreferencesModal({ context, id }: ContextModalProps) {
   const { data: prefs, isLoading } = useUserPreferences()
@@ -58,6 +59,8 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
     setIsExporting(true)
     try {
       await exportData()
+    } catch (err) {
+      showErrorNotification(err)
     } finally {
       setIsExporting(false)
     }
