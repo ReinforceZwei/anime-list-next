@@ -2,9 +2,11 @@ import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { MantineProvider, localStorageColorSchemeManager } from '@mantine/core'
 import { ModalsProvider } from '@mantine/modals'
+import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
 import { modals } from '@/components/modals'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { theme } from '@/theme'
@@ -26,6 +28,7 @@ function RootLayout() {
       <MantineProvider colorSchemeManager={colorSchemeManager} theme={theme}>
         <DatesProvider settings={{ locale: 'zh-TW', firstDayOfWeek: 0 }}>
           <ModalsProvider modals={modals}>
+            <Notifications />
             <div>
               <Outlet />
             </div>
