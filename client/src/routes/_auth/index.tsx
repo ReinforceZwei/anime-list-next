@@ -5,6 +5,7 @@ import { useScrollToRecord } from "@/hooks/useScrollToRecord";
 import type { AnimeRecord, SectionDef } from "@/types/anime";
 import {
   Affix,
+  ActionIcon,
   Button,
   Center,
   Stack,
@@ -14,7 +15,7 @@ import {
   Text,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconAlertTriangle } from "@tabler/icons-react";
+import { IconAlertTriangle, IconPlus } from "@tabler/icons-react";
 import AnimePaper from "@/components/AnimePaper/AnimePaper";
 import AppMenu from "@/components/AppMenu/AppMenu";
 import AnimeCard from "@/components/InfoCard/AnimeCard";
@@ -168,7 +169,9 @@ function Index() {
         )}
       </Affix>
       <Affix position={{ bottom: 10, right: 10 }}>
-        <Button onClick={openTmdbModal}>搜尋 TMDb</Button>
+        <ActionIcon variant="white" size="lg" radius="xl" style={(theme) => ({ boxShadow: theme.shadows.md })} aria-label="搜尋 TMDb" onClick={openTmdbModal}>
+          <IconPlus />
+        </ActionIcon>
       </Affix>
       <ElevatorWidget markerRefs={markerRefs.current} />
     </div>
