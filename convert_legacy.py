@@ -27,6 +27,7 @@ animeID     -> (dropped)
 """
 
 import json
+import re
 import sys
 import uuid
 from datetime import datetime, timedelta, timezone
@@ -54,10 +55,36 @@ def derive_download_status(downloaded: int) -> str:
 
 
 def convert_rating(rating: int) -> int:
-    """Scale 0-5 → 0-10; rating -1 (legacy dropped marker) becomes 0."""
+    """rating -1 (legacy dropped marker) becomes 0."""
     if rating <= 0:
         return 0
-    return rating * 2
+    return rating
+
+
+_TMDB_URL_RE = re.compile(
+    r"themoviedb\.org/(tv|movie)/(\d+)(?:/season/(\d+))?", re.IGNORECASE
+)
+
+
+def parse_tmdb_url(url: str) -> tuple[int, int, str]:
+    """Return (tmdbId, tmdbSeasonNumber, tmdbMediaType) from a TMDb URL.
+
+    Returns (0, 0, "") if the URL is not a recognised TMDb URL.
+    For tv entries with no season segment, season defaults to 1.
+    For movie entries, season is always 0.
+    """
+    if not url:
+        return 0, 0, ""
+    m = _TMDB_URL_RE.search(url)
+    if not m:
+        return 0, 0, ""
+    media_type = m.group(1).lower()
+    tmdb_id = int(m.group(2))
+    if media_type == "tv":
+        season = int(m.group(3)) if m.group(3) else 1
+    else:
+        season = 0
+    return tmdb_id, season, media_type
 
 
 def convert(legacy: list[dict]) -> dict:
@@ -119,11 +146,13 @@ def convert(legacy: list[dict]) -> dict:
             if t in tag_name_to_id
         ]
 
+        tmdb_id, tmdb_season, tmdb_media_type = parse_tmdb_url(item.get("url") or "")
+
         anime_records.append(
             {
-                "tmdbId": 0,
-                "tmdbSeasonNumber": 0,
-                "tmdbMediaType": "",
+                "tmdbId": tmdb_id,
+                "tmdbSeasonNumber": tmdb_season,
+                "tmdbMediaType": tmdb_media_type,
                 "customName": item.get("animeName") or "",
                 "cachedTitle": "",
                 "cachedSeasonName": "",
