@@ -3,6 +3,7 @@ import {
   Button,
   Divider,
   Group,
+  NumberInput,
   Rating,
   Select,
   Stack,
@@ -11,17 +12,19 @@ import {
   Textarea,
   TextInput,
   Tooltip,
+  type NumberInputHandlers,
 } from '@mantine/core'
 import { DateTimePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import { modals } from '@mantine/modals'
 import type { ContextModalProps } from '@mantine/modals'
-import { IconTags, IconTrash } from '@tabler/icons-react'
+import { IconMinus, IconPlus, IconTags, IconTrash } from '@tabler/icons-react'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
 import type { AnimeRecord } from '@/types/anime'
 import dayjs from 'dayjs'
+import { useRef } from 'react'
 
 type EditAnimeInnerProps = {
   anime: AnimeRecord
@@ -57,6 +60,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
       completedAt: anime.completedAt ? new Date(anime.completedAt) : null,
     },
   })
+  const ratingNumberInputHandlersRef = useRef<NumberInputHandlers>(null);
 
   function handleSubmit(values: typeof form.values) {
     const statusChanged = values.status !== anime.status
@@ -171,10 +175,42 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
             />
 
             <Stack gap={4}>
-              <Text size="sm" fw={500}>評分</Text>
+              <NumberInput
+                label="評分（0-5）"
+                placeholder="0 – 5"
+                min={0}
+                max={5}
+                step={0.1}
+                decimalScale={1}
+                clampBehavior="strict"
+                hideControls
+                handlersRef={ratingNumberInputHandlersRef}
+                leftSection={
+                  <ActionIcon
+                    variant="subtle"
+                    size="sm"
+                    disabled={!form.values.rating || form.values.rating <= 0}
+                    onClick={() => ratingNumberInputHandlersRef.current?.decrement()}
+                  >
+                    <IconMinus size={14} />
+                  </ActionIcon>
+                }
+                rightSection={
+                  <ActionIcon
+                    variant="subtle"
+                    size="sm"
+                    disabled={form.values.rating >= 5}
+                    onClick={() => ratingNumberInputHandlersRef.current?.increment()}
+                  >
+                    <IconPlus size={14} />
+                  </ActionIcon>
+                }
+                {...form.getInputProps('rating')}
+              />
               <Rating
-                count={10}
                 value={form.values.rating}
+                fractions={2}
+                size="sm"
                 onChange={(val) => form.setFieldValue('rating', val)}
               />
             </Stack>

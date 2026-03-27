@@ -1,4 +1,4 @@
-import { Rating, Skeleton } from '@mantine/core'
+import { Group, Rating, Skeleton, Text } from '@mantine/core'
 import { useInfoCard } from './InfoCardContext'
 
 export default function InfoCardRating() {
@@ -8,10 +8,9 @@ export default function InfoCardRating() {
   if (!anime?.rating) return null
 
   return (
-    <Rating
-      value={anime.rating}
-      readOnly
-      mb="xs"
-    />
+    <Group gap="xs" align="center" mb="xs">
+      <Rating value={anime.rating} fractions={10} readOnly />
+      <Text size="sm" c="dimmed">{anime.rating}</Text>
+    </Group>
   )
 }
