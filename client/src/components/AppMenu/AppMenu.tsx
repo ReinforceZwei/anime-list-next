@@ -1,7 +1,7 @@
 import { ActionIcon, Menu, useMantineColorScheme } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
-import { IconLogout, IconMenu2, IconMoon, IconRefresh, IconSettings, IconSun, IconTag } from "@tabler/icons-react";
+import { IconInfoCircle, IconLogout, IconMenu2, IconMoon, IconRefresh, IconSettings, IconSun, IconTag } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -48,6 +48,12 @@ export default function AppMenu() {
           onClick={() => modals.openContextModal({ modal: 'preferences', title: '偏好設定', innerProps: {} })}
         >
           設定
+        </Menu.Item>
+        <Menu.Item
+          leftSection={<IconInfoCircle size={16} />}
+          onClick={() => modals.openContextModal({ modal: 'about', title: '關於', innerProps: {} })}
+        >
+          關於
         </Menu.Item>
         <Menu.Item
           leftSection={<IconLogout size={16} />}

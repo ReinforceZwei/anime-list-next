@@ -68,9 +68,12 @@ func main() {
 
 	importExportRoutes := routes.NewImportExportRoutes()
 
+	versionRoutes := routes.NewVersionRoutes(version, commit, date)
+
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 		tmdbRoutes.Register(se)
 		importExportRoutes.Register(se)
+		versionRoutes.Register(se)
 		return se.Next()
 	})
 
