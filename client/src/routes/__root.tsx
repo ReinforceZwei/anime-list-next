@@ -33,7 +33,7 @@ function RootLayout() {
               <Outlet />
             </div>
             <TanStackRouterDevtools />
-            <ReactQueryDevtools />
+            <ReactQueryDevtools buttonPosition='bottom-left' />
           </ModalsProvider>
         </DatesProvider>
       </MantineProvider>
