@@ -1,6 +1,8 @@
 import { ActionIcon, Menu, useMantineColorScheme } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
-import { IconLogout, IconMenu2, IconMoon, IconSettings, IconSun, IconTag } from "@tabler/icons-react";
+import { IconLogout, IconMenu2, IconMoon, IconRefresh, IconSettings, IconSun, IconTag } from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
 
@@ -8,6 +10,12 @@ export default function AppMenu() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const isDark = colorScheme === 'dark'
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+
+  async function handleRefresh() {
+    await queryClient.refetchQueries()
+    notifications.show({ message: '資料已重新整理', color: 'teal' })
+  }
 
   return (
     <Menu>
@@ -17,6 +25,12 @@ export default function AppMenu() {
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown>
+        <Menu.Item
+          leftSection={<IconRefresh size={16} />}
+          onClick={handleRefresh}
+        >
+          重新整理
+        </Menu.Item>
         <Menu.Item
           leftSection={isDark ? <IconSun size={16} /> : <IconMoon size={16} />}
           onClick={toggleColorScheme}
