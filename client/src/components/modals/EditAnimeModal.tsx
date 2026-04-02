@@ -68,15 +68,15 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
       {
         ...anime,
         id: anime.id,
-        customName: values.customName || undefined,
+        customName: values.customName || null,
         status: values.status as AnimeRecord['status'],
         downloadStatus: values.downloadStatus as AnimeRecord['downloadStatus'],
-        rating: values.rating || undefined,
-        comment: values.comment || undefined,
-        remark: values.remark || undefined,
+        rating: values.rating || null,
+        comment: values.comment || null,
+        remark: values.remark || null,
         tags: values.tags,
-        startedAt: values.startedAt?.toISOString(),
-        completedAt: values.completedAt?.toISOString(),
+        startedAt: values.startedAt ? values.startedAt.toISOString() : null,
+        completedAt: values.completedAt ? values.completedAt.toISOString() : null,
       },
       {
         onSuccess: (record) => {
