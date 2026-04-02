@@ -10,8 +10,8 @@ import {
   Stack,
   Text,
 } from '@mantine/core'
-import { modals } from '@mantine/modals'
-import type { ContextModalProps } from '@mantine/modals'
+import { modals } from '@/lib/modalStack'
+import type { ContextModalProps } from '@/lib/modalStack'
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react'
 import { useTagList } from '@/hooks/useTagList'
 import { useTagMutation } from '@/hooks/useTagMutation'

@@ -15,7 +15,7 @@ import {
   Title,
 } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
-import { modals } from '@mantine/modals'
+import { modals } from '@/lib/modalStack'
 import { IconSearch, IconMovie } from '@tabler/icons-react'
 import { useTmdbSearch } from '@/hooks/useTmdb'
 

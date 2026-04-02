@@ -19,9 +19,9 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks'
-import { modals as mantineModals } from '@mantine/modals'
+import { modals as mantineModals } from '@/lib/modalStack'
 import { IconArrowLeft, IconCheck, IconLink, IconPlus, IconSearch } from '@tabler/icons-react'
-import type { ContextModalProps } from '@mantine/modals'
+import type { ContextModalProps } from '@/lib/modalStack'
 import { useTmdbSearch, useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeExistsMap } from '@/hooks/useAnimeExistsMap'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
@@ -212,7 +212,27 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
               fallbackSrc="https://placehold.co/100x150?text=?"
               w={140}
               radius="sm"
-              style={{ flexShrink: 0 }}
+              style={{
+                flexShrink: 0,
+                cursor: detail.posterPath ? 'pointer' : undefined,
+              }}
+              onClick={detail.posterPath ? () => {
+                const posterModalId = mantineModals.open({
+                  size: 'auto',
+                  padding: 0,
+                  withCloseButton: false,
+                  children: (
+                    <Image
+                      src={detail.posterPath!}
+                      alt={detail.title}
+                      fit="contain"
+                      mah="90vh"
+                      style={{ display: 'block' }}
+                      onClick={() => mantineModals.close(posterModalId)}
+                    />
+                  ),
+                })
+              } : undefined}
             />
             <Stack gap="xs" style={{ flex: 1, minWidth: 0 }}>
               <Text fw={700} size="lg" lh={1.2}>{detail.title}</Text>

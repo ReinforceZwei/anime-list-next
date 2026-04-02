@@ -1,5 +1,5 @@
 import { Anchor, Center, Image, Stack, Text } from '@mantine/core'
-import type { ContextModalProps } from '@mantine/modals'
+import type { ContextModalProps } from '@/lib/modalStack'
 
 export function AboutModal(_props: ContextModalProps) {
   return (

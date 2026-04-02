@@ -1,5 +1,5 @@
 import { IconLink, IconPhotoOff } from '@tabler/icons-react'
-import { modals } from '@mantine/modals'
+import { modals } from '@/lib/modalStack'
 import { ActionIcon, Tooltip } from '@mantine/core'
 import { useInfoCard } from './InfoCardContext'
 import styles from './InfoCard.module.css'

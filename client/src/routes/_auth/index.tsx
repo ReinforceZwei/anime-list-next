@@ -14,7 +14,7 @@ import {
   ThemeIcon,
   Text,
 } from "@mantine/core";
-import { modals } from "@mantine/modals";
+import { modals } from '@/lib/modalStack';
 import { IconAlertTriangle, IconPlus } from "@tabler/icons-react";
 import AnimePaper from "@/components/AnimePaper/AnimePaper";
 import AppMenu from "@/components/AppMenu/AppMenu";

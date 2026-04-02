@@ -1,6 +1,6 @@
 import { ActionIcon, Menu, useMantineColorScheme } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { modals } from "@mantine/modals";
+import { modals } from '@/lib/modalStack';
 import { IconInfoCircle, IconLogout, IconMenu2, IconMoon, IconRefresh, IconSettings, IconSun, IconTag } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";

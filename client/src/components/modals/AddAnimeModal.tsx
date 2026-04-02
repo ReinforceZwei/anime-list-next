@@ -1,6 +1,6 @@
 import { Button, Stack, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import type { ContextModalProps } from '@mantine/modals'
+import type { ContextModalProps } from '@/lib/modalStack'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useEffect, useRef } from 'react'
 

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Image } from '@mantine/core'
-import { modals } from '@mantine/modals'
+import { modals } from '@/lib/modalStack'
 import { useAnimeList } from '@/hooks/useAnimeList'
 import { useTagMap } from '@/hooks/useTagMap'
 import { useTmdbDetail } from '@/hooks/useTmdb'
