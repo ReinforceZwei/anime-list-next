@@ -102,6 +102,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
       onClose={onClose}
       onEdit={handleEdit}
       onPosterClick={handlePosterClick}
+      onJumpTo={onJumpTo}
     >
       <InfoCard.CloseButton />
       <InfoCard.Poster />
@@ -114,6 +115,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
         <InfoCard.DateTime />
         <InfoCard.TextSection label="心得" contentKey="comment" />
         <InfoCard.TextSection label="備註" contentKey="remark" />
+        <InfoCard.RelatedSeasons />
       </InfoCard.Content>
       <InfoCard.QuickActions
         onStatusChange={handleStatusChange}

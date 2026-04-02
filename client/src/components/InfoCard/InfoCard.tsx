@@ -14,6 +14,7 @@ import InfoCardRating from './InfoCardRating'
 import InfoCardDateTime from './InfoCardDateTime'
 import InfoCardTextSection from './InfoCardTextSection'
 import InfoCardQuickActions from './InfoCardQuickActions'
+import InfoCardRelatedSeasons from './InfoCardRelatedSeasons'
 import styles from './InfoCard.module.css'
 
 interface InfoCardProps
@@ -31,11 +32,12 @@ function InfoCard({
   onClose,
   onEdit,
   onPosterClick,
+  onJumpTo,
   children,
 }: InfoCardProps) {
   return (
     <InfoCardContext.Provider
-      value={{ anime, tags, loading, posterUrl, hasTmdbId, onClose, onEdit, onPosterClick }}
+      value={{ anime, tags, loading, posterUrl, hasTmdbId, onClose, onEdit, onPosterClick, onJumpTo }}
     >
       <Paper radius="md" shadow="xl" className={styles.card} withBorder>
         {children}
@@ -55,5 +57,6 @@ InfoCard.Rating = InfoCardRating
 InfoCard.DateTime = InfoCardDateTime
 InfoCard.TextSection = InfoCardTextSection
 InfoCard.QuickActions = InfoCardQuickActions
+InfoCard.RelatedSeasons = InfoCardRelatedSeasons
 
 export default InfoCard

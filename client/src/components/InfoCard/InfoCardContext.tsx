@@ -10,6 +10,7 @@ export interface InfoCardContextValue {
   onClose: () => void
   onEdit: () => void
   onPosterClick: () => void
+  onJumpTo?: (id: string) => void
 }
 
 export const InfoCardContext = createContext<InfoCardContextValue | null>(null)
