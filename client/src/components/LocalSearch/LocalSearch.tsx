@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import { ActionIcon, Paper, TextInput, ScrollArea, UnstyledButton, Text, Stack } from '@mantine/core'
 import { IconSearch, IconX } from '@tabler/icons-react'
 import { useAnimeList } from '@/hooks/useAnimeList'
+import { getDisplayTitle } from '@/lib/animeUtils'
 import classes from './LocalSearch.module.css'
 
 interface LocalSearchProps {
@@ -75,29 +76,17 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
           {results.length > 0 && (
             <ScrollArea.Autosize mah={320} mt="xs">
               <Stack gap={0}>
-                {results.map((anime) => {
-                  const primary = anime.customName || anime.cachedTitle || '（無標題）'
-                  const secondary =
-                    anime.cachedSeasonName && anime.cachedSeasonName !== primary
-                      ? anime.cachedSeasonName
-                      : null
-                  return (
-                    <UnstyledButton
-                      key={anime.id}
-                      className={classes.resultItem}
-                      onClick={() => jumpTo(anime.id)}
-                    >
-                      <Text size="sm" lh={1.3}>
-                        {primary}
-                      </Text>
-                      {secondary && (
-                        <Text size="xs" c="dimmed" lh={1.2}>
-                          {secondary}
-                        </Text>
-                      )}
-                    </UnstyledButton>
-                  )
-                })}
+                {results.map((anime) => (
+                  <UnstyledButton
+                    key={anime.id}
+                    className={classes.resultItem}
+                    onClick={() => jumpTo(anime.id)}
+                  >
+                    <Text size="sm" lh={1.3}>
+                      {getDisplayTitle(anime, '（無標題）')}
+                    </Text>
+                  </UnstyledButton>
+                ))}
               </Stack>
             </ScrollArea.Autosize>
           )}

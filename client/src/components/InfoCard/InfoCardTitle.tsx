@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { ActionIcon, Group, Skeleton, Text, Tooltip } from '@mantine/core'
 import { IconCopy, IconCheck } from '@tabler/icons-react'
+import { getDisplayTitle } from '@/lib/animeUtils'
 import { useInfoCard } from './InfoCardContext'
 
 export default function InfoCardTitle() {
   const { anime, loading } = useInfoCard()
   const [copied, setCopied] = useState(false)
 
-  const title = anime?.cachedTitle || anime?.customName
+  const title = anime ? getDisplayTitle(anime) : undefined
 
   const handleCopy = () => {
     if (title) {

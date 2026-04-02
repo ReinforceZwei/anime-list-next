@@ -6,6 +6,7 @@ import { useTagMap } from '@/hooks/useTagMap'
 import { useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import type { AnimeRecord } from '@/types/anime'
+import { getDisplayTitle } from '@/lib/animeUtils'
 import InfoCard from './InfoCard'
 
 interface AnimeCardProps {
@@ -43,7 +44,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
       .sort((a, b) => (a.weight ?? 0) - (b.weight ?? 0) || a.name.localeCompare(b.name))
   }, [anime?.tags, tagMap])
 
-  const title = anime?.cachedTitle || anime?.customName
+  const title = anime ? getDisplayTitle(anime) : undefined
 
   function handleEdit() {
     if (!anime) return

@@ -1,5 +1,6 @@
 import type { AnimeRecord } from "@/types/anime";
 import { List } from "@mantine/core";
+import { getDisplayTitle } from "@/lib/animeUtils";
 import styles from "./Item.module.css";
 
 function getItemClass(record: AnimeRecord): string | undefined {
@@ -29,7 +30,7 @@ export default function Item({
         onClick={onClick ? () => onClick(record) : undefined}
       >
         <>
-          {record.customName || record.cachedTitle || record.tmdbId}
+          {getDisplayTitle(record, record.tmdbId ? String(record.tmdbId) : undefined)}
           {record.remark && (
             <span className={styles.remark}>（{record.remark}）</span>
           )}

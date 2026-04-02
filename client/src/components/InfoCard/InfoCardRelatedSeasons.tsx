@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Button, Divider, Stack, Text } from '@mantine/core'
 import { useAnimeList } from '@/hooks/useAnimeList'
+import { getDisplayTitle } from '@/lib/animeUtils'
 import { useInfoCard } from './InfoCardContext'
 
 export default function InfoCardRelatedSeasons() {
@@ -31,7 +32,7 @@ export default function InfoCardRelatedSeasons() {
             justify="start"
             onClick={() => onJumpTo?.(record.id)}
           >
-            {record.cachedSeasonName || record.cachedTitle || record.customName || '未命名'}
+            {getDisplayTitle(record, '未命名')}
           </Button>
         ))}
       </Stack>

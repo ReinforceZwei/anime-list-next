@@ -46,6 +46,12 @@ func (h *AnimeRecordsHooks) Register(app core.App) {
 			applyStatusDateLogic(record, original, newStatus)
 		}
 
+		if record.GetInt("tmdbId") != original.GetInt("tmdbId") ||
+			record.GetInt("tmdbSeasonNumber") != original.GetInt("tmdbSeasonNumber") ||
+			record.GetString("tmdbMediaType") != original.GetString("tmdbMediaType") {
+			h.populateCachedTitle(record)
+		}
+
 		return e.Next()
 	})
 }
