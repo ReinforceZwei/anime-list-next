@@ -7,7 +7,13 @@ import {
 
 export default defineConfig({
   preset: combinePresetAndAppleSplashScreens(
-    minimal2023Preset,
+    {
+      ...minimal2023Preset,
+      apple: {
+        sizes: [180],
+        padding: 0,
+      },
+    },
     createAppleSplashScreens({
       padding: 0.3,
       resizeOptions: { background: '#1a1b1e', fit: 'contain' },
@@ -18,7 +24,6 @@ export default defineConfig({
         basePath: '/',
         xhtml: false,
       },
-      png: { compressionLevel: 9, quality: 60 },
       name: (landscape, size, dark) =>
         `apple-splash-${landscape ? 'landscape' : 'portrait'}-${dark ? 'dark-' : ''}${size.width}x${size.height}.png`,
     }),
