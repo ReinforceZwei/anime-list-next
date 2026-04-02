@@ -168,7 +168,7 @@ function Index() {
           />
         )}
       </Affix>
-      <Affix position={{ bottom: 10, right: 10 }}>
+      <Affix position={{ bottom: 10, right: 10 }} style={{ paddingBlockEnd: 'env(safe-area-inset-bottom)' }}>
         <ActionIcon variant="white" size="lg" radius="xl" style={(theme) => ({ boxShadow: theme.shadows.md })} aria-label="搜尋 TMDb" onClick={openTmdbModal}>
           <IconPlus />
         </ActionIcon>

@@ -47,6 +47,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
         variant="white"
         size="lg"
         radius="lg"
+        style={(theme) => ({ boxShadow: theme.shadows.md })}
         onClick={() => setOpened((o) => !o)}
         aria-label="搜尋動畫"
       >
