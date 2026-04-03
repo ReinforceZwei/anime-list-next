@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import {
   Alert,
+  Anchor,
   Button,
   Center,
   Divider,
@@ -14,7 +15,7 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconDownload, IconInfoCircle, IconSettings, IconUpload } from '@tabler/icons-react'
+import { IconDownload, IconExternalLink, IconInfoCircle, IconSettings, IconUpload } from '@tabler/icons-react'
 import { exportData, importData, type ImportResult } from '@/api/importexport'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
@@ -126,6 +127,13 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
             <Button type="submit" loading={saveMutation.isPending}>
               儲存
             </Button>
+            <Divider />
+            <Anchor href="/_/" target="_blank" rel="noopener noreferrer" size="sm">
+              <Group gap="xs">
+                <IconExternalLink size={14} />
+                前往 Pocketbase 控制台
+              </Group>
+            </Anchor>
           </Stack>
         </form>
       </Tabs.Panel>
