@@ -257,6 +257,19 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 				)
 				return err
 			}
+			// PocketBase overwrites created/updated on Save; restore original values.
+			if anime.Created != "" || anime.Updated != "" {
+				_, err := txApp.DB().NewQuery(
+					"UPDATE animeRecords SET created={:created}, updated={:updated} WHERE id={:id}",
+				).Bind(dbx.Params{
+					"created": anime.Created,
+					"updated": anime.Updated,
+					"id":      record.Id,
+				}).Execute()
+				if err != nil {
+					return err
+				}
+			}
 			importedRecords++
 		}
 
