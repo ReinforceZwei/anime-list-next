@@ -81,9 +81,9 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
         tags: values.tags,
         startedAt: values.startedAt ? values.startedAt.toISOString() : null,
         completedAt: values.completedAt ? values.completedAt.toISOString() : null,
-        tmdbId: values.tmdbId ?? undefined,
+        tmdbId: values.tmdbId ?? 0,
         tmdbMediaType: values.tmdbMediaType,
-        tmdbSeasonNumber: values.tmdbSeasonNumber ?? undefined,
+        tmdbSeasonNumber: values.tmdbSeasonNumber ?? 0,
       },
       {
         onSuccess: (record) => {
