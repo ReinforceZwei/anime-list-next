@@ -20,6 +20,7 @@ import { exportData, importData, type ImportResult } from '@/api/importexport'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
 import { showErrorNotification } from '@/lib/notifications'
+import { pb } from '@/lib/pb'
 
 export function PreferencesModal({ context, id }: ContextModalProps) {
   const { data: prefs, isLoading } = useUserPreferences()
@@ -128,7 +129,14 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
               儲存
             </Button>
             <Divider />
-            <Anchor href="/_/" target="_blank" rel="noopener noreferrer" size="sm">
+            <Anchor
+              href={pb.baseURL + '/_/'}
+              size="sm"
+              onClick={(e) => {
+                e.preventDefault()
+                window.open(pb.baseURL + '/_/', '_blank', 'noopener,noreferrer')
+              }}
+            >
               <Group gap="xs">
                 <IconExternalLink size={14} />
                 前往 Pocketbase 控制台

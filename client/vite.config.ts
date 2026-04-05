@@ -43,6 +43,9 @@ export default defineConfig({
         scope: '/',
       },
       devOptions: { enabled: true },
+      workbox: {
+        navigateFallbackDenylist: [/^\/_.*/],
+      },
     }),
   ],
   resolve: {
