@@ -19,7 +19,7 @@ import { DateTimePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import { modals } from '@/lib/modalStack'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconAlertTriangle, IconMinus, IconPlus, IconTags, IconTrash } from '@tabler/icons-react'
+import { IconAlertTriangle, IconLink, IconMinus, IconPlus, IconTags, IconTrash } from '@tabler/icons-react'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
@@ -278,12 +278,27 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
 
             <Divider label="TMDb 資料" labelPosition="left" />
 
+            <Button
+              variant="default"
+              leftSection={<IconLink size={16} />}
+              onClick={() => {
+                modals.openContextModal({
+                  modal: 'tmdbSearch',
+                  title: '重新連結至 TMDb',
+                  size: '56rem',
+                  innerProps: { mode: 'link', animeId: anime.id, initialQuery: anime.customName || anime.cachedTitle || '' },
+                })
+              }}
+            >
+              重新連結至 TMDb
+            </Button>
+
             <Alert
               icon={<IconAlertTriangle size={16} />}
               color="yellow"
               variant="light"
             >
-              不建議手動修改 TMDb 欄位，除非您清楚知道自己在做什麼。建議使用海報區的重新連結按鈕來更新 TMDb 連結。
+              不建議手動修改 TMDb 欄位，除非您清楚知道自己在做什麼。
             </Alert>
 
             <NumberInput

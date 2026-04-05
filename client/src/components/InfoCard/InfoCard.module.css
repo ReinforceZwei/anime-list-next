@@ -79,16 +79,3 @@
   right: var(--mantine-spacing-md);
   transform: translateY(-50%);
 }
-
-.posterRelinkButton {
-  position: absolute;
-  bottom: var(--mantine-spacing-xs);
-  left: var(--mantine-spacing-xs);
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.posterWrapper:hover .posterRelinkButton {
-  opacity: 1;
-}
