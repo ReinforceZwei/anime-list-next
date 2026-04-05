@@ -246,8 +246,13 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 			record.Set("comment", anime.Comment)
 			record.Set("remark", anime.Remark)
 			record.Set("tags", remappedTags)
-			setOptionalDate(record, "created", anime.Created)
-			setOptionalDate(record, "updated", anime.Updated)
+			// Use SetRaw to override autodate
+			if anime.Created != "" {
+				record.SetRaw("created", anime.Created)
+			}
+			if anime.Updated != "" {
+				record.SetRaw("updated", anime.Updated)
+			}
 
 			if err := txApp.Save(record); err != nil {
 				txApp.Logger().Error("failed to save anime record during import",
@@ -256,19 +261,6 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 					"error", err,
 				)
 				return err
-			}
-			// PocketBase overwrites created/updated on Save; restore original values.
-			if anime.Created != "" || anime.Updated != "" {
-				_, err := txApp.DB().NewQuery(
-					"UPDATE animeRecords SET created={:created}, updated={:updated} WHERE id={:id}",
-				).Bind(dbx.Params{
-					"created": anime.Created,
-					"updated": anime.Updated,
-					"id":      record.Id,
-				}).Execute()
-				if err != nil {
-					return err
-				}
 			}
 			importedRecords++
 		}
