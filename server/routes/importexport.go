@@ -232,6 +232,9 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 				record.Set("userId", userId)
 			}
 
+			// Mark the record as being imported to prevent hooks from overwriting imported
+			record.Set("isImporting", true)
+
 			record.Set("tmdbId", anime.TmdbID)
 			record.Set("tmdbSeasonNumber", anime.TmdbSeasonNumber)
 			record.Set("tmdbMediaType", anime.TmdbMediaType)

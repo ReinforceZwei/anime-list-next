@@ -34,7 +34,10 @@ func (h *AnimeRecordsHooks) Register(app core.App) {
 		if e.Record.GetString("downloadStatus") == "" {
 			e.Record.Set("downloadStatus", "pending")
 		}
-		applyStatusDateLogic(e.Record, nil, e.Record.GetString("status"))
+		// Skip auto-filling dates when importing, as the import route sets them explicitly and we don't want to override them
+		if !e.Record.GetBool("isImporting") {
+			applyStatusDateLogic(e.Record, nil, e.Record.GetString("status"))
+		}
 		return e.Next()
 	})
 	app.OnRecordUpdate("animeRecords").BindFunc(func(e *core.RecordEvent) error {
