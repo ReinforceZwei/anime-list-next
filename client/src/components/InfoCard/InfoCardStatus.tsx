@@ -34,11 +34,22 @@ export default function InfoCardStatus() {
 
   const status = anime?.status
   const downloadStatus = anime?.downloadStatus
+  const seasonNumber = anime?.tmdbSeasonNumber
 
-  if (!status && !downloadStatus) return null
+  if (!status && !downloadStatus && !seasonNumber) return null
 
   return (
     <Group gap={6} mb="xs">
+      {Boolean(seasonNumber) && (
+        <Badge size='sm'>
+          第{anime?.tmdbSeasonNumber}季
+        </Badge>
+      )}
+      {Boolean(anime?.tmdbId) && anime?.tmdbMediaType === 'tv' && seasonNumber === 0 && (
+        <Badge size='sm'>
+          SP
+        </Badge>
+      )}
       {status && (
         <Badge size="sm" variant="light" color={STATUS_COLOR[status] ?? 'gray'}>
           {STATUS_LABEL[status] ?? status}
