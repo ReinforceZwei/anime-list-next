@@ -94,3 +94,18 @@ Response:
 ```json
 { "importedRecords": 42, "importedTags": 3 }
 ```
+
+## Created/Updated date override
+
+Collection `animeRecords` has custom hook logic to allow client overriding created and updated date.
+
+Use `createdOverride` and `updatedOverride` to override the date value. Date format is the same as Pocketbase date field format (ISO format). 
+
+```json
+{
+  "userId": "2ruxzm9xdu59v3e",
+  "customName": "test1231",
+  "createdOverride": "2014-12-31T16:00:00.000Z",
+  "updatedOverride": "2014-12-31T16:00:00.000Z"
+}
+```

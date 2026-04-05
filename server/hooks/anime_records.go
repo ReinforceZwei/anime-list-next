@@ -54,6 +54,42 @@ func (h *AnimeRecordsHooks) Register(app core.App) {
 
 		return e.Next()
 	})
+	app.OnRecordCreateRequest("animeRecords").BindFunc(func(e *core.RecordRequestEvent) error {
+		requestInfo, err := e.RequestInfo()
+		if err != nil {
+			return err
+		}
+		// Allow client to set created/updated timestamps
+		if created, ok := requestInfo.Body["createdOverride"].(string); ok && created != "" {
+			if dt, err := types.ParseDateTime(created); err == nil && !dt.IsZero() {
+				e.Record.SetRaw("created", created)
+			}
+		}
+		if updated, ok := requestInfo.Body["updatedOverride"].(string); ok && updated != "" {
+			if dt, err := types.ParseDateTime(updated); err == nil && !dt.IsZero() {
+				e.Record.SetRaw("updated", updated)
+			}
+		}
+		return e.Next()
+	})
+	app.OnRecordUpdateRequest("animeRecords").BindFunc(func(e *core.RecordRequestEvent) error {
+		requestInfo, err := e.RequestInfo()
+		if err != nil {
+			return err
+		}
+		// Allow client to set created/updated timestamps
+		if created, ok := requestInfo.Body["createdOverride"].(string); ok && created != "" {
+			if dt, err := types.ParseDateTime(created); err == nil && !dt.IsZero() {
+				e.Record.SetRaw("created", created)
+			}
+		}
+		if updated, ok := requestInfo.Body["updatedOverride"].(string); ok && updated != "" {
+			if dt, err := types.ParseDateTime(updated); err == nil && !dt.IsZero() {
+				e.Record.SetRaw("updated", updated)
+			}
+		}
+		return e.Next()
+	})
 }
 
 // applyStatusDateLogic auto-fills or clears startedAt/completedAt based on the
