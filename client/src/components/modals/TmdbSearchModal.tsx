@@ -109,7 +109,7 @@ export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<T
     if (!targetAnime) return
     updateMutation.mutate(
       { ...targetAnime, tmdbId, tmdbMediaType, tmdbSeasonNumber },
-      { onSuccess: () => context.closeModal(id) },
+      { onSuccess: () => context.closeAll() },
     )
   }
 

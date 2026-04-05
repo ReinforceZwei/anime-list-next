@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Alert,
   Button,
   Divider,
   Group,
@@ -18,7 +19,7 @@ import { DateTimePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import { modals } from '@/lib/modalStack'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconMinus, IconPlus, IconTags, IconTrash } from '@tabler/icons-react'
+import { IconAlertTriangle, IconLink, IconMinus, IconPlus, IconTags, IconTrash } from '@tabler/icons-react'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
@@ -58,6 +59,9 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
       tags: (anime.tags ?? []).filter((id) => knownTagIds.has(id)),
       startedAt: anime.startedAt ? new Date(anime.startedAt) : null,
       completedAt: anime.completedAt ? new Date(anime.completedAt) : null,
+      tmdbId: anime.tmdbId ?? null,
+      tmdbMediaType: anime.tmdbMediaType ?? '',
+      tmdbSeasonNumber: anime.tmdbSeasonNumber ?? null,
     },
   })
   const ratingNumberInputHandlersRef = useRef<NumberInputHandlers>(null);
@@ -77,6 +81,9 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
         tags: values.tags,
         startedAt: values.startedAt ? values.startedAt.toISOString() : null,
         completedAt: values.completedAt ? values.completedAt.toISOString() : null,
+        tmdbId: values.tmdbId ?? 0,
+        tmdbMediaType: values.tmdbMediaType,
+        tmdbSeasonNumber: values.tmdbSeasonNumber ?? 0,
       },
       {
         onSuccess: (record) => {
@@ -268,6 +275,61 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
               value={form.values.completedAt}
               onChange={(val) => form.setFieldValue('completedAt', parseLocalDateString(val as string | null))}
             />
+
+            <Divider label="TMDb 資料" labelPosition="left" />
+
+            <Button
+              variant="default"
+              leftSection={<IconLink size={16} />}
+              onClick={() => {
+                modals.openContextModal({
+                  modal: 'tmdbSearch',
+                  title: '重新連結至 TMDb',
+                  size: '56rem',
+                  innerProps: { mode: 'link', animeId: anime.id, initialQuery: anime.customName || anime.cachedTitle || '' },
+                })
+              }}
+            >
+              重新連結至 TMDb
+            </Button>
+
+            <Alert
+              icon={<IconAlertTriangle size={16} />}
+              color="yellow"
+              variant="light"
+            >
+              不建議手動修改 TMDb 欄位，除非您清楚知道自己在做什麼。
+            </Alert>
+
+            <NumberInput
+              label="TMDb ID"
+              placeholder="輸入 TMDb ID"
+              min={1}
+              allowDecimal={false}
+              value={form.values.tmdbId ?? ''}
+              onChange={(val) => form.setFieldValue('tmdbId', val === '' ? null : Number(val))}
+            />
+
+            <Select
+              label="TMDb 媒體類型"
+              data={[
+                { value: '', label: '無' },
+                { value: 'tv', label: '電視 (TV)' },
+                { value: 'movie', label: '電影 (Movie)' },
+              ]}
+              {...form.getInputProps('tmdbMediaType')}
+            />
+
+            {form.values.tmdbMediaType === 'tv' && (
+              <NumberInput
+                label="TMDb 季數"
+                placeholder="輸入季數"
+                min={0}
+                allowDecimal={false}
+                value={form.values.tmdbSeasonNumber ?? ''}
+                onChange={(val) => form.setFieldValue('tmdbSeasonNumber', val === '' ? null : Number(val))}
+              />
+            )}
           </Stack>
         </Tabs.Panel>
       </Tabs>
