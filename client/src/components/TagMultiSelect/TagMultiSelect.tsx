@@ -3,6 +3,7 @@ import {
   Combobox,
   ColorSwatch,
   Group,
+  isLightColor,
   Pill,
   PillsInput,
   Text,
@@ -95,7 +96,7 @@ export function TagMultiSelect({
                 styles={{
                   root: {
                     backgroundColor: tag.color ?? undefined,
-                    color: tag.color ? '#fff' : undefined,
+                    color: tag.color ? (isLightColor(tag.color) ? '#000' : '#fff') : undefined,
                   },
                 }}
               >
