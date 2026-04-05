@@ -7,6 +7,21 @@ import styles from './InfoCard.module.css'
 export default function InfoCardPoster() {
   const { anime, posterUrl, hasTmdbId, onPosterClick } = useInfoCard()
 
+  function openRelinkModal(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!anime?.id) return
+    modals.openContextModal({
+      modal: 'tmdbSearch',
+      title: '重新連結至 TMDb',
+      size: '56rem',
+      innerProps: {
+        mode: 'link',
+        animeId: anime.id,
+        initialQuery: anime.customName ?? anime.cachedTitle ?? '',
+      },
+    })
+  }
+
   if (!hasTmdbId) {
     return (
       <div className={styles.posterPlaceholder}>
@@ -41,6 +56,19 @@ export default function InfoCardPoster() {
       aria-label={posterUrl ? '全螢幕檢視海報' : undefined}
       tabIndex={posterUrl ? 0 : undefined}
       onKeyDown={posterUrl ? (e) => e.key === 'Enter' && onPosterClick() : undefined}
-    />
+    >
+      <Tooltip label="重新連結至 TMDb" position="right" withArrow>
+        <ActionIcon
+          className={styles.posterRelinkButton}
+          variant="filled"
+          color="dark"
+          size="sm"
+          aria-label="重新連結至 TMDb"
+          onClick={openRelinkModal}
+        >
+          <IconLink size={13} stroke={1.5} />
+        </ActionIcon>
+      </Tooltip>
+    </div>
   )
 }
