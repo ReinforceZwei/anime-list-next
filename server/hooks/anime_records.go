@@ -25,7 +25,9 @@ func NewAnimeRecordsHooks(apiKey string) (*AnimeRecordsHooks, error) {
 // Register binds all animeRecords hooks to the app.
 func (h *AnimeRecordsHooks) Register(app core.App) {
 	app.OnRecordCreate("animeRecords").BindFunc(func(e *core.RecordEvent) error {
-		h.populateCachedTitle(e.Record)
+		if e.Record.GetString("cachedTitle") == "" {
+			h.populateCachedTitle(e.Record)
+		}
 		if e.Record.GetString("status") == "" {
 			e.Record.Set("status", "planned")
 		}
