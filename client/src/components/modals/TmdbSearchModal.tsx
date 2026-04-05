@@ -45,7 +45,7 @@ function ExistsBadge() {
   )
 }
 
-export function TmdbSearchModal({ context, id, innerProps }: ContextModalProps<TmdbSearchInnerProps>) {
+export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbSearchInnerProps>) {
   const mode = innerProps.mode ?? 'create'
   const linkProps = mode === 'link' ? (innerProps as { mode: 'link'; animeId: string; initialQuery?: string }) : null
   const animeId = linkProps?.animeId ?? null
