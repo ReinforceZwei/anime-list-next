@@ -8,6 +8,7 @@ import {
   FileButton,
   Group,
   Loader,
+  Slider,
   Stack,
   Tabs,
   Text,
@@ -31,6 +32,17 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
   const [importError, setImportError] = useState<string | null>(null)
   const resetFileRef = useRef<() => void>(null)
+
+  const [uiScale, setUiScale] = useState<number>(() => {
+    const stored = localStorage.getItem('ui-scale')
+    return stored ? parseInt(stored, 10) : 100
+  })
+
+  function handleUiScaleChange(value: number) {
+    setUiScale(value)
+    document.documentElement.style.fontSize = `${value}%`
+    localStorage.setItem('ui-scale', String(value))
+  }
 
   const form = useForm({
     initialValues: {
@@ -125,6 +137,25 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
               placeholder="棄番"
               {...form.getInputProps('droppedLabel')}
             />
+            <Divider label="介面縮放" labelPosition="left" />
+            <div>
+              <Text size="sm" fw={500} mb="xs">
+                縮放比例：{uiScale}%
+              </Text>
+              <Slider
+                value={uiScale}
+                min={70}
+                max={130}
+                step={10}
+                marks={[
+                  { value: 70, label: '70%' },
+                  { value: 100, label: '100%' },
+                  { value: 130, label: '130%' },
+                ]}
+                onChange={handleUiScaleChange}
+                mb="xl"
+              />
+            </div>
             <Button type="submit" loading={saveMutation.isPending}>
               儲存
             </Button>

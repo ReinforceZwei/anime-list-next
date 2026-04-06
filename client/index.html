@@ -9,6 +9,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="動漫清單" />
     <title>動漫清單</title>
+    <script>
+      (function () {
+        var scale = localStorage.getItem('ui-scale');
+        if (scale) document.documentElement.style.fontSize = scale + '%';
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

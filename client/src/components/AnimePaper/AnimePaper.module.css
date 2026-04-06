@@ -6,7 +6,7 @@
 
 @media only screen and (min-width: 780px) {
   .paper {
-    max-width: 700px;
+    max-width: 43.75rem;
     margin: 0 auto;
   }
 }
