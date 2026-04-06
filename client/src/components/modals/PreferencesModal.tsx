@@ -16,7 +16,7 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconDownload, IconExternalLink, IconInfoCircle, IconSettings, IconUpload } from '@tabler/icons-react'
+import { IconAdjustments, IconDownload, IconExternalLink, IconInfoCircle, IconSettings, IconUpload } from '@tabler/icons-react'
 import { exportData, importData, type ImportResult } from '@/api/importexport'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
@@ -102,6 +102,9 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
         <Tabs.Tab value="general" leftSection={<IconSettings size={14} />}>
           一般
         </Tabs.Tab>
+        <Tabs.Tab value="interface" leftSection={<IconAdjustments size={14} />}>
+          介面
+        </Tabs.Tab>
         <Tabs.Tab value="importexport" leftSection={<IconDownload size={14} />}>
           匯入／匯出
         </Tabs.Tab>
@@ -137,25 +140,6 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
               placeholder="棄番"
               {...form.getInputProps('droppedLabel')}
             />
-            <Divider label="介面縮放" labelPosition="left" />
-            <div>
-              <Text size="sm" fw={500} mb="xs">
-                縮放比例：{uiScale}%
-              </Text>
-              <Slider
-                value={uiScale}
-                min={70}
-                max={130}
-                step={10}
-                marks={[
-                  { value: 70, label: '70%' },
-                  { value: 100, label: '100%' },
-                  { value: 130, label: '130%' },
-                ]}
-                onChange={handleUiScaleChange}
-                mb="xl"
-              />
-            </div>
             <Button type="submit" loading={saveMutation.isPending}>
               儲存
             </Button>
@@ -175,6 +159,30 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
             </Anchor>
           </Stack>
         </form>
+      </Tabs.Panel>
+
+      <Tabs.Panel value="interface">
+        <Stack>
+          <Divider label="介面縮放" labelPosition="left" />
+          <div>
+            <Text size="sm" fw={500} mb="xs">
+              縮放比例：{uiScale}%
+            </Text>
+            <Slider
+              value={uiScale}
+              min={70}
+              max={150}
+              step={10}
+              marks={[
+                { value: 70, label: '70%' },
+                { value: 100, label: '100%' },
+                { value: 150, label: '150%' },
+              ]}
+              onChange={handleUiScaleChange}
+              mb="xl"
+            />
+          </div>
+        </Stack>
       </Tabs.Panel>
 
       <Tabs.Panel value="importexport">
