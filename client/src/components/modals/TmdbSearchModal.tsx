@@ -20,7 +20,7 @@ import {
 } from '@mantine/core'
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks'
 import { modals as mantineModals } from '@/lib/modalStack'
-import { IconArrowLeft, IconCheck, IconLink, IconPlus, IconSearch } from '@tabler/icons-react'
+import { IconArrowLeft, IconCheck, IconLink, IconPlus, IconSearch, IconX } from '@tabler/icons-react'
 import type { ContextModalProps } from '@/lib/modalStack'
 import { useTmdbSearch, useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeExistsMap } from '@/hooks/useAnimeExistsMap'
@@ -129,7 +129,13 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
       <TextInput
         placeholder="搜尋電影與電視劇…"
         leftSection={<IconSearch size={14} />}
-        rightSection={isFetching ? <Loader size="xs" /> : null}
+        rightSection={
+          isFetching ? <Loader size="xs" /> : query ? (
+            <ActionIcon variant="subtle" color="gray" size="sm" onClick={() => setQuery('')}>
+              <IconX size={14} />
+            </ActionIcon>
+          ) : null
+        }
         value={query}
         onChange={(e) => setQuery(e.currentTarget.value)}
         size="sm"
