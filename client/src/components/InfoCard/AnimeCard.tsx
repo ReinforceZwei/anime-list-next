@@ -6,7 +6,7 @@ import { useTagMap } from '@/hooks/useTagMap'
 import { useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import type { AnimeRecord } from '@/types/anime'
-import { getDisplayTitle } from '@/lib/animeUtils'
+import { getDisplayTitle, sortTags } from '@/lib/animeUtils'
 import InfoCard from './InfoCard'
 
 interface AnimeCardProps {
@@ -38,10 +38,9 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
 
   const tags = useMemo(() => {
     if (!anime?.tags) return []
-    return anime.tags
-      .map((id) => tagMap.get(id))
-      .filter((t): t is NonNullable<typeof t> => !!t)
-      .sort((a, b) => (a.weight ?? 0) - (b.weight ?? 0) || a.name.localeCompare(b.name))
+    return sortTags(
+      anime.tags.map((id) => tagMap.get(id)).filter((t): t is NonNullable<typeof t> => !!t),
+    )
   }, [anime?.tags, tagMap])
 
   const title = anime ? getDisplayTitle(anime) : undefined

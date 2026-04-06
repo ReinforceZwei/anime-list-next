@@ -61,7 +61,7 @@ export function TagFormModal({ context, id, innerProps }: ContextModalProps<TagF
         />
         <NumberInput
           label="權重"
-          description="決定顯示順序，數字越小越前面"
+          description="決定顯示順序，數字越大越前面"
           placeholder="例如：10"
           min={0}
           {...form.getInputProps('weight')}

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import {
   ActionIcon,
   Badge,
@@ -16,10 +17,12 @@ import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react'
 import { useTagList } from '@/hooks/useTagList'
 import { useTagMutation } from '@/hooks/useTagMutation'
 import type { TagRecord } from '@/types/anime'
+import { sortTags } from '@/lib/animeUtils'
 
 export function ManageTagsModal(_props: ContextModalProps) {
   const { data: tags, isLoading } = useTagList()
   const { deleteMutation } = useTagMutation()
+  const sortedTags = useMemo(() => sortTags(tags ?? []), [tags])
 
   function openCreateForm() {
     modals.openContextModal({
@@ -74,7 +77,7 @@ export function ManageTagsModal(_props: ContextModalProps) {
       ) : (
         <ScrollArea.Autosize mah={400} offsetScrollbars>
           <Stack gap={4}>
-            {tags.map((tag) => (
+            {sortedTags.map((tag) => (
               <Group
                 key={tag.id}
                 justify="space-between"

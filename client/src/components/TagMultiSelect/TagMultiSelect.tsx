@@ -11,6 +11,7 @@ import {
   CheckIcon,
 } from '@mantine/core'
 import type { TagRecord } from '@/types/anime'
+import { sortTags } from '@/lib/animeUtils'
 
 interface TagMultiSelectProps {
   data: TagRecord[]
@@ -19,12 +20,6 @@ interface TagMultiSelectProps {
   label?: string
   placeholder?: string
   style?: React.CSSProperties
-}
-
-function sortTags(tags: TagRecord[]) {
-  return [...tags].sort(
-    (a, b) => (a.weight ?? 0) - (b.weight ?? 0) || a.name.localeCompare(b.name),
-  )
 }
 
 export function TagMultiSelect({

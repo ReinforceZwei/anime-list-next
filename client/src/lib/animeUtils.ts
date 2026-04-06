@@ -1,3 +1,11 @@
+import type { TagRecord } from '@/types/anime'
+
+export function sortTags(tags: TagRecord[]) {
+  return [...tags].sort(
+    (a, b) => (b.weight ?? 0) - (a.weight ?? 0) || a.name.localeCompare(b.name),
+  )
+}
+
 /**
  * Returns the display title for an anime record.
  *
