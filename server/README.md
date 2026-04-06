@@ -11,7 +11,7 @@ No need to read scattered migration files. Use `server/pocketbase-get-schemas.sh
 pocketbase-get-schemas.sh
 
 # View specific collection schema
-pocketbase-get-schemas.sh animeRecords
+pocketbase-get-schemas.sh animes
 ```
 
 ## Design
@@ -62,7 +62,7 @@ Response shape:
   "tags": [
     { "id": "abc123", "name": "Action", "color": "#ff0000", "weight": 0, "hidden": false, "deleted": "" }
   ],
-  "animeRecords": [
+  "animes": [
     {
       "tmdbId": 12345, "tmdbSeasonNumber": 1, "tmdbMediaType": "tv",
       "customName": "", "cachedTitle": "...", "cachedSeasonName": "...",
@@ -76,7 +76,7 @@ Response shape:
 }
 ```
 
-`tags[].id` and `animeRecords[].tags` are internal reference keys within the file, not PocketBase record IDs.
+`tags[].id` and `animes[].tags` are internal reference keys within the file, not PocketBase record IDs.
 
 **Import**
 
@@ -97,7 +97,7 @@ Response:
 
 ## Created/Updated date override
 
-Collection `animeRecords` has custom hook logic to allow client overriding created and updated date.
+Collection `animes` has custom hook logic to allow client overriding created and updated date.
 
 Use `createdOverride` and `updatedOverride` to override the date value. Date format is the same as Pocketbase date field format (ISO format). 
 

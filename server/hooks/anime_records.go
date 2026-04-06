@@ -10,21 +10,21 @@ import (
 
 const defaultLang = "zh-TW"
 
-type AnimeRecordsHooks struct {
+type AnimesHooks struct {
 	client *tmdb.Client
 }
 
-func NewAnimeRecordsHooks(apiKey string) (*AnimeRecordsHooks, error) {
+func NewAnimesHooks(apiKey string) (*AnimesHooks, error) {
 	client, err := tmdb.Init(apiKey)
 	if err != nil {
 		return nil, err
 	}
-	return &AnimeRecordsHooks{client: client}, nil
+	return &AnimesHooks{client: client}, nil
 }
 
-// Register binds all animeRecords hooks to the app.
-func (h *AnimeRecordsHooks) Register(app core.App) {
-	app.OnRecordCreate("animeRecords").BindFunc(func(e *core.RecordEvent) error {
+// Register binds all animes hooks to the app.
+func (h *AnimesHooks) Register(app core.App) {
+	app.OnRecordCreate("animes").BindFunc(func(e *core.RecordEvent) error {
 		if e.Record.GetString("cachedTitle") == "" {
 			h.populateCachedTitle(e.Record)
 		}
@@ -40,7 +40,7 @@ func (h *AnimeRecordsHooks) Register(app core.App) {
 		}
 		return e.Next()
 	})
-	app.OnRecordUpdate("animeRecords").BindFunc(func(e *core.RecordEvent) error {
+	app.OnRecordUpdate("animes").BindFunc(func(e *core.RecordEvent) error {
 		record := e.Record
 		original := record.Original()
 
@@ -59,7 +59,7 @@ func (h *AnimeRecordsHooks) Register(app core.App) {
 
 		return e.Next()
 	})
-	app.OnRecordCreateRequest("animeRecords").BindFunc(func(e *core.RecordRequestEvent) error {
+	app.OnRecordCreateRequest("animes").BindFunc(func(e *core.RecordRequestEvent) error {
 		requestInfo, err := e.RequestInfo()
 		if err != nil {
 			return err
@@ -77,7 +77,7 @@ func (h *AnimeRecordsHooks) Register(app core.App) {
 		}
 		return e.Next()
 	})
-	app.OnRecordUpdateRequest("animeRecords").BindFunc(func(e *core.RecordRequestEvent) error {
+	app.OnRecordUpdateRequest("animes").BindFunc(func(e *core.RecordRequestEvent) error {
 		requestInfo, err := e.RequestInfo()
 		if err != nil {
 			return err
@@ -139,7 +139,7 @@ func applyStatusDateLogic(record *core.Record, original *core.Record, status str
 
 // populateCachedTitle fetches the title from TMDB and sets it on the record.
 // Errors are logged but do not abort the record creation.
-func (h *AnimeRecordsHooks) populateCachedTitle(record *core.Record) {
+func (h *AnimesHooks) populateCachedTitle(record *core.Record) {
 	tmdbID := record.GetInt("tmdbId")
 	if tmdbID == 0 {
 		return
@@ -162,7 +162,7 @@ func (h *AnimeRecordsHooks) populateCachedTitle(record *core.Record) {
 	}
 
 	if err != nil {
-		log.Printf("[anime_records hook] failed to fetch cachedTitle (tmdbId=%d type=%s): %v", tmdbID, mediaType, err)
+		log.Printf("[animes hook] failed to fetch cachedTitle (tmdbId=%d type=%s): %v", tmdbID, mediaType, err)
 		return
 	}
 
@@ -170,7 +170,7 @@ func (h *AnimeRecordsHooks) populateCachedTitle(record *core.Record) {
 	record.Set("cachedSeasonName", seasonName)
 }
 
-func (h *AnimeRecordsHooks) fetchMovieTitle(id int, opts map[string]string) (string, error) {
+func (h *AnimesHooks) fetchMovieTitle(id int, opts map[string]string) (string, error) {
 	movie, err := h.client.GetMovieDetails(id, opts)
 	if err != nil {
 		return "", err
@@ -178,7 +178,7 @@ func (h *AnimeRecordsHooks) fetchMovieTitle(id int, opts map[string]string) (str
 	return movie.Title, nil
 }
 
-func (h *AnimeRecordsHooks) fetchTVTitle(id int, seasonNumber int, opts map[string]string) (string, string, error) {
+func (h *AnimesHooks) fetchTVTitle(id int, seasonNumber int, opts map[string]string) (string, string, error) {
 	tv, err := h.client.GetTVDetails(id, opts)
 	if err != nil {
 		return "", "", err
@@ -196,6 +196,6 @@ func (h *AnimeRecordsHooks) fetchTVTitle(id int, seasonNumber int, opts map[stri
 	}
 
 	// Season number not found in the list, fall back to show name with no season name
-	log.Printf("[anime_records hook] season %d not found for tvId=%d, falling back to show name", seasonNumber, id)
+	log.Printf("[animes hook] season %d not found for tvId=%d, falling back to show name", seasonNumber, id)
 	return tv.Name, "", nil
 }

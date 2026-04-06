@@ -22,8 +22,8 @@ go build -o server.exe .
 go test ./...
 
 # View collection schemas (no need to read migrations)
-./pocketbase-get-schemas.sh animeRecords   # Linux/macOS
-./pocketbase-get-schemas.ps1 animeRecords  # Windows
+./pocketbase-get-schemas.sh animes   # Linux/macOS
+./pocketbase-get-schemas.ps1 animes  # Windows
 ```
 
 **Required env** — `server/.env`:
@@ -63,7 +63,7 @@ import "github.com/ReinforceZwei/anime-list-next/server/hooks"
 
 Collections (managed by PocketBase migrations):
 - `users` — built-in PocketBase users
-- `animeRecords` — anime watchlist entries (one per user per anime/season)
+- `animes` — anime watchlist entries (one per user per anime/season)
 - `tags` — user-defined tags referenced by `animeRecords.tags` (relation field)
 - `lastUpdates` — tracks last-write timestamps per user per collection (for sync)
 - `userPreferences` — per-user UI preferences (labels, page title)
@@ -121,7 +121,7 @@ rg -n "func.*Handler\|\.GET\|\.POST" server/routes/
 rg -n "os\.Getenv" server/config/
 
 # Find all collection name strings
-rg -n '"animeRecords"\|"tags"\|"lastUpdates"\|"userPreferences"' server/
+rg -n '"animes"|"tags"|"lastUpdates"|"userPreferences"' server/
 
 # Find all migration files (sorted = chronological)
 ls server/migrations/

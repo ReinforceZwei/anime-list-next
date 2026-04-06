@@ -44,10 +44,10 @@ type ExportAnimeRecord struct {
 
 // ExportData is the top-level JSON envelope for import/export.
 type ExportData struct {
-	Version      int                 `json:"version"`
-	ExportedAt   string              `json:"exportedAt"`
-	Tags         []ExportTag         `json:"tags"`
-	AnimeRecords []ExportAnimeRecord `json:"animeRecords"`
+	Version    int                 `json:"version"`
+	ExportedAt string              `json:"exportedAt"`
+	Tags       []ExportTag         `json:"tags"`
+	Animes     []ExportAnimeRecord `json:"animes"`
 }
 
 // ImportResult is returned by the import endpoint.
@@ -84,7 +84,7 @@ func (r *ImportExportRoutes) exportHandler(e *core.RequestEvent) error {
 		return e.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to fetch tags"})
 	}
 
-	animeRecords, err := e.App.FindAllRecords("animeRecords", dbx.HashExp{"userId": userId})
+	animeRecords, err := e.App.FindAllRecords("animes", dbx.HashExp{"userId": userId})
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to fetch anime records"})
 	}
@@ -123,10 +123,10 @@ func (r *ImportExportRoutes) exportHandler(e *core.RequestEvent) error {
 	}
 
 	return e.JSON(http.StatusOK, ExportData{
-		Version:      1,
-		ExportedAt:   time.Now().UTC().Format(time.RFC3339),
-		Tags:         exportTags,
-		AnimeRecords: exportAnimes,
+		Version:    1,
+		ExportedAt: time.Now().UTC().Format(time.RFC3339),
+		Tags:       exportTags,
+		Animes:     exportAnimes,
 	})
 }
 
@@ -161,9 +161,9 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 		return e.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find tags collection"})
 	}
 
-	animeCol, err := e.App.FindCollectionByNameOrId("animeRecords")
+	animeCol, err := e.App.FindCollectionByNameOrId("animes")
 	if err != nil {
-		return e.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find animeRecords collection"})
+		return e.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to find animes collection"})
 	}
 
 	// tagIdMap maps exported tag IDs → real PocketBase tag IDs.
@@ -197,7 +197,7 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 			}
 		}
 
-		for _, anime := range data.AnimeRecords {
+		for _, anime := range data.Animes {
 			// Remap exported tag IDs to real IDs, dropping any that have no mapping.
 			remappedTags := make([]string, 0, len(anime.Tags))
 			for _, oldId := range anime.Tags {
@@ -210,7 +210,7 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 			var record *core.Record
 			if anime.TmdbID != 0 {
 				record, _ = txApp.FindFirstRecordByFilter(
-					"animeRecords",
+					"animes",
 					"userId={:u} && tmdbMediaType={:mt} && tmdbId={:id} && tmdbSeasonNumber={:sn}",
 					dbx.Params{
 						"u":  userId,
@@ -221,7 +221,7 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 				)
 			} else if anime.CustomName != "" {
 				record, _ = txApp.FindFirstRecordByFilter(
-					"animeRecords",
+					"animes",
 					"userId={:u} && customName={:name}",
 					dbx.Params{"u": userId, "name": anime.CustomName},
 				)

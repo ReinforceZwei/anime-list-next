@@ -29,7 +29,7 @@ export interface ExportData {
   version: number
   exportedAt: string
   tags: ExportTag[]
-  animeRecords: ExportAnimeRecord[]
+  animes: ExportAnimeRecord[]
 }
 
 export interface ImportResult {

@@ -52,7 +52,7 @@ func main() {
 		return e.Next()
 	})
 
-	animeHooks, err := hooks.NewAnimeRecordsHooks(cfg.TmdbApiKey)
+	animeHooks, err := hooks.NewAnimesHooks(cfg.TmdbApiKey)
 	if err != nil {
 		log.Fatal("Failed to initialize anime records hooks: ", err)
 	}
