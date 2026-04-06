@@ -20,11 +20,18 @@ export function useScrollToRecord() {
     function attempt(retriesLeft: number) {
       const el = refMap.current.get(id)
       if (el) {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              observer.disconnect()
+              el.classList.add(styles.blink)
+              setTimeout(() => el.classList.remove(styles.blink), 1000)
+            }
+          },
+          { threshold: 0.5 }
+        )
+        observer.observe(el)
         el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        el.classList.add(styles.blink)
-        const timer = setTimeout(() => el.classList.remove(styles.blink), 1000)
-        // Guard against the element being removed before the timer fires
-        return () => clearTimeout(timer)
       } else if (retriesLeft > 0) {
         setTimeout(() => attempt(retriesLeft - 1), 100)
       }
