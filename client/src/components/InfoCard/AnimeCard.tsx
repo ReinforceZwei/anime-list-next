@@ -83,7 +83,8 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
     if (targetStatus === 'completed' && !anime.completedAt) patch.completedAt = now
     updateMutation.mutate(
       { ...anime, ...patch },
-      { onSuccess: (record) => onJumpTo?.(record.id) },
+      // FIXME: setTimeout to wait for the anime list to update, should be replaced with a more robust solution
+      { onSuccess: (record) => setTimeout(() => onJumpTo?.(record.id), 1000) },
     )
   }
 
