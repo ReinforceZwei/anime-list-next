@@ -9,6 +9,10 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 )
 
+var (
+	posterSize = tmdb.Original
+)
+
 type TmdbSearchItem struct {
 	ID            int    `json:"id"`
 	MediaType     string `json:"mediaType"`
@@ -99,7 +103,7 @@ func (r *TmdbRoutes) search(e *core.RequestEvent) error {
 
 		posterPath := ""
 		if result.PosterPath != "" {
-			posterPath = tmdb.GetImageURL(result.PosterPath, tmdb.W500)
+			posterPath = tmdb.GetImageURL(result.PosterPath, posterSize)
 		}
 
 		items = append(items, TmdbSearchItem{
@@ -140,7 +144,7 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 
 		posterPath := ""
 		if movie.PosterPath != "" {
-			posterPath = tmdb.GetImageURL(movie.PosterPath, tmdb.W500)
+			posterPath = tmdb.GetImageURL(movie.PosterPath, posterSize)
 		}
 
 		year := ""
@@ -167,7 +171,7 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 
 	posterPath := ""
 	if tv.PosterPath != "" {
-		posterPath = tmdb.GetImageURL(tv.PosterPath, tmdb.W500)
+		posterPath = tmdb.GetImageURL(tv.PosterPath, posterSize)
 	}
 
 	year := ""
@@ -179,7 +183,7 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 	for _, s := range tv.Seasons {
 		seasonPosterPath := ""
 		if s.PosterPath != "" {
-			seasonPosterPath = tmdb.GetImageURL(s.PosterPath, tmdb.W500)
+			seasonPosterPath = tmdb.GetImageURL(s.PosterPath, posterSize)
 		}
 		seasons = append(seasons, TmdbSeasonInfo{
 			SeasonNumber: s.SeasonNumber,
