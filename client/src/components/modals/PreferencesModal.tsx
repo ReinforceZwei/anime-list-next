@@ -32,7 +32,10 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
   const [importError, setImportError] = useState<string | null>(null)
   const resetFileRef = useRef<() => void>(null)
-  const pbAdminUrl = useMemo(() => new URL('/_/', pb.baseURL || window.location.origin).href, [pb.baseURL])
+  const pbAdminUrl = useMemo(() => {
+    const base = pb.baseURL?.replace(/\/$/, '') || window.location.origin
+    return `${base}/_/`
+  }, [])
 
   const [uiScale, setUiScale] = useState<number>(() => {
     const stored = localStorage.getItem('ui-scale')
