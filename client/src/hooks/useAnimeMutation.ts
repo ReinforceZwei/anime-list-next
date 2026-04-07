@@ -9,7 +9,10 @@ type PbInternals = 'collectionId' | 'collectionName' | 'created' | 'updated' | '
 
 // Excludes PocketBase internals and userId (injected by hook).
 // id is kept so callers can optionally specify a custom record id on create.
-export type AnimeCreateInput = Omit<AnimeRecord, PbInternals | 'userId'>
+// createdOverride is a virtual field accepted by the server hook to override the created timestamp.
+export type AnimeCreateInput = Omit<AnimeRecord, PbInternals | 'userId'> & {
+  createdOverride?: string
+}
 export type AnimeUpdateInput = Omit<AnimeRecord, PbInternals | 'userId'> & { id: string }
 export type AnimeDeleteInput = { id: string }
 
