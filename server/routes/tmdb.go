@@ -1,10 +1,15 @@
 package routes
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	tmdb "github.com/cyruzin/golang-tmdb"
+	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )
@@ -44,14 +49,84 @@ type TmdbDetailResult struct {
 
 type TmdbRoutes struct {
 	client *tmdb.Client
+	app    core.App
 }
 
-func NewTmdbRoutes(apiKey string) (*TmdbRoutes, error) {
+func NewTmdbRoutes(app core.App, apiKey string) (*TmdbRoutes, error) {
 	client, err := tmdb.Init(apiKey)
 	if err != nil {
 		return nil, err
 	}
-	return &TmdbRoutes{client: client}, nil
+	return &TmdbRoutes{client: client, app: app}, nil
+}
+
+func computeExpiry(mediaType string, tvStatus string) time.Time {
+	if mediaType == "movie" {
+		return time.Now().AddDate(0, 0, 30)
+	}
+	switch tvStatus {
+	case "Ended", "Canceled":
+		return time.Now().AddDate(0, 0, 30)
+	default:
+		return time.Now().Add(24 * time.Hour)
+	}
+}
+
+func (r *TmdbRoutes) getCached(cacheKey string) (json.RawMessage, bool) {
+	now := time.Now().UTC().Format("2006-01-02 15:04:05.000Z")
+	record, err := r.app.FindFirstRecordByFilter(
+		"tmdbCache",
+		"cacheKey = {:cacheKey} && expiresAt > {:now}",
+		dbx.Params{"cacheKey": cacheKey, "now": now},
+	)
+	if err != nil {
+		return nil, false
+	}
+	data := record.GetString("responseData")
+	if data == "" {
+		return nil, false
+	}
+	return json.RawMessage(data), true
+}
+
+func (r *TmdbRoutes) setCached(cacheKey string, mediaType string, tvStatus string, result any) {
+	data, err := json.Marshal(result)
+	if err != nil {
+		log.Printf("[tmdb cache] failed to marshal response for key %q: %v", cacheKey, err)
+		return
+	}
+	expiry := computeExpiry(mediaType, tvStatus).UTC().Format("2006-01-02 15:04:05.000Z")
+
+	existing, err := r.app.FindFirstRecordByFilter(
+		"tmdbCache",
+		"cacheKey = {:cacheKey}",
+		dbx.Params{"cacheKey": cacheKey},
+	)
+	if err != nil {
+		// No existing record — create new
+		col, err := r.app.FindCollectionByNameOrId("tmdbCache")
+		if err != nil {
+			log.Printf("[tmdb cache] failed to find tmdbCache collection: %v", err)
+			return
+		}
+		rec := core.NewRecord(col)
+		rec.Set("cacheKey", cacheKey)
+		rec.Set("responseData", string(data))
+		rec.Set("mediaType", mediaType)
+		rec.Set("tvStatus", tvStatus)
+		rec.Set("expiresAt", expiry)
+		if err := r.app.Save(rec); err != nil {
+			log.Printf("[tmdb cache] failed to save cache record for key %q: %v", cacheKey, err)
+		}
+		return
+	}
+
+	existing.Set("responseData", string(data))
+	existing.Set("tvStatus", tvStatus)
+	existing.Set("expiresAt", expiry)
+	if err := r.app.Save(existing); err != nil {
+		log.Printf("[tmdb cache] failed to update cache record for key %q: %v", cacheKey, err)
+	}
 }
 
 func (r *TmdbRoutes) Register(se *core.ServeEvent) {
@@ -136,6 +211,16 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 		return e.JSON(http.StatusBadRequest, map[string]string{"error": "id must be an integer"})
 	}
 
+	lang := e.Request.URL.Query().Get("language")
+	if lang == "" {
+		lang = "zh-TW"
+	}
+	cacheKey := fmt.Sprintf("%s:%s:%s", mediaType, idStr, lang)
+
+	if cached, ok := r.getCached(cacheKey); ok {
+		return e.JSON(http.StatusOK, cached)
+	}
+
 	if mediaType == "movie" {
 		movie, err := r.client.GetMovieDetails(id, langOptions(e))
 		if err != nil {
@@ -152,7 +237,7 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 			year = movie.ReleaseDate[:4]
 		}
 
-		return e.JSON(http.StatusOK, TmdbDetailResult{
+		result := TmdbDetailResult{
 			ID:            int(movie.ID),
 			MediaType:     "movie",
 			Title:         movie.Title,
@@ -160,7 +245,9 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 			Overview:      movie.Overview,
 			PosterPath:    posterPath,
 			Year:          year,
-		})
+		}
+		r.setCached(cacheKey, "movie", "", result)
+		return e.JSON(http.StatusOK, result)
 	}
 
 	// TV
@@ -194,7 +281,7 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 		})
 	}
 
-	return e.JSON(http.StatusOK, TmdbDetailResult{
+	result := TmdbDetailResult{
 		ID:            int(tv.ID),
 		MediaType:     "tv",
 		Title:         tv.Name,
@@ -203,5 +290,7 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 		PosterPath:    posterPath,
 		Year:          year,
 		Seasons:       seasons,
-	})
+	}
+	r.setCached(cacheKey, "tv", tv.Status, result)
+	return e.JSON(http.StatusOK, result)
 }
