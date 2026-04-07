@@ -186,11 +186,11 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
           color="dimmed"
           onClick={() => mantineModals.openContextModal({
             modal: 'addAnime',
-            title: '不經 TMDb 新增',
+            title: '手動新增',
             innerProps: { onSaved },
           })}
         >
-          不經 TMDb 新增
+          手動新增
         </Button>
       )}
     </Stack>

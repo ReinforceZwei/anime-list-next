@@ -128,7 +128,7 @@ export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnim
           justify="space-between"
           fullWidth
         >
-          進階設定
+          更多選項
         </Button>
 
         <Collapse in={advancedOpen}>
