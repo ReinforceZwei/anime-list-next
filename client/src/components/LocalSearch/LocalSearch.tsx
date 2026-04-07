@@ -103,7 +103,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
             />
             <Indicator disabled={selectedTags.length === 0} size={8} offset={3}>
               <ActionIcon
-                variant={tagFilterOpen ? 'filled' : 'subtle'}
+                variant={tagFilterOpen ? 'filled' : 'outline'}
                 size="lg"
                 onClick={() => setTagFilterOpen((o) => !o)}
                 aria-label="依標籤篩選"
