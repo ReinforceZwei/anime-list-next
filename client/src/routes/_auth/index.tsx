@@ -105,7 +105,7 @@ function Index() {
         >
           <Stack align="center" gap="md">
             <ThemeIcon size={48} radius="xl" color="red" variant="light">
-              <IconAlertTriangle size={26} />
+              <IconAlertTriangle size="2em" />
             </ThemeIcon>
             <Text fw={600} size="lg">
               發生錯誤
@@ -170,7 +170,7 @@ function Index() {
       </Affix>
       <Affix position={{ bottom: 10, right: 10 }} style={{ paddingBlockEnd: 'env(safe-area-inset-bottom)' }}>
         <ActionIcon variant="white" size="lg" radius="xl" style={(theme) => ({ boxShadow: theme.shadows.md })} aria-label="搜尋 TMDb" onClick={openTmdbModal}>
-          <IconPlus />
+          <IconPlus size="1.5em" />
         </ActionIcon>
       </Affix>
       <ElevatorWidget markerRefs={markerRefs.current} />

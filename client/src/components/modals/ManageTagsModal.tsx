@@ -59,7 +59,7 @@ export function ManageTagsModal(_props: ContextModalProps) {
       <Group justify="flex-end">
         <Button
           size="xs"
-          leftSection={<IconPlus size={13} />}
+          leftSection={<IconPlus size="1em" />}
           onClick={openCreateForm}
         >
           新增標籤
@@ -113,7 +113,7 @@ export function ManageTagsModal(_props: ContextModalProps) {
                     aria-label="編輯標籤"
                     onClick={() => openEditForm(tag)}
                   >
-                    <IconEdit size={14} />
+                    <IconEdit size="1em" />
                   </ActionIcon>
                   <ActionIcon
                     variant="subtle"
@@ -123,7 +123,7 @@ export function ManageTagsModal(_props: ContextModalProps) {
                     loading={deleteMutation.isPending && deleteMutation.variables?.id === tag.id}
                     onClick={() => confirmDelete(tag)}
                   >
-                    <IconTrash size={14} />
+                    <IconTrash size="1em" />
                   </ActionIcon>
                 </Group>
               </Group>

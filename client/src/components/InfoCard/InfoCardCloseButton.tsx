@@ -17,7 +17,7 @@ export default function InfoCardCloseButton() {
         aria-label="關閉資訊卡"
         mt={8}
       >
-        <IconX size={14} />
+        <IconX size="1em" />
       </ActionIcon>
     </div>
   )

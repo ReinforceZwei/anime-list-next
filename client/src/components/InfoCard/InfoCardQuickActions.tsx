@@ -28,20 +28,20 @@ function getActions(
   const actions: QuickAction[] = []
 
   if (status === 'planned') {
-    actions.push({ label: '開始觀看', icon: <IconPlayerPlay size={14} />, color: 'blue', targetStatus: 'watching' })
+    actions.push({ label: '開始觀看', icon: <IconPlayerPlay size="1em" />, color: 'blue', targetStatus: 'watching' })
   }
   if (status === 'watching') {
-    actions.push({ label: '標記為已看完', icon: <IconCheck size={14} />, color: 'teal', targetStatus: 'completed' })
+    actions.push({ label: '標記為已看完', icon: <IconCheck size="1em" />, color: 'teal', targetStatus: 'completed' })
   }
   if (!status) {
-    actions.push({ label: '列入待看', icon: <IconCalendar size={14} />, color: 'gray', targetStatus: 'planned' })
+    actions.push({ label: '列入待看', icon: <IconCalendar size="1em" />, color: 'gray', targetStatus: 'planned' })
   }
 
   if (downloadStatus === 'pending') {
-    actions.push({ label: '開始下載', icon: <IconDownload size={14} />, color: 'orange', targetDownloadStatus: 'downloading' })
+    actions.push({ label: '開始下載', icon: <IconDownload size="1em" />, color: 'orange', targetDownloadStatus: 'downloading' })
   }
   if (downloadStatus === 'downloading') {
-    actions.push({ label: '標記為已下載', icon: <IconCheck size={14} />, color: 'green', targetDownloadStatus: 'downloaded' })
+    actions.push({ label: '標記為已下載', icon: <IconCheck size="1em" />, color: 'green', targetDownloadStatus: 'downloaded' })
   }
 
   return actions

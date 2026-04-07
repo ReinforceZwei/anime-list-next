@@ -99,13 +99,13 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   return (
     <Tabs defaultValue="general">
       <Tabs.List mb="md">
-        <Tabs.Tab value="general" leftSection={<IconSettings size={14} />}>
+        <Tabs.Tab value="general" leftSection={<IconSettings size="1em" />}>
           一般
         </Tabs.Tab>
-        <Tabs.Tab value="interface" leftSection={<IconAdjustments size={14} />}>
+        <Tabs.Tab value="interface" leftSection={<IconAdjustments size="1em" />}>
           介面
         </Tabs.Tab>
-        <Tabs.Tab value="importexport" leftSection={<IconDownload size={14} />}>
+        <Tabs.Tab value="importexport" leftSection={<IconDownload size="1em" />}>
           匯入／匯出
         </Tabs.Tab>
       </Tabs.List>
@@ -153,7 +153,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
               }}
             >
               <Group gap="xs">
-                <IconExternalLink size={14} />
+                <IconExternalLink size="1em" />
                 前往 Pocketbase 控制台
               </Group>
             </Anchor>
@@ -195,7 +195,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
               將所有動畫紀錄與標籤下載為 JSON 檔。
             </Text>
             <Button
-              leftSection={<IconDownload size={16} />}
+              leftSection={<IconDownload size="1em" />}
               variant="default"
               loading={isExporting}
               onClick={handleExport}
@@ -218,7 +218,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
                 {(props) => (
                   <Button
                     {...props}
-                    leftSection={<IconUpload size={16} />}
+                    leftSection={<IconUpload size="1em" />}
                     variant="default"
                     loading={isImporting}
                   >
@@ -229,13 +229,13 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
             </Group>
 
             {importResult && (
-              <Alert mt="sm" icon={<IconInfoCircle size={16} />} color="green" variant="light">
+              <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="green" variant="light">
                 已匯入 {importResult.importedRecords} 筆動畫紀錄與 {importResult.importedTags} 個標籤。
               </Alert>
             )}
 
             {importError && (
-              <Alert mt="sm" icon={<IconInfoCircle size={16} />} color="red" variant="light">
+              <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="red" variant="light">
                 {importError}
               </Alert>
             )}

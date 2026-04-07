@@ -68,7 +68,7 @@ export function TagMultiSelect({
         <Text size="sm" style={{ flex: 1 }}>
           {tag.name}
         </Text>
-        {selectedSet.has(tag.id) && <CheckIcon size={12} />}
+        {selectedSet.has(tag.id) && <CheckIcon size="1em" />}
       </Group>
     </Combobox.Option>
   ))

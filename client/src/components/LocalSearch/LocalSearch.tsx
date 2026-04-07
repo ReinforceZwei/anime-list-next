@@ -76,7 +76,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
         onClick={() => setOpened((o) => !o)}
         aria-label="搜尋動畫"
       >
-        <IconSearch size={18} />
+        <IconSearch size="1.2em" />
       </ActionIcon>
       {opened && (
         <Paper shadow="xl" withBorder className={classes.panel}>
@@ -96,7 +96,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
                     onClick={() => setQuery('')}
                     aria-label="清除搜尋"
                   >
-                    <IconX size={14} />
+                    <IconX size="1em" />
                   </ActionIcon>
                 ) : null
               }
@@ -108,7 +108,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
                 onClick={() => setTagFilterOpen((o) => !o)}
                 aria-label="依標籤篩選"
               >
-                <IconTag size={16} />
+                <IconTag size="1em" />
               </ActionIcon>
             </Indicator>
           </Group>

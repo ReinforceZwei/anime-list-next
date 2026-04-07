@@ -38,7 +38,7 @@ function ExistsBadge() {
   return (
     <Group gap={4} align="center">
       <ThemeIcon size="xs" radius="xl" color="teal" variant="light">
-        <IconCheck size={10} />
+        <IconCheck size="1em" />
       </ThemeIcon>
       <Text size="xs" c="teal" fw={500}>已加入</Text>
     </Group>
@@ -128,11 +128,11 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
     >
       <TextInput
         placeholder="搜尋電影與電視劇…"
-        leftSection={<IconSearch size={14} />}
+        leftSection={<IconSearch size="1em" />}
         rightSection={
           isFetching ? <Loader size="xs" /> : query ? (
             <ActionIcon variant="subtle" color="gray" size="sm" onClick={() => setQuery('')}>
-              <IconX size={14} />
+              <IconX size="1em" />
             </ActionIcon>
           ) : null
         }
@@ -208,7 +208,7 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
         <ScrollArea h={PANEL_H} offsetScrollbars>
           {isMobile && (
             <ActionIcon variant="subtle" mb="xs" onClick={() => setMobileView('search')}>
-              <IconArrowLeft size={16} />
+              <IconArrowLeft size="1em" />
             </ActionIcon>
           )}
 
@@ -262,7 +262,7 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
                     <Button
                       size="xs"
                       variant="light"
-                      leftSection={<IconLink size={13} />}
+                      leftSection={<IconLink size="1em" />}
                       mt={4}
                       w="fit-content"
                       loading={updateMutation.isPending}
@@ -278,7 +278,7 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
                       <Button
                         size="xs"
                         variant="light"
-                        leftSection={<IconPlus size={13} />}
+                        leftSection={<IconPlus size="1em" />}
                         mt={4}
                         w="fit-content"
                         loading={createMutation.isPending}
@@ -323,7 +323,7 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
                           <Button
                             size="xs"
                             variant="light"
-                            leftSection={<IconLink size={12} />}
+                            leftSection={<IconLink size="1em" />}
                             loading={
                               updateMutation.isPending &&
                               updateMutation.variables?.tmdbSeasonNumber === season.seasonNumber
@@ -340,7 +340,7 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
                             <Button
                               size="xs"
                               variant="light"
-                              leftSection={<IconPlus size={12} />}
+                              leftSection={<IconPlus size="1em" />}
                               loading={
                                 createMutation.isPending &&
                                 createMutation.variables?.tmdbSeasonNumber === season.seasonNumber

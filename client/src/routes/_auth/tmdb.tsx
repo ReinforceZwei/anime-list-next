@@ -41,14 +41,14 @@ function RouteComponent() {
     <Stack p="xl" maw={1000} mx="auto">
       <Group justify="space-between" align="center">
         <Title order={2}>TMDB Search</Title>
-        <Button leftSection={<IconMovie size={16} />} onClick={openTmdbModal}>
+        <Button leftSection={<IconMovie size="1em" />} onClick={openTmdbModal}>
           Open Modal
         </Button>
       </Group>
 
       <TextInput
         placeholder="Search movies & TV shows…"
-        leftSection={<IconSearch size={16} />}
+        leftSection={<IconSearch size="1em" />}
         rightSection={isFetching ? <Loader size="xs" /> : null}
         value={query}
         onChange={(e) => setQuery(e.currentTarget.value)}

@@ -1,6 +1,6 @@
 .card {
   position: relative;
-  width: 350px;
+  width: 22rem;
   max-height: 98vh;
   overflow-y: auto;
   display: flex;
@@ -16,7 +16,7 @@
   position: sticky;
   top: 0;
   z-index: 0;
-  height: 467px;
+  height: 29rem;
   flex-shrink: 0;
   background-color: light-dark(#e0e0e0, #2a2a2a);
   background-size: cover;
@@ -36,7 +36,7 @@
   position: sticky;
   top: 0;
   z-index: 0;
-  height: 80px;
+  height: 5rem;
   flex-shrink: 0;
   background-color: light-dark(#e8e8e8, #242424);
   display: flex;
@@ -50,10 +50,10 @@
   z-index: 10;
   display: flex;
   justify-content: flex-end;
-  padding-inline-end: 8px;
+  padding-inline-end: 0.5rem;
   /* row takes no vertical space — overlays the poster */
   height: 0;
-  right: 12px;
+  right: 0.75rem;
 }
 
 .content {
