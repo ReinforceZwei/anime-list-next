@@ -5,7 +5,6 @@ import {
   Divider,
   Group,
   NumberInput,
-  Rating,
   Select,
   Stack,
   Tabs,
@@ -13,19 +12,18 @@ import {
   Textarea,
   TextInput,
   Tooltip,
-  type NumberInputHandlers,
 } from '@mantine/core'
 import { DateTimePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import { modals } from '@/lib/modalStack'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconAlertTriangle, IconLink, IconMinus, IconPlus, IconTags, IconTrash } from '@tabler/icons-react'
+import { IconAlertTriangle, IconLink, IconTags, IconTrash } from '@tabler/icons-react'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
+import { RatingInput } from '@/components/RatingInput/RatingInput'
 import type { AnimeRecord } from '@/types/anime'
 import dayjs from 'dayjs'
-import { useRef } from 'react'
 
 type EditAnimeInnerProps = {
   anime: AnimeRecord
@@ -64,8 +62,6 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
       tmdbSeasonNumber: anime.tmdbSeasonNumber ?? null,
     },
   })
-  const ratingNumberInputHandlersRef = useRef<NumberInputHandlers>(null);
-
   function handleSubmit(values: typeof form.values) {
     const statusChanged = values.status !== anime.status
     updateMutation.mutate(
@@ -180,46 +176,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
               {...form.getInputProps('downloadStatus')}
             />
 
-            <Stack gap={4}>
-              <NumberInput
-                label="評分（0-5）"
-                placeholder="0 – 5"
-                min={0}
-                max={5}
-                step={0.1}
-                decimalScale={1}
-                clampBehavior="strict"
-                hideControls
-                handlersRef={ratingNumberInputHandlersRef}
-                leftSection={
-                  <ActionIcon
-                    variant="subtle"
-                    size="sm"
-                    disabled={!form.values.rating || form.values.rating <= 0}
-                    onClick={() => ratingNumberInputHandlersRef.current?.decrement()}
-                  >
-                    <IconMinus size="1em" />
-                  </ActionIcon>
-                }
-                rightSection={
-                  <ActionIcon
-                    variant="subtle"
-                    size="sm"
-                    disabled={form.values.rating >= 5}
-                    onClick={() => ratingNumberInputHandlersRef.current?.increment()}
-                  >
-                    <IconPlus size="1em" />
-                  </ActionIcon>
-                }
-                {...form.getInputProps('rating')}
-              />
-              <Rating
-                value={form.values.rating}
-                fractions={2}
-                size="sm"
-                onChange={(val) => form.setFieldValue('rating', val)}
-              />
-            </Stack>
+            <RatingInput {...form.getInputProps('rating')} />
 
             <Textarea
               label="心得"
