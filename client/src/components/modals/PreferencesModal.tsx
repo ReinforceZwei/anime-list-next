@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   Alert,
   Anchor,
@@ -32,6 +32,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
   const [importError, setImportError] = useState<string | null>(null)
   const resetFileRef = useRef<() => void>(null)
+  const pbAdminUrl = useMemo(() => new URL('/_/', pb.baseURL || window.location.origin).href, [pb.baseURL])
 
   const [uiScale, setUiScale] = useState<number>(() => {
     const stored = localStorage.getItem('ui-scale')
@@ -145,12 +146,10 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
             </Button>
             <Divider />
             <Anchor
-              href={pb.baseURL + '/_/'}
+              href={pbAdminUrl}
               size="sm"
-              onClick={(e) => {
-                e.preventDefault()
-                window.open(pb.baseURL + '/_/', '_blank', 'noopener,noreferrer')
-              }}
+              target='_blank'
+              rel='noopener noreferrer'
             >
               <Group gap="xs">
                 <IconExternalLink size="1em" />
