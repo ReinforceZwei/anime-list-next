@@ -36,7 +36,7 @@ export default function InfoCardTitle() {
             aria-label="複製標題"
             style={{ flexShrink: 0, marginTop: 3 }}
           >
-            {copied ? <IconCheck size={13} /> : <IconCopy size={13} />}
+            {copied ? <IconCheck size="1em" /> : <IconCopy size="1em" />}
           </ActionIcon>
         </Tooltip>
       )}

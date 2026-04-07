@@ -26,37 +26,37 @@ export default function AppMenu() {
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Item
-          leftSection={<IconRefresh size={16} />}
+          leftSection={<IconRefresh size="1em" />}
           onClick={handleRefresh}
         >
           重新整理
         </Menu.Item>
         <Menu.Item
-          leftSection={isDark ? <IconSun size={16} /> : <IconMoon size={16} />}
+          leftSection={isDark ? <IconSun size="1em" /> : <IconMoon size="1em" />}
           onClick={toggleColorScheme}
         >
           {isDark ? '淺色模式' : '深色模式'}
         </Menu.Item>
         <Menu.Item
-          leftSection={<IconTag size={16} />}
+          leftSection={<IconTag size="1em" />}
           onClick={() => modals.openContextModal({ modal: 'manageTags', title: '管理標籤', innerProps: {} })}
         >
           標籤
         </Menu.Item>
         <Menu.Item
-          leftSection={<IconSettings size={16} />}
+          leftSection={<IconSettings size="1em" />}
           onClick={() => modals.openContextModal({ modal: 'preferences', title: '偏好設定', innerProps: {} })}
         >
           設定
         </Menu.Item>
         <Menu.Item
-          leftSection={<IconInfoCircle size={16} />}
+          leftSection={<IconInfoCircle size="1em" />}
           onClick={() => modals.openContextModal({ modal: 'about', title: '關於', innerProps: {} })}
         >
           關於
         </Menu.Item>
         <Menu.Item
-          leftSection={<IconLogout size={16} />}
+          leftSection={<IconLogout size="1em" />}
           color="red"
           onClick={() => navigate({ to: '/logout' })}
         >

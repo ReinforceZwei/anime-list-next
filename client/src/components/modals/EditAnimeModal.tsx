@@ -198,7 +198,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
                     disabled={!form.values.rating || form.values.rating <= 0}
                     onClick={() => ratingNumberInputHandlersRef.current?.decrement()}
                   >
-                    <IconMinus size={14} />
+                    <IconMinus size="1em" />
                   </ActionIcon>
                 }
                 rightSection={
@@ -208,7 +208,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
                     disabled={form.values.rating >= 5}
                     onClick={() => ratingNumberInputHandlersRef.current?.increment()}
                   >
-                    <IconPlus size={14} />
+                    <IconPlus size="1em" />
                   </ActionIcon>
                 }
                 {...form.getInputProps('rating')}
@@ -252,7 +252,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
                   mb={1}
                   onClick={openManageTags}
                 >
-                  <IconTags size={16} />
+                  <IconTags size="1em" />
                 </ActionIcon>
               </Tooltip>
             </Group>
@@ -280,7 +280,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
 
             <Button
               variant="default"
-              leftSection={<IconLink size={16} />}
+              leftSection={<IconLink size="1em" />}
               onClick={() => {
                 modals.openContextModal({
                   modal: 'tmdbSearch',
@@ -294,7 +294,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
             </Button>
 
             <Alert
-              icon={<IconAlertTriangle size={16} />}
+              icon={<IconAlertTriangle size="1em" />}
               color="yellow"
               variant="light"
             >
@@ -345,7 +345,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
             onClick={handleDelete}
             mr="auto"
           >
-            <IconTrash size={18} />
+            <IconTrash size="1em" />
           </ActionIcon>
         </Tooltip>
         <Button variant="default" onClick={() => context.closeModal(id)}>

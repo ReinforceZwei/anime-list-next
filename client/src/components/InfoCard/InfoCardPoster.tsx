@@ -10,7 +10,7 @@ export default function InfoCardPoster() {
   if (!hasTmdbId) {
     return (
       <div className={styles.posterPlaceholder}>
-        <IconPhotoOff size={28} stroke={1.5} />
+        <IconPhotoOff size="2em" stroke={1.5} />
         <Tooltip label="連結至 TMDb" position="bottom" withArrow>
           <ActionIcon
             variant="subtle"
@@ -25,7 +25,7 @@ export default function InfoCardPoster() {
               })
             }}
           >
-            <IconLink size={16} stroke={1.5} />
+            <IconLink size="1em" stroke={1.5} />
           </ActionIcon>
         </Tooltip>
       </div>

@@ -8,6 +8,7 @@ import {
   FileButton,
   Group,
   Loader,
+  Slider,
   Stack,
   Tabs,
   Text,
@@ -15,7 +16,7 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconDownload, IconExternalLink, IconInfoCircle, IconSettings, IconUpload } from '@tabler/icons-react'
+import { IconAdjustments, IconDownload, IconExternalLink, IconInfoCircle, IconSettings, IconUpload } from '@tabler/icons-react'
 import { exportData, importData, type ImportResult } from '@/api/importexport'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
@@ -31,6 +32,17 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
   const [importError, setImportError] = useState<string | null>(null)
   const resetFileRef = useRef<() => void>(null)
+
+  const [uiScale, setUiScale] = useState<number>(() => {
+    const stored = localStorage.getItem('ui-scale')
+    return stored ? parseInt(stored, 10) : 100
+  })
+
+  function handleUiScaleChange(value: number) {
+    setUiScale(value)
+    document.documentElement.style.fontSize = `${value}%`
+    localStorage.setItem('ui-scale', String(value))
+  }
 
   const form = useForm({
     initialValues: {
@@ -87,10 +99,13 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   return (
     <Tabs defaultValue="general">
       <Tabs.List mb="md">
-        <Tabs.Tab value="general" leftSection={<IconSettings size={14} />}>
+        <Tabs.Tab value="general" leftSection={<IconSettings size="1em" />}>
           一般
         </Tabs.Tab>
-        <Tabs.Tab value="importexport" leftSection={<IconDownload size={14} />}>
+        <Tabs.Tab value="interface" leftSection={<IconAdjustments size="1em" />}>
+          介面
+        </Tabs.Tab>
+        <Tabs.Tab value="importexport" leftSection={<IconDownload size="1em" />}>
           匯入／匯出
         </Tabs.Tab>
       </Tabs.List>
@@ -138,12 +153,36 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
               }}
             >
               <Group gap="xs">
-                <IconExternalLink size={14} />
+                <IconExternalLink size="1em" />
                 前往 Pocketbase 控制台
               </Group>
             </Anchor>
           </Stack>
         </form>
+      </Tabs.Panel>
+
+      <Tabs.Panel value="interface">
+        <Stack>
+          <Divider label="介面縮放" labelPosition="left" />
+          <div>
+            <Text size="sm" fw={500} mb="xs">
+              縮放比例：{uiScale}%
+            </Text>
+            <Slider
+              value={uiScale}
+              min={70}
+              max={150}
+              step={10}
+              marks={[
+                { value: 70, label: '70%' },
+                { value: 100, label: '100%' },
+                { value: 150, label: '150%' },
+              ]}
+              onChange={handleUiScaleChange}
+              mb="xl"
+            />
+          </div>
+        </Stack>
       </Tabs.Panel>
 
       <Tabs.Panel value="importexport">
@@ -156,7 +195,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
               將所有動畫紀錄與標籤下載為 JSON 檔。
             </Text>
             <Button
-              leftSection={<IconDownload size={16} />}
+              leftSection={<IconDownload size="1em" />}
               variant="default"
               loading={isExporting}
               onClick={handleExport}
@@ -179,7 +218,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
                 {(props) => (
                   <Button
                     {...props}
-                    leftSection={<IconUpload size={16} />}
+                    leftSection={<IconUpload size="1em" />}
                     variant="default"
                     loading={isImporting}
                   >
@@ -190,13 +229,13 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
             </Group>
 
             {importResult && (
-              <Alert mt="sm" icon={<IconInfoCircle size={16} />} color="green" variant="light">
+              <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="green" variant="light">
                 已匯入 {importResult.importedRecords} 筆動畫紀錄與 {importResult.importedTags} 個標籤。
               </Alert>
             )}
 
             {importError && (
-              <Alert mt="sm" icon={<IconInfoCircle size={16} />} color="red" variant="light">
+              <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="red" variant="light">
                 {importError}
               </Alert>
             )}

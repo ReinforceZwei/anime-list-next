@@ -47,7 +47,7 @@ export default function ElevatorWidget({ markerRefs }: ElevatorWidgetProps) {
           onClick={() => elevatorUp(markerRefs)}
           aria-label="Scroll to previous section"
         >
-          <IconChevronUp size={16} />
+          <IconChevronUp size="1em" />
         </ActionIcon>
         <ActionIcon
           variant="transparent"
@@ -56,7 +56,7 @@ export default function ElevatorWidget({ markerRefs }: ElevatorWidgetProps) {
           onClick={() => elevatorDown(markerRefs)}
           aria-label="Scroll to next section"
         >
-          <IconChevronDown size={16} />
+          <IconChevronDown size="1em" />
         </ActionIcon>
       </Stack>
     </Paper>

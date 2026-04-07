@@ -16,7 +16,7 @@ export default function InfoCardEditButton() {
         onClick={onEdit}
         aria-label="編輯動畫"
       >
-        <IconEdit size={16} />
+        <IconEdit size="1em" />
       </ActionIcon>
     </div>
   )
