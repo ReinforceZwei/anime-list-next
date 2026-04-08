@@ -250,12 +250,10 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
                 <Badge variant="light" color={detail.mediaType === 'tv' ? 'blue' : 'grape'}>
                   {detail.mediaType === 'tv' ? '電視劇' : '電影'}
                 </Badge>
-                {detail.mediaType === 'tv' && detail.firstAirDate
-                  ? <Text size="sm" c="dimmed">{dayjs(detail.firstAirDate).format('YYYY')}</Text>
-                  : detail.mediaType === 'movie' && detail.releaseDate
-                    ? <Text size="sm" c="dimmed">{dayjs(detail.releaseDate).format('YYYY')}</Text>
-                    : null
-                }
+                {(() => {
+                  const date = detail.firstAirDate ?? detail.releaseDate
+                  return date ? <Text size="sm" c="dimmed">{dayjs(date).format('YYYY')}</Text> : null
+                })()}
               </Group>
               {detail.overview && (
                 <Spoiler maxHeight={60} showLabel="顯示更多" hideLabel="顯示較少">
