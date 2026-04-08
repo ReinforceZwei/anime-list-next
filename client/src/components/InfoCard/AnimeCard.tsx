@@ -109,6 +109,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
       <InfoCard.Poster />
       <InfoCard.Content>
         <InfoCard.EditButton />
+        <InfoCard.TmdbButton />
         <InfoCard.Title />
         <InfoCard.Status />
         <InfoCard.Tags />

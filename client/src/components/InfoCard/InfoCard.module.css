@@ -79,3 +79,10 @@
   right: var(--mantine-spacing-md);
   transform: translateY(-50%);
 }
+
+.tmdbButton {
+  position: absolute;
+  top: 0;
+  right: calc(var(--mantine-spacing-md) + 2.5rem);
+  transform: translateY(-50%);
+}

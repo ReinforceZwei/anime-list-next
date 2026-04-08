@@ -15,6 +15,7 @@ import InfoCardDateTime from './InfoCardDateTime'
 import InfoCardTextSection from './InfoCardTextSection'
 import InfoCardQuickActions from './InfoCardQuickActions'
 import InfoCardRelatedSeasons from './InfoCardRelatedSeasons'
+import InfoCardTmdbButton from './InfoCardTmdbButton'
 import styles from './InfoCard.module.css'
 
 interface InfoCardProps
@@ -58,5 +59,6 @@ InfoCard.DateTime = InfoCardDateTime
 InfoCard.TextSection = InfoCardTextSection
 InfoCard.QuickActions = InfoCardQuickActions
 InfoCard.RelatedSeasons = InfoCardRelatedSeasons
+InfoCard.TmdbButton = InfoCardTmdbButton
 
 export default InfoCard
