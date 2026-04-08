@@ -87,7 +87,7 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
 
   const seasonExistsMap = useMemo(() => {
     if (detail?.mediaType !== 'tv' || !detail.seasons) return new Map<number, boolean>()
-    return new Map(detail.seasons.map((s) => [s.seasonNumber, exists('tv', detail.id, s.seasonNumber)]))
+    return new Map(detail.seasons.map((s) => [s.season_number, exists('tv', detail.id, s.season_number)]))
   }, [detail, exists])
 
   useEffect(() => { setSelected(null); setMobileView('search') }, [debounced])
@@ -215,23 +215,23 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
 
           <Group align="flex-start" gap="md" wrap="nowrap">
             <Image
-              src={detail.posterPath || undefined}
+              src={detail.poster_path || undefined}
               fallbackSrc="https://placehold.co/100x150?text=?"
               w={140}
               radius="sm"
               style={{
                 flexShrink: 0,
-                cursor: detail.posterPath ? 'pointer' : undefined,
+                cursor: detail.poster_path ? 'pointer' : undefined,
               }}
-              onClick={detail.posterPath ? () => {
+              onClick={detail.poster_path ? () => {
                 const posterModalId = mantineModals.open({
                   size: 'auto',
                   padding: 0,
                   withCloseButton: false,
                   children: (
                     <Image
-                      src={detail.posterPath!}
-                      alt={detail.title}
+                      src={detail.poster_path!}
+                      alt={detail.mediaType === 'tv' ? detail.name : detail.title}
                       fit="contain"
                       mah="90vh"
                       style={{ display: 'block' }}
@@ -242,16 +242,22 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
               } : undefined}
             />
             <Stack gap="xs" style={{ flex: 1, minWidth: 0 }}>
-              <Text fw={700} size="lg" lh={1.2}>{detail.title}</Text>
-              {detail.originalTitle && detail.originalTitle !== detail.title && (
-                <Text size="sm" c="dimmed">{detail.originalTitle}</Text>
-              )}
+              <Text fw={700} size="lg" lh={1.2}>
+                {detail.mediaType === 'tv' ? detail.name : detail.title}
+              </Text>
+              {(() => {
+                const origTitle = detail.mediaType === 'tv' ? detail.original_name : detail.original_title
+                const dispTitle = detail.mediaType === 'tv' ? detail.name : detail.title
+                return origTitle && origTitle !== dispTitle
+                  ? <Text size="sm" c="dimmed">{origTitle}</Text>
+                  : null
+              })()}
               <Group gap="xs">
                 <Badge variant="light" color={detail.mediaType === 'tv' ? 'blue' : 'grape'}>
                   {detail.mediaType === 'tv' ? '電視劇' : '電影'}
                 </Badge>
                 {(() => {
-                  const date = detail.firstAirDate ?? detail.releaseDate
+                  const date = detail.mediaType === 'tv' ? detail.first_air_date : detail.release_date
                   return date ? <Text size="sm" c="dimmed">{dayjs(date).format('YYYY')}</Text> : null
                 })()}
               </Group>
@@ -304,7 +310,7 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
               <Stack gap="xs">
                 {detail.seasons.map((season) => (
                   <Group
-                    key={season.seasonNumber}
+                    key={season.season_number}
                     justify="space-between"
                     wrap="nowrap"
                     px="sm"
@@ -318,9 +324,9 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
                       {season.name}
                     </Text>
                     <Group gap="xs" style={{ flexShrink: 0 }}>
-                      <Badge size="xs" variant="outline">{season.episodeCount} 集</Badge>
-                      {season.airDate && (
-                        <Text size="xs" c="dimmed">{season.airDate.slice(0, 4)}</Text>
+                      <Badge size="xs" variant="outline">{season.episode_count} 集</Badge>
+                      {season.air_date && (
+                        <Text size="xs" c="dimmed">{season.air_date.slice(0, 4)}</Text>
                       )}
                       {mode === 'link'
                         ? (
@@ -330,15 +336,15 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
                             leftSection={<IconLink size="1em" />}
                             loading={
                               updateMutation.isPending &&
-                              updateMutation.variables?.tmdbSeasonNumber === season.seasonNumber
+                              updateMutation.variables?.tmdbSeasonNumber === season.season_number
                             }
                             disabled={updateMutation.isPending || !targetAnime}
-                            onClick={() => handleLink(detail.id, 'tv', season.seasonNumber)}
+                            onClick={() => handleLink(detail.id, 'tv', season.season_number)}
                           >
                             連結
                           </Button>
                         )
-                        : seasonExistsMap.get(season.seasonNumber)
+                        : seasonExistsMap.get(season.season_number)
                           ? <ExistsBadge />
                           : (
                             <Button
@@ -347,11 +353,11 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
                               leftSection={<IconPlus size="1em" />}
                               loading={
                                 createMutation.isPending &&
-                                createMutation.variables?.tmdbSeasonNumber === season.seasonNumber
+                                createMutation.variables?.tmdbSeasonNumber === season.season_number
                               }
                               disabled={createMutation.isPending}
                               onClick={() => createMutation.mutate(
-                                { tmdbId: detail.id, tmdbMediaType: 'tv', tmdbSeasonNumber: season.seasonNumber },
+                                { tmdbId: detail.id, tmdbMediaType: 'tv', tmdbSeasonNumber: season.season_number },
                                 { onSuccess: (record) => onSaved?.(record.id) },
                               )}
                             >

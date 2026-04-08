@@ -28,37 +28,18 @@ type TmdbSearchItem struct {
 	Year          string `json:"year"`
 }
 
-type TmdbSeasonInfo struct {
-	SeasonNumber int    `json:"seasonNumber"`
-	Name         string `json:"name"`
-	EpisodeCount int    `json:"episodeCount"`
-	PosterPath   string `json:"posterPath"`
-	AirDate      string `json:"airDate"`
+// TvDetailResponse wraps the raw TMDb TVDetails response with a mediaType field.
+// Poster paths are resolved to full URLs before returning.
+type TvDetailResponse struct {
+	MediaType string `json:"mediaType"`
+	*tmdb.TVDetails
 }
 
-type TmdbGenre struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
-
-type TmdbDetailResult struct {
-	ID            int64            `json:"id"`
-	MediaType     string           `json:"mediaType"`
-	Title         string           `json:"title"`
-	OriginalTitle string           `json:"originalTitle"`
-	Overview      string           `json:"overview"`
-	PosterPath    string           `json:"posterPath"`
-	Status        string           `json:"status"`
-	Tagline       string           `json:"tagline"`
-	Genres        []TmdbGenre      `json:"genres"`
-	// TV-specific
-	FirstAirDate     string           `json:"firstAirDate,omitempty"`
-	NumberOfSeasons  int              `json:"numberOfSeasons,omitempty"`
-	NumberOfEpisodes int              `json:"numberOfEpisodes,omitempty"`
-	Seasons          []TmdbSeasonInfo `json:"seasons,omitempty"`
-	// Movie-specific
-	ReleaseDate string `json:"releaseDate,omitempty"`
-	Runtime     int    `json:"runtime,omitempty"`
+// MovieDetailResponse wraps the raw TMDb MovieDetails response with a mediaType field.
+// PosterPath is resolved to a full URL before returning.
+type MovieDetailResponse struct {
+	MediaType string `json:"mediaType"`
+	*tmdb.MovieDetails
 }
 
 type TmdbRoutes struct {
@@ -241,29 +222,11 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 			return e.JSON(http.StatusBadGateway, map[string]string{"error": err.Error()})
 		}
 
-		posterPath := ""
 		if movie.PosterPath != "" {
-			posterPath = tmdb.GetImageURL(movie.PosterPath, posterSize)
+			movie.PosterPath = tmdb.GetImageURL(movie.PosterPath, posterSize)
 		}
 
-		genres := make([]TmdbGenre, 0, len(movie.Genres))
-		for _, g := range movie.Genres {
-			genres = append(genres, TmdbGenre{ID: int(g.ID), Name: g.Name})
-		}
-
-		result := TmdbDetailResult{
-			ID:            movie.ID,
-			MediaType:     "movie",
-			Title:         movie.Title,
-			OriginalTitle: movie.OriginalTitle,
-			Overview:      movie.Overview,
-			PosterPath:    posterPath,
-			Status:        movie.Status,
-			Tagline:       movie.Tagline,
-			Genres:        genres,
-			ReleaseDate:   movie.ReleaseDate,
-			Runtime:       movie.Runtime,
-		}
+		result := &MovieDetailResponse{MediaType: "movie", MovieDetails: movie}
 		r.setCached(cacheKey, "movie", "", result)
 		return e.JSON(http.StatusOK, result)
 	}
@@ -274,46 +237,16 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 		return e.JSON(http.StatusBadGateway, map[string]string{"error": err.Error()})
 	}
 
-	posterPath := ""
 	if tv.PosterPath != "" {
-		posterPath = tmdb.GetImageURL(tv.PosterPath, posterSize)
+		tv.PosterPath = tmdb.GetImageURL(tv.PosterPath, posterSize)
 	}
-
-	genres := make([]TmdbGenre, 0, len(tv.Genres))
-	for _, g := range tv.Genres {
-		genres = append(genres, TmdbGenre{ID: int(g.ID), Name: g.Name})
-	}
-
-	seasons := make([]TmdbSeasonInfo, 0, len(tv.Seasons))
-	for _, s := range tv.Seasons {
-		seasonPosterPath := ""
-		if s.PosterPath != "" {
-			seasonPosterPath = tmdb.GetImageURL(s.PosterPath, posterSize)
+	for i := range tv.Seasons {
+		if tv.Seasons[i].PosterPath != "" {
+			tv.Seasons[i].PosterPath = tmdb.GetImageURL(tv.Seasons[i].PosterPath, posterSize)
 		}
-		seasons = append(seasons, TmdbSeasonInfo{
-			SeasonNumber: s.SeasonNumber,
-			Name:         s.Name,
-			EpisodeCount: s.EpisodeCount,
-			PosterPath:   seasonPosterPath,
-			AirDate:      s.AirDate,
-		})
 	}
 
-	result := TmdbDetailResult{
-		ID:               tv.ID,
-		MediaType:        "tv",
-		Title:            tv.Name,
-		OriginalTitle:    tv.OriginalName,
-		Overview:         tv.Overview,
-		PosterPath:       posterPath,
-		Status:           tv.Status,
-		Tagline:          tv.Tagline,
-		Genres:           genres,
-		FirstAirDate:     tv.FirstAirDate,
-		NumberOfSeasons:  tv.NumberOfSeasons,
-		NumberOfEpisodes: tv.NumberOfEpisodes,
-		Seasons:          seasons,
-	}
+	result := &TvDetailResponse{MediaType: "tv", TVDetails: tv}
 	r.setCached(cacheKey, "tv", tv.Status, result)
 	return e.JSON(http.StatusOK, result)
 }

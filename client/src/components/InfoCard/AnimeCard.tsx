@@ -34,7 +34,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
   const tmdbId = anime?.tmdbId ?? null
   const { data: tmdbDetail } = useTmdbDetail(tmdbType, tmdbId)
 
-  const posterUrl = tmdbDetail?.posterPath ?? null
+  const posterUrl = tmdbDetail?.poster_path ?? null
 
   const tags = useMemo(() => {
     if (!anime?.tags) return []
