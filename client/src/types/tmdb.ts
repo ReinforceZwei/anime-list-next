@@ -9,6 +9,11 @@ export interface TmdbSearchItem {
   year: string
 }
 
+export interface TmdbGenre {
+  id: number
+  name: string
+}
+
 export interface TmdbSeasonInfo {
   seasonNumber: number
   name: string
@@ -26,7 +31,19 @@ export interface TmdbDetailResult {
   overview: string
   /** Full poster image path (already resolved at backend) */
   posterPath: string
-  year: string
+  status: string
+  tagline: string
+  genres: TmdbGenre[]
+  /** TV only */
+  firstAirDate?: string
+  /** TV only */
+  numberOfSeasons?: number
+  /** TV only */
+  numberOfEpisodes?: number
   /** TV only */
   seasons?: TmdbSeasonInfo[]
+  /** Movie only */
+  releaseDate?: string
+  /** Movie only */
+  runtime?: number
 }

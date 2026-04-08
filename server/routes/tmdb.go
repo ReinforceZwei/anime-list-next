@@ -36,15 +36,29 @@ type TmdbSeasonInfo struct {
 	AirDate      string `json:"airDate"`
 }
 
+type TmdbGenre struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
 type TmdbDetailResult struct {
-	ID            int              `json:"id"`
+	ID            int64            `json:"id"`
 	MediaType     string           `json:"mediaType"`
 	Title         string           `json:"title"`
 	OriginalTitle string           `json:"originalTitle"`
 	Overview      string           `json:"overview"`
 	PosterPath    string           `json:"posterPath"`
-	Year          string           `json:"year"`
-	Seasons       []TmdbSeasonInfo `json:"seasons,omitempty"`
+	Status        string           `json:"status"`
+	Tagline       string           `json:"tagline"`
+	Genres        []TmdbGenre      `json:"genres"`
+	// TV-specific
+	FirstAirDate     string           `json:"firstAirDate,omitempty"`
+	NumberOfSeasons  int              `json:"numberOfSeasons,omitempty"`
+	NumberOfEpisodes int              `json:"numberOfEpisodes,omitempty"`
+	Seasons          []TmdbSeasonInfo `json:"seasons,omitempty"`
+	// Movie-specific
+	ReleaseDate string `json:"releaseDate,omitempty"`
+	Runtime     int    `json:"runtime,omitempty"`
 }
 
 type TmdbRoutes struct {
@@ -232,19 +246,23 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 			posterPath = tmdb.GetImageURL(movie.PosterPath, posterSize)
 		}
 
-		year := ""
-		if len(movie.ReleaseDate) >= 4 {
-			year = movie.ReleaseDate[:4]
+		genres := make([]TmdbGenre, 0, len(movie.Genres))
+		for _, g := range movie.Genres {
+			genres = append(genres, TmdbGenre{ID: int(g.ID), Name: g.Name})
 		}
 
 		result := TmdbDetailResult{
-			ID:            int(movie.ID),
+			ID:            movie.ID,
 			MediaType:     "movie",
 			Title:         movie.Title,
 			OriginalTitle: movie.OriginalTitle,
 			Overview:      movie.Overview,
 			PosterPath:    posterPath,
-			Year:          year,
+			Status:        movie.Status,
+			Tagline:       movie.Tagline,
+			Genres:        genres,
+			ReleaseDate:   movie.ReleaseDate,
+			Runtime:       movie.Runtime,
 		}
 		r.setCached(cacheKey, "movie", "", result)
 		return e.JSON(http.StatusOK, result)
@@ -261,9 +279,9 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 		posterPath = tmdb.GetImageURL(tv.PosterPath, posterSize)
 	}
 
-	year := ""
-	if len(tv.FirstAirDate) >= 4 {
-		year = tv.FirstAirDate[:4]
+	genres := make([]TmdbGenre, 0, len(tv.Genres))
+	for _, g := range tv.Genres {
+		genres = append(genres, TmdbGenre{ID: int(g.ID), Name: g.Name})
 	}
 
 	seasons := make([]TmdbSeasonInfo, 0, len(tv.Seasons))
@@ -282,14 +300,19 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 	}
 
 	result := TmdbDetailResult{
-		ID:            int(tv.ID),
-		MediaType:     "tv",
-		Title:         tv.Name,
-		OriginalTitle: tv.OriginalName,
-		Overview:      tv.Overview,
-		PosterPath:    posterPath,
-		Year:          year,
-		Seasons:       seasons,
+		ID:               tv.ID,
+		MediaType:        "tv",
+		Title:            tv.Name,
+		OriginalTitle:    tv.OriginalName,
+		Overview:         tv.Overview,
+		PosterPath:       posterPath,
+		Status:           tv.Status,
+		Tagline:          tv.Tagline,
+		Genres:           genres,
+		FirstAirDate:     tv.FirstAirDate,
+		NumberOfSeasons:  tv.NumberOfSeasons,
+		NumberOfEpisodes: tv.NumberOfEpisodes,
+		Seasons:          seasons,
 	}
 	r.setCached(cacheKey, "tv", tv.Status, result)
 	return e.JSON(http.StatusOK, result)
