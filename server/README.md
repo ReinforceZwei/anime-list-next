@@ -4,15 +4,7 @@ Pocketbase backend with custom API route.
 
 ## How to view collection schema
 
-No need to read scattered migration files. Use `server/pocketbase-get-schemas.sh` (Linux/MacOS) or `server/pocketbase-get-schemas.ps1` (Windows) helper script to view collection schema.
-
-```sh
-# No argument to list collections
-pocketbase-get-schemas.sh
-
-# View specific collection schema
-pocketbase-get-schemas.sh animes
-```
+Read migration files in `migrations/` or use the PocketBase admin UI.
 
 ## Design
 

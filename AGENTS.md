@@ -56,9 +56,7 @@ rg -n "export function use" client/src/hooks/
 # Find a PocketBase collection reference
 rg -n "Collections\." client/src/
 
-# View collection schema (no need to read migrations)
-cd server && ./pocketbase-get-schemas.sh            # Linux/macOS
-cd server && ./pocketbase-get-schemas.ps1           # Windows
+# View collection schema: read migrations/ files or use the PocketBase admin UI
 ```
 
 ## Definition of Done
