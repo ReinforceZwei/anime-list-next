@@ -116,3 +116,23 @@ cd client
 npm install
 npm run dev
 ```
+
+## Telemetry
+
+This project uses [Sentry](https://sentry.io) for error monitoring, performance tracing, and session replay.
+
+### What's collected
+
+| Feature | What it captures |
+|---|---|
+| **Error Monitoring** | Unhandled React errors, component crashes, and caught exceptions — with stack traces |
+| **Tracing** | Page loads, navigation timings, and API call latencies |
+| **Session Replay** | Recordings of user sessions leading up to errors (text is masked, media is blocked) |
+
+No personally identifiable information (PII) is collected. Session replay masks all text content and blocks images/video by default. The Sentry DSN is the only value baked into the frontend bundle — it's public by design.
+
+### Opting out
+
+To opt-out Sentry telemetry, rebuild the project without providing Sentry DSN.
+
+To completely strip the Sentry SDK from production builds, remove the `@sentry/react` dependency and the `sentryVitePlugin` from `vite.config.ts`.

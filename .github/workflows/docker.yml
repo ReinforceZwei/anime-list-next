@@ -54,5 +54,10 @@ jobs:
             APP_VERSION=${{ github.ref_name }}
             COMMIT=${{ github.sha }}
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            SENTRY_ORG=${{ vars.SENTRY_ORG }}
+            SENTRY_PROJECT=${{ vars.SENTRY_PROJECT }}
+            VITE_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          secrets: |
+            "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}"
           cache-from: type=gha,scope=multi-arch
           cache-to: type=gha,mode=max,scope=multi-arch
