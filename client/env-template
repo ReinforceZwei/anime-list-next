@@ -1,1 +1,6 @@
 VITE_PB_URL=
+VITE_SENTRY_DSN=
+# Sentry source map upload (only needed at build time)
+SENTRY_AUTH_TOKEN=sntrys_...
+SENTRY_ORG=my-org-slug
+SENTRY_PROJECT=my-project-slug
