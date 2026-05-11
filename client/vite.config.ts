@@ -15,13 +15,15 @@ function getAppVersion(): string {
   }
 }
 
+const isSentryEnabled = !!(process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT)
+
 // https://vite.dev/config/
 export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(getAppVersion()),
   },
   build: {
-    sourcemap: "hidden",
+    sourcemap: isSentryEnabled ? "hidden" : false,
   },
   plugins: [
     tanstackRouter({
@@ -51,14 +53,16 @@ export default defineConfig({
         navigateFallbackDenylist: [/^\/_.*/],
       },
     }),
-    sentryVitePlugin({
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      sourcemaps: {
-        filesToDeleteAfterUpload: ['./dist/**/*.map']
-      }
-    }),
+    ...(isSentryEnabled
+      ? [sentryVitePlugin({
+          org: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+          sourcemaps: {
+            filesToDeleteAfterUpload: ['./dist/**/*.map']
+          }
+        })]
+      : []),
   ],
   resolve: {
     alias: {

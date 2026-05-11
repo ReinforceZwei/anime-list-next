@@ -1,0 +1,9 @@
+.devcontainer/
+.github/
+
+client/node_modules/
+client/dist/
+client/dev-dist/
+client/.tanstack/
+
+server/pb_data/
