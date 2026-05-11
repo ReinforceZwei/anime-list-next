@@ -135,17 +135,28 @@ Go to **Settings → Secrets and variables → Actions** on your GitHub repo and
 
 ### How they're used
 
-The workflow passes all four as `build-args` to Docker:
+The workflow passes the non-sensitive values as `build-args` and the auth token as a build **secret** (to avoid leaking it into image layers):
 
 ```yaml
 build-args: |
   SENTRY_ORG=${{ vars.SENTRY_ORG }}
   SENTRY_PROJECT=${{ vars.SENTRY_PROJECT }}
-  SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
   VITE_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+secrets: |
+  "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}"
 ```
 
-Inside the Dockerfile, these are received as `ARG` and exported as `ENV` during the client build stage. The `sentryVitePlugin` in `vite.config.ts` reads `SENTRY_ORG`, `SENTRY_PROJECT`, and `SENTRY_AUTH_TOKEN` to upload source maps. Vite statically replaces `import.meta.env.VITE_SENTRY_DSN` in the bundle.
+Inside the Dockerfile, `SENTRY_ORG`, `SENTRY_PROJECT`, and `VITE_SENTRY_DSN` are received as `ARG` and exported as `ENV` during the client build stage. `SENTRY_AUTH_TOKEN` is mounted as a secret file and read at build time:
+
+```dockerfile
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
+    export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || echo "") && \
+    npm run build
+```
+
+The `sentryVitePlugin` in `vite.config.ts` reads `SENTRY_ORG`, `SENTRY_PROJECT`, and `SENTRY_AUTH_TOKEN` to upload source maps. Vite statically replaces `import.meta.env.VITE_SENTRY_DSN` in the bundle.
+
+> **Local builds:** Pass the secret via `--secret id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN`. If the env var isn't set, Docker passes an empty string and the build still succeeds — the sentry plugin just skips source map uploads.
 
 ### Creating a Sentry auth token
 

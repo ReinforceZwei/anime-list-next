@@ -5,10 +5,9 @@ Sentry.init({
   environment: import.meta.env.MODE,
   release: __APP_VERSION__,
 
-  sendDefaultPii: true,
+  sendDefaultPii: false,
 
   integrations: [
-    Sentry.browserTracingIntegration(),
     Sentry.replayIntegration({
       maskAllText: true,
       blockAllMedia: true,
@@ -16,11 +15,9 @@ Sentry.init({
   ],
 
   // Tracing
-  tracesSampleRate: 1.0, // lower to 0.1–0.2 in production
+  tracesSampleRate: 0.1,
 
   // Session Replay
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
-
-  enableLogs: true,
 });

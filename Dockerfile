@@ -10,13 +10,11 @@ FROM --platform=$BUILDPLATFORM node:22-alpine AS client-builder
 ARG APP_VERSION
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
-ARG SENTRY_AUTH_TOKEN
 ARG VITE_SENTRY_DSN
 
 ENV APP_VERSION=${APP_VERSION}
 ENV SENTRY_ORG=${SENTRY_ORG}
 ENV SENTRY_PROJECT=${SENTRY_PROJECT}
-ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV VITE_SENTRY_DSN=${VITE_SENTRY_DSN}
 
 WORKDIR /app/client
@@ -25,7 +23,11 @@ COPY client/package.json client/package-lock.json ./
 RUN npm ci
 
 COPY client/ ./
-RUN npm run build
+# SENTRY_AUTH_TOKEN is a build secret (not an ARG) to avoid leaking it into image layers.
+# For local builds, pass it via:  --secret id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
+    export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || echo "") && \
+    npm run build
 
 # ── Server build ─────────────────────────────────────────────────────────────
 FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS server-builder
