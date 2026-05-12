@@ -33,4 +33,4 @@ git tag $Tag
 Write-Host ""
 Write-Host "Done. Run the following to publish:"
 Write-Host ""
-Write-Host "  git push && git push --tags"
+Write-Host "  git push; git push --tags"
