@@ -38,12 +38,12 @@ func main() {
 	// Falls back to SENTRY_DSN env var for local development (go run .).
 	dsn := sentryDsn
 	if dsn == "" {
-		dsn = os.Getenv("SENTRY_DSN")
+		dsn = cfg.SentryDsn
 	}
 	if dsn != "" {
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              dsn,
-			Environment:      os.Getenv("SENTRY_ENVIRONMENT"),
+			Environment:      cfg.SentryEnvironment,
 			Release:          version,
 			AttachStacktrace: true,
 			SendDefaultPII:   false,
