@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	github.com/cyruzin/golang-tmdb v1.9.2
+	github.com/getsentry/sentry-go v0.46.2
 	github.com/joho/godotenv v1.5.1
 	github.com/pocketbase/dbx v1.12.0
 	github.com/pocketbase/pocketbase v0.36.6

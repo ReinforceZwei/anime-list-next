@@ -35,6 +35,7 @@ FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS server-builder
 ARG APP_VERSION
 ARG COMMIT
 ARG BUILD_DATE
+ARG SENTRY_DSN
 ARG TARGETOS
 ARG TARGETARCH
 
@@ -49,7 +50,8 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build \
     -ldflags "-s -w \
               -X main.version=${APP_VERSION} \
               -X main.commit=${COMMIT} \
-              -X main.date=${BUILD_DATE}" \
+              -X main.date=${BUILD_DATE} \
+              -X main.sentryDsn=${SENTRY_DSN}" \
     -o /app/anime-list-server \
     .
 
@@ -59,6 +61,11 @@ FROM alpine:3.21
 RUN apk add --no-cache ca-certificates tzdata
 
 WORKDIR /app
+
+# Sentry runtime config.  DSNs are baked into client/server binaries at build time.
+# SENTRY_ENVIRONMENT can be overridden at container runtime via -e.
+ARG SENTRY_ENVIRONMENT=production
+ENV SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
 
 COPY --from=server-builder /app/anime-list-server ./server
 COPY --from=client-builder /app/client/dist ./pb_public
