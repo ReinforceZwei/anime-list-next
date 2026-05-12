@@ -1,10 +1,12 @@
 package middlewares
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/tools/router"
 )
 
 type SentryMiddleware struct{}
@@ -43,10 +45,37 @@ func (m *SentryMiddleware) handler(e *core.RequestEvent) error {
 	err := e.Next()
 
 	if err != nil {
-		transaction.Status = sentry.SpanStatusInternalError
-		hub.CaptureException(err)
+		var apiErr *router.ApiError
+		if errors.As(err, &apiErr) && apiErr.Status < 500 {
+			// Expected client error (4xx, etc.) — do not report to Sentry,
+			// but still reflect a meaningful span status.
+			transaction.Status = httpStatusToSpanStatus(apiErr.Status)
+		} else {
+			// Real server fault (5xx) or unexpected non-ApiError — capture.
+			transaction.Status = sentry.SpanStatusInternalError
+			hub.CaptureException(err)
+		}
 	} else {
 		transaction.Status = sentry.SpanStatusOK
 	}
 	return err
+}
+
+// httpStatusToSpanStatus maps common HTTP status codes to Sentry span statuses.
+// Falls back to SpanStatusUnknown for unrecognized codes.
+func httpStatusToSpanStatus(status int) sentry.SpanStatus {
+	switch status {
+	case 400:
+		return sentry.SpanStatusInvalidArgument
+	case 401:
+		return sentry.SpanStatusUnauthenticated
+	case 403:
+		return sentry.SpanStatusPermissionDenied
+	case 404:
+		return sentry.SpanStatusNotFound
+	case 429:
+		return sentry.SpanStatusResourceExhausted
+	default:
+		return sentry.SpanStatusUnknown
+	}
 }
