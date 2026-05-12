@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/joho/godotenv"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -16,19 +18,44 @@ import (
 
 	"github.com/ReinforceZwei/anime-list-next/server/config"
 	"github.com/ReinforceZwei/anime-list-next/server/hooks"
+	"github.com/ReinforceZwei/anime-list-next/server/middlewares"
 	_ "github.com/ReinforceZwei/anime-list-next/server/migrations"
 	"github.com/ReinforceZwei/anime-list-next/server/routes"
 )
 
 var (
-	version = "dev"
-	commit  = "unknown"
-	date    = "unknown"
+	version   = "dev"
+	commit    = "unknown"
+	date      = "unknown"
+	sentryDsn = "" // set at build time via -ldflags "-X main.sentryDsn=..."
 )
 
 func main() {
 	_ = godotenv.Load()
 	cfg := config.Load()
+
+	// Sentry DSN is baked at build time via ldflags for production images.
+	// Falls back to SENTRY_DSN env var for local development (go run .).
+	dsn := sentryDsn
+	if dsn == "" {
+		dsn = os.Getenv("SENTRY_DSN")
+	}
+	if dsn != "" {
+		err := sentry.Init(sentry.ClientOptions{
+			Dsn:              dsn,
+			Environment:      os.Getenv("SENTRY_ENVIRONMENT"),
+			Release:          version,
+			AttachStacktrace: true,
+			SendDefaultPII:   false,
+			EnableTracing:    true,
+			TracesSampleRate: 0.1,
+		})
+		if err != nil {
+			log.Fatalf("sentry.Init: %s", err)
+		}
+		defer sentry.Flush(2 * time.Second)
+	}
+
 	app := pocketbase.New()
 
 	app.RootCmd.Version = fmt.Sprintf("%s (commit: %s, built: %s)", version, commit, date)
@@ -67,13 +94,17 @@ func main() {
 	}
 
 	importExportRoutes := routes.NewImportExportRoutes()
-
 	versionRoutes := routes.NewVersionRoutes(version, commit, date)
+
+	sentryMiddleware := middlewares.NewSentryMiddleware()
 
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 		tmdbRoutes.Register(se)
 		importExportRoutes.Register(se)
 		versionRoutes.Register(se)
+		if dsn != "" {
+			sentryMiddleware.Register(se)
+		}
 		return se.Next()
 	})
 

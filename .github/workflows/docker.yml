@@ -56,7 +56,9 @@ jobs:
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
             SENTRY_ORG=${{ vars.SENTRY_ORG }}
             SENTRY_PROJECT=${{ vars.SENTRY_PROJECT }}
-            VITE_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            VITE_SENTRY_DSN=${{ secrets.SENTRY_CLIENT_DSN }}
+            SENTRY_DSN=${{ secrets.SENTRY_SERVER_DSN }}
+            SENTRY_ENVIRONMENT=production
           secrets: |
             "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}"
           cache-from: type=gha,scope=multi-arch
