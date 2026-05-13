@@ -31,6 +31,7 @@ var (
 )
 
 func main() {
+	isGoRun := osutils.IsProbablyGoRun()
 	_ = godotenv.Load()
 	cfg := config.Load()
 
@@ -41,9 +42,18 @@ func main() {
 		dsn = cfg.SentryDsn
 	}
 	if dsn != "" {
+		environment := cfg.SentryEnvironment
+		if environment == "" {
+			if isGoRun {
+				environment = "development"
+			} else {
+				environment = "production"
+			}
+		}
+
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              dsn,
-			Environment:      cfg.SentryEnvironment,
+			Environment:      environment,
 			Release:          version,
 			AttachStacktrace: true,
 			SendDefaultPII:   false,
@@ -63,7 +73,7 @@ func main() {
 
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
 		// Only auto migrate when running from go run
-		Automigrate: osutils.IsProbablyGoRun(),
+		Automigrate: isGoRun,
 	})
 
 	app.OnRecordCreate("users").BindFunc(func(e *core.RecordEvent) error {
