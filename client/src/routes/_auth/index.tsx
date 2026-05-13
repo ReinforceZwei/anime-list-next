@@ -15,12 +15,15 @@ import {
   Text,
 } from "@mantine/core";
 import { modals } from '@/lib/modalStack';
-import { IconAlertTriangle, IconPlus } from "@tabler/icons-react";
+import { IconAlertTriangle, IconPlus, IconFilterOff } from "@tabler/icons-react";
 import AnimePaper from "@/components/AnimePaper/AnimePaper";
 import AppMenu from "@/components/AppMenu/AppMenu";
 import AnimeCard from "@/components/InfoCard/AnimeCard";
 import ElevatorWidget from "@/components/ElevatorWidget/ElevatorWidget";
 import { LocalSearch } from "@/components/LocalSearch/LocalSearch";
+import { FilterBuilder } from "@/components/FilterBuilder/FilterBuilder";
+import { evaluateFilter } from "@/lib/filterEngine";
+import type { FilterExpression } from "@/types/filter";
 import { useMemo, useRef, useState } from "react";
 import { useDocumentTitle } from "@mantine/hooks";
 
@@ -66,9 +69,19 @@ function Index() {
 
   const { sections, isLoading, isError, error } = useAnimeSections(sectionDefs);
   const [selectedAnimeId, setSelectedAnimeId] = useState<string | null>(null);
+  const [globalFilter, setGlobalFilter] = useState<FilterExpression | null>(null);
   const pageTitle = prefs?.pageTitle || "動漫清單";
   const markerRefs = useRef<(HTMLParagraphElement | null)[]>([]);
   const { getRef, jumpTo } = useScrollToRecord();
+
+  // Apply global filter on top of sections
+  const filteredSections = useMemo(() => {
+    if (!globalFilter) return sections;
+    return sections.map((section) => ({
+      ...section,
+      items: section.items.filter((item) => evaluateFilter(globalFilter, item)),
+    }));
+  }, [sections, globalFilter]);
 
   useDocumentTitle(pageTitle);
 
@@ -134,7 +147,7 @@ function Index() {
       </Affix>
       <AnimePaper>
         <AnimePaper.Title>{pageTitle}</AnimePaper.Title>
-        {sections.map((section, i) => (
+        {filteredSections.map((section, i) => (
           <div key={section.key}>
             <AnimePaper.Subtitle
               ref={(el) => {
@@ -156,8 +169,9 @@ function Index() {
           </div>
         ))}
       </AnimePaper>
-      <Affix position={{ top: 10, right: 10 }}>
+      <Affix position={{ top: 10, right: 10 }} style={{ display: 'flex', gap: 8 }}>
         <LocalSearch jumpTo={jumpTo} />
+        <FilterBuilder value={globalFilter} onChange={setGlobalFilter} />
       </Affix>
       <Affix position={{ top: 10, right: 10 }}>
         {selectedAnimeId && (
@@ -168,7 +182,20 @@ function Index() {
           />
         )}
       </Affix>
-      <Affix position={{ bottom: 10, right: 10 }} style={{ paddingBlockEnd: 'env(safe-area-inset-bottom)' }}>
+      <Affix position={{ bottom: 10, right: 10 }} style={{ paddingBlockEnd: 'env(safe-area-inset-bottom)', display: 'flex', gap: 8 }}>
+        {globalFilter && (
+          <ActionIcon
+            variant="white"
+            size="lg"
+            radius="xl"
+            color="blue"
+            style={(theme) => ({ boxShadow: theme.shadows.md })}
+            aria-label="清除篩選"
+            onClick={() => setGlobalFilter(null)}
+          >
+            <IconFilterOff size="1.2em" />
+          </ActionIcon>
+        )}
         <ActionIcon variant="white" size="lg" radius="xl" style={(theme) => ({ boxShadow: theme.shadows.md })} aria-label="搜尋 TMDb" onClick={openTmdbModal}>
           <IconPlus size="1.5em" />
         </ActionIcon>
