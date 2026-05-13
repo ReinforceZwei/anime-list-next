@@ -15,12 +15,13 @@ function getAppVersion(): string {
   }
 }
 
+const appVersion = JSON.stringify(getAppVersion())
 const isSentryEnabled = !!(process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT)
 
 // https://vite.dev/config/
 export default defineConfig({
   define: {
-    __APP_VERSION__: JSON.stringify(getAppVersion()),
+    __APP_VERSION__: appVersion,
   },
   build: {
     sourcemap: isSentryEnabled ? "hidden" : false,
@@ -58,6 +59,9 @@ export default defineConfig({
           org: process.env.SENTRY_ORG,
           project: process.env.SENTRY_PROJECT,
           authToken: process.env.SENTRY_AUTH_TOKEN,
+          release: {
+            name: appVersion,
+          },
           sourcemaps: {
             filesToDeleteAfterUpload: ['./dist/**/*.map']
           }
