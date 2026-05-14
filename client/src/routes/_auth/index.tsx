@@ -21,7 +21,7 @@ import AppMenu from "@/components/AppMenu/AppMenu";
 import AnimeCard from "@/components/InfoCard/AnimeCard";
 import ElevatorWidget from "@/components/ElevatorWidget/ElevatorWidget";
 import { LocalSearch } from "@/components/LocalSearch/LocalSearch";
-import { FilterBuilder } from "@/components/FilterBuilder/FilterBuilder";
+import { FilterPopover } from "@/components/FilterPopover/FilterPopover";
 import { evaluateFilter } from "@/lib/filterEngine";
 import type { FilterExpression } from "@/types/filter";
 import { useMemo, useRef, useState } from "react";
@@ -171,7 +171,7 @@ function Index() {
       </AnimePaper>
       <Affix position={{ top: 10, right: 10 }} style={{ display: 'flex', gap: 8 }}>
         <LocalSearch jumpTo={jumpTo} />
-        <FilterBuilder value={globalFilter} onChange={setGlobalFilter} />
+        <FilterPopover value={globalFilter} onChange={setGlobalFilter} />
       </Affix>
       <Affix position={{ top: 10, right: 10 }}>
         {selectedAnimeId && (
