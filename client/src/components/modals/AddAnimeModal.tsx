@@ -26,6 +26,7 @@ import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
 import { RatingInput } from '@/components/RatingInput/RatingInput'
+import { SELECT_STATUS_OPTIONS, SELECT_DOWNLOAD_OPTIONS, SELECT_MEDIA_OPTIONS } from '@/lib/fieldRegistry'
 import dayjs from 'dayjs'
 import { useEffect, useRef } from 'react'
 
@@ -137,10 +138,7 @@ export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnim
               label="觀看狀態"
               data={[
                 { value: '', label: '無' },
-                { value: 'planned', label: '待看' },
-                { value: 'watching', label: '觀看中' },
-                { value: 'completed', label: '已看完' },
-                { value: 'dropped', label: '棄番' },
+                ...SELECT_STATUS_OPTIONS,
               ]}
               {...form.getInputProps('status')}
             />
@@ -149,9 +147,7 @@ export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnim
               label="下載狀態"
               data={[
                 { value: '', label: '無' },
-                { value: 'pending', label: '等待下載' },
-                { value: 'downloading', label: '下載中' },
-                { value: 'downloaded', label: '已下載' },
+                ...SELECT_DOWNLOAD_OPTIONS,
               ]}
               {...form.getInputProps('downloadStatus')}
             />
@@ -237,8 +233,7 @@ export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnim
               label="TMDb 媒體類型"
               data={[
                 { value: '', label: '無' },
-                { value: 'tv', label: '電視 (TV)' },
-                { value: 'movie', label: '電影 (Movie)' },
+                ...SELECT_MEDIA_OPTIONS,
               ]}
               {...form.getInputProps('tmdbMediaType')}
             />

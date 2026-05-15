@@ -1,0 +1,13 @@
+.container {
+  position: relative;
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 32rem;
+  max-width: calc(100vw - 2rem);
+  padding: var(--mantine-spacing-sm);
+  z-index: 100;
+}
