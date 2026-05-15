@@ -498,7 +498,7 @@ describe('evaluateFilter - tags', () => {
 
   it('returns true for unknown operator with empty filter value', () => {
     // If filterValue is empty and operator is not isEmpty/isNotEmpty, it returns true
-    const filter: FilterExpression = group('and', [cond('tags', 'containsAll' as never, [] as never)])
+    const filter: FilterExpression = group('and', [cond('tags', 'unknownOperator' as never, [] as never)])
     expect(evaluateFilter(filter, makeRecord({ tags: ['action'] }))).toBe(true)
   })
 })

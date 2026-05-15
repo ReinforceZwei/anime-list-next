@@ -79,7 +79,7 @@ export function FilterValueInput({
               size="xs"
               w={80}
               min={0}
-              max={10}
+              max={5}
               value={arr[0] ? parseFloat(arr[0]) : undefined}
               onChange={(n) => onChange([String(n ?? ''), arr[1]])}
               placeholder="最小值"
@@ -88,7 +88,7 @@ export function FilterValueInput({
               size="xs"
               w={80}
               min={0}
-              max={10}
+              max={5}
               value={arr[1] ? parseFloat(arr[1]) : undefined}
               onChange={(n) => onChange([arr[0], String(n ?? '')])}
               placeholder="最大值"
@@ -101,7 +101,7 @@ export function FilterValueInput({
           size="xs"
           w={80}
           min={0}
-          max={10}
+          max={5}
           value={typeof value === 'number' ? value : undefined}
           onChange={(n) => onChange(typeof n === 'number' ? n : '')}
           placeholder="數值"
