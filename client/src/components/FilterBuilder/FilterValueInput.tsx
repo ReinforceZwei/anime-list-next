@@ -1,5 +1,5 @@
 import { Select, MultiSelect, NumberInput, TextInput } from '@mantine/core'
-import { DatePickerInput } from '@mantine/dates'
+import { DatePickerInput, type DateValue } from '@mantine/dates'
 import type { FilterableField, FilterOperator, FilterValue } from '@/types/filter'
 import { getFieldDef, operatorNeedsRange, operatorNeedsNoValue } from '@/lib/fieldRegistry'
 import { useTagList } from '@/hooks/useTagList'
@@ -74,15 +74,26 @@ export function FilterValueInput({
       if (needsRange) {
         const arr = Array.isArray(value) ? value as [string, string] : ['', '']
         return (
-          <NumberInput
-            size="xs"
-            w={80}
-            min={0}
-            max={10}
-            value={arr[0] ? parseFloat(arr[0]) : undefined}
-            onChange={(n) => onChange([String(n ?? ''), arr[1]])}
-            placeholder="最小值"
-          />
+          <>
+            <NumberInput
+              size="xs"
+              w={80}
+              min={0}
+              max={10}
+              value={arr[0] ? parseFloat(arr[0]) : undefined}
+              onChange={(n) => onChange([String(n ?? ''), arr[1]])}
+              placeholder="最小值"
+            />
+            <NumberInput
+              size="xs"
+              w={80}
+              min={0}
+              max={10}
+              value={arr[1] ? parseFloat(arr[1]) : undefined}
+              onChange={(n) => onChange([arr[0], String(n ?? '')])}
+              placeholder="最大值"
+            />
+          </>
         )
       }
       return (
@@ -98,40 +109,27 @@ export function FilterValueInput({
       )
     case 'date':
       if (needsRange) {
-        const arr = Array.isArray(value) ? value as [string, string] : ['', '']
+        const arr = Array.isArray(value) ? value as [DateValue, DateValue] : ['', ''] as [DateValue, DateValue]
         return (
-          <>
-            <DatePickerInput
-              size="xs"
-              w={140}
-              locale="zh-tw"
-              valueFormat="YYYY/MM/DD"
-              value={arr[0] ? dayjs(arr[0]).toDate() : null}
-              onChange={(d) => onChange([d ? dayjs(d).format('YYYY-MM-DD') : '', arr[1]])}
-              placeholder="開始日期"
-              clearable
-            />
-            <DatePickerInput
-              size="xs"
-              w={140}
-              locale="zh-tw"
-              valueFormat="YYYY/MM/DD"
-              value={arr[1] ? dayjs(arr[1]).toDate() : null}
-              onChange={(d) => onChange([arr[0], d ? dayjs(d).format('YYYY-MM-DD') : ''])}
-              placeholder="結束日期"
-              clearable
-            />
-          </>
+          <DatePickerInput
+            type="range"
+            size="xs"
+            w={180}
+            valueFormat="YYYY/MM/DD"
+            value={arr}
+            onChange={(d) => onChange(d ? d.map(x => x ?? '') : ['', ''])}
+            placeholder="選擇日期"
+            clearable
+          />
         )
       }
       return (
         <DatePickerInput
           size="xs"
           w={150}
-          locale="zh-tw"
           valueFormat="YYYY/MM/DD"
           value={typeof value === 'string' && value ? dayjs(value).toDate() : null}
-          onChange={(d) => onChange(d ? dayjs(d).format('YYYY-MM-DD') : '')}
+          onChange={(d) => onChange(d ?? '')}
           placeholder="選擇日期"
           clearable
         />

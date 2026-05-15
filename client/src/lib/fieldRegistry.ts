@@ -1,13 +1,13 @@
 import type { FilterableField, FilterOperator } from '@/types/filter'
 
-export type FieldType = 'select' | 'multiSelect' | 'text' | 'number' | 'date' | 'tags'
+export type FieldType = 'select' | 'text' | 'number' | 'date' | 'tags'
 
 export interface FieldDef {
   field: FilterableField
   label: string
   type: FieldType
   operators: FilterOperator[]
-  /** Options for select/multiSelect fields */
+  /** Options for select fields */
   options?: { value: string; label: string }[]
 }
 
@@ -19,7 +19,7 @@ export const SELECT_STATUS_OPTIONS = [
 ]
 
 export const SELECT_DOWNLOAD_OPTIONS = [
-  { value: 'pending', label: '待下載' },
+  { value: 'pending', label: '等待下載' },
   { value: 'downloading', label: '下載中' },
   { value: 'downloaded', label: '已下載' },
 ]
@@ -41,9 +41,13 @@ const DATE_OPERATORS: FilterOperator[] = [
   'before', 'after', 'between', 'isEmpty', 'isNotEmpty',
 ]
 
-const SELECT_OPERATORS: FilterOperator[] = ['eq', 'neq', 'in', 'notIn']
+const SELECT_OPERATORS: FilterOperator[] = [
+  'eq', 'neq', 'in', 'notIn', 'isEmpty', 'isNotEmpty'
+]
 
-const MEDIA_TYPE_OPERATORS: FilterOperator[] = ['eq', 'neq']
+const MEDIA_TYPE_OPERATORS: FilterOperator[] = [
+  'eq', 'neq', 'isEmpty', 'isNotEmpty'
+]
 
 const TAGS_OPERATORS: FilterOperator[] = [
   'containsAll', 'containsAny', 'isEmpty', 'isNotEmpty',
@@ -65,7 +69,7 @@ export const FIELD_REGISTRY: FieldDef[] = [
   { field: 'cachedTitle', label: '標題', type: 'text', operators: TEXT_OPERATORS },
   { field: 'cachedSeasonName', label: '季名', type: 'text', operators: TEXT_OPERATORS },
   { field: 'customName', label: '自訂名稱', type: 'text', operators: TEXT_OPERATORS },
-  { field: 'comment', label: '留言', type: 'text', operators: TEXT_OPERATORS },
+  { field: 'comment', label: '心得', type: 'text', operators: TEXT_OPERATORS },
   { field: 'remark', label: '備註', type: 'text', operators: TEXT_OPERATORS },
   // Tags
   { field: 'tags', label: '標籤', type: 'tags', operators: TAGS_OPERATORS },
@@ -124,4 +128,41 @@ export function operatorNeedsRange(op: FilterOperator): boolean {
  */
 export function operatorNeedsNoValue(op: FilterOperator): boolean {
   return op === 'isEmpty' || op === 'isNotEmpty'
+}
+
+/**
+ * Classify the value shape an operator expects.
+ * - 'none': isEmpty / isNotEmpty
+ * - 'scalar': single string or number
+ * - 'array': string[] (in, notIn, containsAll, containsAny)
+ * - 'tuple': [string, string] (between)
+ */
+export type ValueShape = 'none' | 'scalar' | 'array' | 'tuple'
+
+export function getValueShape(op: FilterOperator): ValueShape {
+  if (operatorNeedsNoValue(op)) return 'none'
+  if (operatorNeedsRange(op)) return 'tuple'
+  switch (op) {
+    case 'in':
+    case 'notIn':
+    case 'containsAll':
+    case 'containsAny':
+      return 'array'
+    default:
+      return 'scalar'
+  }
+}
+
+/**
+ * Return the proper empty/default value for a given operator's shape.
+ * Use this when switching operators to avoid leaking a stale value
+ * whose shape is incompatible with the new operator.
+ */
+export function getDefaultValueForOperator(op: FilterOperator): import('@/types/filter').FilterValue {
+  switch (getValueShape(op)) {
+    case 'none':  return null
+    case 'tuple': return ['', '']
+    case 'array': return []
+    case 'scalar': return ''
+  }
 }

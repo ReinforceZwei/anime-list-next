@@ -20,8 +20,13 @@ export function evaluateFilter(
 }
 
 function evaluateGroup(group: FilterGroup, record: AnimeRecord): boolean {
-  if (group.conditions.length === 0) return true
-  const results = group.conditions.map((c) => {
+  // Skip empty child groups — they should not act as unconditional true/false
+  const active = group.conditions.filter((c) => {
+    if ('field' in c) return true
+    return (c as FilterGroup).conditions.length > 0
+  })
+  if (active.length === 0) return true
+  const results = active.map((c) => {
     if ('field' in c) {
       return evaluateCondition(c as FilterCondition, record)
     }
@@ -46,15 +51,11 @@ function evaluateCondition(
       break
   }
 
-  // For operators that need a value, if the record's value is empty, no match
-  if (cond.field !== 'tags' && isEmptyValue(rawValue)) return false
-
   const def = FIELD_MAP.get(cond.field)
   if (!def) return false
 
   switch (def.type) {
     case 'select':
-    case 'multiSelect':
       return evaluateSelect(rawValue as string, operator, value as string | string[])
     case 'number':
       return evaluateNumber(rawValue as number, operator, value as number | [string, string])
@@ -89,7 +90,7 @@ function evaluateSelect(
   operator: FilterOperator,
   filterValue: string | string[],
 ): boolean {
-  const normalized = (recordValue ?? '').trim()
+  const normalized = recordValue ?? ''
   switch (operator) {
     case 'eq':
       return normalized === filterValue
@@ -115,7 +116,8 @@ function evaluateNumber(
   operator: FilterOperator,
   filterValue: number | [string, string],
 ): boolean {
-  const num = recordValue ?? 0
+  if (recordValue === null || recordValue === undefined) return false
+  const num = recordValue
   switch (operator) {
     case 'eq':
       return num === (filterValue as number)
@@ -152,9 +154,9 @@ function evaluateText(
   const filter = (filterValue ?? '').trim().toLowerCase()
   switch (operator) {
     case 'contains':
-      return text.includes(filter)
+      return filter.length > 0 && text.includes(filter)
     case 'notContains':
-      return !text.includes(filter)
+      return filter.length > 0 && !text.includes(filter)
     case 'eq':
       return text === filter
     case 'neq':
@@ -189,14 +191,30 @@ function evaluateDate(
     }
     case 'between': {
       const [lo, hi] = filterValue as [string, string]
+      // Parse lower bound as start-of-day (default Date parsing for date-only strings)
       const loTs = lo ? new Date(lo).getTime() : NaN
-      const hiTs = hi ? new Date(hi).getTime() : NaN
+      // Parse upper bound as end-of-day so the entire final day is included
+      const hiTs = parseDateUpperBound(hi)
       if (isNaN(loTs) || isNaN(hiTs)) return false
       return recordTs >= loTs && recordTs <= hiTs
     }
     default:
       return false
   }
+}
+
+/**
+ * Parse a date string as an inclusive upper bound. If the value is a date-only
+ * string (e.g. "2025-12-31") with no time component, it is treated as the end
+ * of that day (23:59:59.999Z) so records throughout the day are included.
+ */
+function parseDateUpperBound(value: string): number {
+  if (!value) return NaN
+  // Date-only strings have exactly 10 chars (YYYY-MM-DD) and no 'T'
+  if (value.length === 10 && !value.includes('T')) {
+    return new Date(value + 'T23:59:59.999Z').getTime()
+  }
+  return new Date(value).getTime()
 }
 
 // ---- Tags ----

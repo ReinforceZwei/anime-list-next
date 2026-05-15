@@ -1,24 +1,35 @@
 import { Group, Select, ActionIcon } from '@mantine/core'
 import { IconTrash } from '@tabler/icons-react'
 import type { FilterCondition, FilterableField, FilterOperator } from '@/types/filter'
-import { FIELD_REGISTRY, getOperatorsForField, getOperatorLabel } from '@/lib/fieldRegistry'
+import { FIELD_REGISTRY, getOperatorsForField, getOperatorLabel, getValueShape, getDefaultValueForOperator } from '@/lib/fieldRegistry'
 import { FilterValueInput } from './FilterValueInput'
 
 interface FilterConditionRowProps {
   condition: FilterCondition
   onChange: (condition: FilterCondition) => void
   onDelete: () => void
+  /** Limit which fields appear in the field selector. Omit to show all. */
+  availableFields?: FilterableField[]
 }
 
-const FIELD_OPTIONS = FIELD_REGISTRY.map((def) => ({
+const ALL_FIELD_OPTIONS = FIELD_REGISTRY.map((def) => ({
   value: def.field,
   label: def.label,
 }))
+
+function getFieldOptions(availableFields?: FilterableField[]) {
+  if (!availableFields || availableFields.length === 0) {
+    return ALL_FIELD_OPTIONS
+  }
+  const allowed = new Set(availableFields)
+  return ALL_FIELD_OPTIONS.filter((opt) => allowed.has(opt.value as FilterableField))
+}
 
 export function FilterConditionRow({
   condition,
   onChange,
   onDelete,
+  availableFields,
 }: FilterConditionRowProps) {
   const operators = getOperatorsForField(condition.field)
   const operatorOptions = operators.map((op) => ({
@@ -31,24 +42,25 @@ export function FilterConditionRow({
     const newField = field as FilterableField
     const newOps = getOperatorsForField(newField)
     const newOperator = newOps[0] ?? 'eq'
-    // Reset value when changing field
-    const needsNoValue = newOperator === 'isEmpty' || newOperator === 'isNotEmpty'
+    // Reset value when changing field — use the correct empty value for the new operator
     onChange({
       ...condition,
       field: newField,
       operator: newOperator,
-      value: needsNoValue ? null : '',
+      value: getDefaultValueForOperator(newOperator),
     })
   }
 
   function handleOperatorChange(op: string | null) {
     if (!op) return
     const newOperator = op as FilterOperator
-    const needsNoValue = newOperator === 'isEmpty' || newOperator === 'isNotEmpty'
+    // Preserve the old value only if the new operator expects the same value shape;
+    // otherwise reset to the correct empty/default value for the new operator.
+    const sameShape = getValueShape(condition.operator) === getValueShape(newOperator)
     onChange({
       ...condition,
       operator: newOperator,
-      value: needsNoValue ? null : (condition.value ?? ''),
+      value: sameShape ? condition.value : getDefaultValueForOperator(newOperator),
     })
   }
 
@@ -61,7 +73,7 @@ export function FilterConditionRow({
       <Select
         size="xs"
         w={120}
-        data={FIELD_OPTIONS}
+        data={getFieldOptions(availableFields)}
         value={condition.field}
         onChange={handleFieldChange}
         placeholder="欄位"

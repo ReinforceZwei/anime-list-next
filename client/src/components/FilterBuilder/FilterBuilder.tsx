@@ -17,6 +17,7 @@ export function FilterBuilder({
   value,
   onChange,
   label,
+  availableFields,
 }: FilterBuilderProps) {
   return (
     <Stack gap="sm">
@@ -31,6 +32,7 @@ export function FilterBuilder({
           group={value}
           onChange={onChange}
           isRoot
+          availableFields={availableFields}
         />
       </ScrollArea.Autosize>
     </Stack>

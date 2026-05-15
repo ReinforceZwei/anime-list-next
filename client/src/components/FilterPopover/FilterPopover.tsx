@@ -23,7 +23,7 @@ interface FilterPopoverProps {
 export function FilterPopover({ value, onChange }: FilterPopoverProps) {
   const [opened, setOpened] = useState(false)
   // Local copy for editing; sync on open
-  const [draft, setDraft] = useState<FilterExpression>(value ?? createEmptyFilter())
+  const [draft, setDraft] = useState<FilterExpression>(() => value ?? createEmptyFilter())
 
   // Sync draft when opening or when external value changes while open
   useEffect(() => {
@@ -43,7 +43,7 @@ export function FilterPopover({ value, onChange }: FilterPopoverProps) {
   }, [opened])
 
   function handleApply() {
-    onChange(draft)
+    onChange(draft.conditions.length > 0 ? draft : null)
     setOpened(false)
   }
 
@@ -108,6 +108,7 @@ export function FilterPopover({ value, onChange }: FilterPopoverProps) {
                 size="xs"
                 variant="filled"
                 onClick={handleApply}
+                disabled={draft.conditions.length === 0}
               >
                 套用
               </Button>

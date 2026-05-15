@@ -85,11 +85,25 @@ export type ActionDef =
   | { type: 'addTag'; tagId: string }
   | { type: 'removeTag'; tagId: string }
 
+// ---- Fallback UUID generator (crypto.randomUUID requires secure context) ----
+
+function generateId(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+  // Fallback for plain HTTP (e.g. Docker serve)
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0
+    const v = c === 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
+
 // ---- Helper: create an empty filter expression ----
 
 export function createEmptyFilter(): FilterExpression {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     logic: 'and',
     conditions: [],
   }
@@ -97,7 +111,7 @@ export function createEmptyFilter(): FilterExpression {
 
 export function createEmptyCondition(): FilterCondition {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     field: 'cachedTitle',
     operator: 'contains',
     value: '',
@@ -106,7 +120,7 @@ export function createEmptyCondition(): FilterCondition {
 
 export function createEmptyGroup(): FilterGroup {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     logic: 'and',
     conditions: [],
   }

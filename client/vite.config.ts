@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { execSync } from 'child_process'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -25,6 +26,16 @@ export default defineConfig({
   },
   build: {
     sourcemap: isSentryEnabled ? "hidden" : false,
+  },
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/**/*.test.*', 'src/routeTree.gen.ts'],
+    },
   },
   plugins: [
     tanstackRouter({

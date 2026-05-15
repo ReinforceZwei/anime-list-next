@@ -8,7 +8,7 @@ import {
   Divider,
 } from '@mantine/core'
 import { IconTrash, IconPlus } from '@tabler/icons-react'
-import type { FilterGroup, FilterCondition } from '@/types/filter'
+import type { FilterGroup, FilterCondition, FilterableField } from '@/types/filter'
 import { createEmptyCondition, createEmptyGroup } from '@/types/filter'
 import { FilterConditionRow } from './FilterConditionRow'
 
@@ -18,6 +18,8 @@ interface FilterGroupRowProps {
   onDelete?: () => void
   /** Whether this is the root group (no delete, simpler appearance) */
   isRoot?: boolean
+  /** Limit which fields appear in the field selector. Omit to show all. */
+  availableFields?: FilterableField[]
 }
 
 export function FilterGroupRow({
@@ -25,6 +27,7 @@ export function FilterGroupRow({
   onChange,
   onDelete,
   isRoot,
+  availableFields,
 }: FilterGroupRowProps) {
   function toggleLogic(value: string) {
     onChange({ ...group, logic: value as 'and' | 'or' })
@@ -122,6 +125,7 @@ export function FilterGroupRow({
                   condition={cond as FilterCondition}
                   onChange={(updated) => updateCondition(index, updated)}
                   onDelete={() => deleteCondition(index)}
+                  availableFields={availableFields}
                 />
               )
             }
@@ -131,6 +135,7 @@ export function FilterGroupRow({
                 group={cond as FilterGroup}
                 onChange={(updated) => updateSubGroup(index, updated)}
                 onDelete={() => deleteCondition(index)}
+                availableFields={availableFields}
               />
             )
           })}
