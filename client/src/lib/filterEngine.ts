@@ -19,11 +19,18 @@ export function evaluateFilter(
   return evaluateGroup(filter, record)
 }
 
+function hasActiveConditions(group: FilterGroup): boolean {
+  return group.conditions.some((c) => {
+    if ('field' in c) return true
+    return hasActiveConditions(c as FilterGroup)
+  })
+}
+
 function evaluateGroup(group: FilterGroup, record: AnimeRecord): boolean {
   // Skip empty child groups — they should not act as unconditional true/false
   const active = group.conditions.filter((c) => {
     if ('field' in c) return true
-    return (c as FilterGroup).conditions.length > 0
+    return hasActiveConditions(c as FilterGroup)
   })
   if (active.length === 0) return true
   const results = active.map((c) => {

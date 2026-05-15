@@ -34,9 +34,15 @@ export function FilterGroupRow({
   }
 
   function addCondition() {
+    const newCondition = createEmptyCondition()
+    const condition =
+      availableFields && availableFields.length > 0
+        ? { ...newCondition, field: availableFields[0] }
+        : newCondition
+
     onChange({
       ...group,
-      conditions: [...group.conditions, createEmptyCondition()],
+      conditions: [...group.conditions, condition],
     })
   }
 

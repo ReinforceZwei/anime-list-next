@@ -103,7 +103,7 @@ export function FilterValueInput({
           min={0}
           max={10}
           value={typeof value === 'number' ? value : undefined}
-          onChange={(n) => onChange(typeof n === 'number' ? n : 0)}
+          onChange={(n) => onChange(typeof n === 'number' ? n : '')}
           placeholder="數值"
         />
       )
