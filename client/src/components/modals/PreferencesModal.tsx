@@ -8,7 +8,6 @@ import {
   FileButton,
   Group,
   Loader,
-  Slider,
   Stack,
   Tabs,
   Text,
@@ -16,7 +15,7 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconAdjustments, IconDownload, IconExternalLink, IconInfoCircle, IconSettings, IconUpload } from '@tabler/icons-react'
+import { IconAdjustments, IconDownload, IconExternalLink, IconInfoCircle, IconMinus, IconPlus, IconSettings, IconUpload } from '@tabler/icons-react'
 import { exportData, importData, type ImportResult } from '@/api/importexport'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
@@ -168,21 +167,27 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
           <Divider label="介面縮放" labelPosition="left" />
           <div>
             <Text size="sm" fw={500} mb="xs">
-              縮放比例：{uiScale}%
+              縮放比例
             </Text>
-            <Slider
-              value={uiScale}
-              min={70}
-              max={150}
-              step={10}
-              marks={[
-                { value: 70, label: '70%' },
-                { value: 100, label: '100%' },
-                { value: 150, label: '150%' },
-              ]}
-              onChange={handleUiScaleChange}
-              mb="xl"
-            />
+            <Button.Group>
+              <Button
+                variant="default"
+                disabled={uiScale <= 70}
+                onClick={() => handleUiScaleChange(uiScale - 10)}
+              >
+                <IconMinus size="1em" />
+              </Button>
+              <Button.GroupSection variant="default" bg="var(--mantine-color-body)" miw={60} ta="center">
+                {uiScale}%
+              </Button.GroupSection>
+              <Button
+                variant="default"
+                disabled={uiScale >= 150}
+                onClick={() => handleUiScaleChange(uiScale + 10)}
+              >
+                <IconPlus size="1em" />
+              </Button>
+            </Button.Group>
           </div>
         </Stack>
       </Tabs.Panel>

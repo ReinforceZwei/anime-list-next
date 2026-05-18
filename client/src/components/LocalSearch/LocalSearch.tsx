@@ -112,7 +112,7 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
               </ActionIcon>
             </Indicator>
           </Group>
-          <Collapse in={tagFilterOpen}>
+          <Collapse expanded={tagFilterOpen}>
             <TagMultiSelect
               data={tagList}
               value={selectedTags}

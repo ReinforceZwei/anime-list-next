@@ -132,7 +132,7 @@ export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnim
           更多選項
         </Button>
 
-        <Collapse in={advancedOpen}>
+        <Collapse expanded={advancedOpen}>
           <Stack>
             <Select
               label="觀看狀態"
