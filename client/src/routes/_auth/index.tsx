@@ -3,6 +3,7 @@ import { useAnimeSections } from "@/hooks/useAnimeSections";
 import { useUserPreferences } from "@/hooks/useUserPreferences";
 import { useScrollToRecord } from "@/hooks/useScrollToRecord";
 import type { AnimeRecord, SectionDef } from "@/types/anime";
+import { DEFAULT_SECTIONS } from "@/types/anime";
 import {
   Affix,
   ActionIcon,
@@ -33,39 +34,12 @@ export const Route = createFileRoute("/_auth/")({
 
 function Index() {
   const { data: prefs } = useUserPreferences();
-  const sectionDefs = useMemo<SectionDef[]>(
-    () => [
-      {
-        key: "watching",
-        label: prefs?.watchingLabel || "觀看中",
-        statuses: ["watching"],
-        sortBy: "updated",
-        sortOrder: "desc",
-      },
-      {
-        key: "completed",
-        label: prefs?.completedLabel || "已看完",
-        statuses: ["completed"],
-        sortBy: "completedAt",
-        sortOrder: "asc",
-      },
-      {
-        key: "planned",
-        label: prefs?.plannedLabel || "計畫中",
-        statuses: ["planned"],
-        sortBy: "created",
-        sortOrder: "asc",
-      },
-      {
-        key: "dropped",
-        label: prefs?.droppedLabel || "已棄番",
-        statuses: ["dropped"],
-        sortBy: "updated",
-        sortOrder: "desc",
-      },
-    ],
-    [prefs],
-  );
+  const sectionDefs = useMemo<SectionDef[]>(() => {
+    if (prefs?.sections && prefs.sections.length > 0) {
+      return prefs.sections
+    }
+    return DEFAULT_SECTIONS
+  }, [prefs]);
 
   const { sections, isLoading, isError, error } = useAnimeSections(sectionDefs);
   const [selectedAnimeId, setSelectedAnimeId] = useState<string | null>(null);

@@ -80,54 +80,17 @@ export interface UserPreferencesRecord extends RecordModel {
 
 ### Step 2: Server migration — add `sections`, remove `*Label` fields
 
-**New file:** `server/migrations/1777000000_updated_userPreferences.go`
+**New file:** `server\migrations\1779157359_updated_userPreferences.go`
 
 This migration:
 1. Adds a new JSON field `sections` (nullable, default `null`)
 2. Deletes the four legacy `*Label` text fields
 
-```go
-package migrations
-
-import (
-    "github.com/pocketbase/pocketbase/core"
-    m "github.com/pocketbase/pocketbase/migrations"
-)
-
-func init() {
-    m.Register(func(app core.App) error {
-        collection, err := app.FindCollectionByNameOrId("userPreferences")
-        if err != nil {
-            return err
-        }
-
-        // Add sections JSON field
-        collection.Fields.Add(&core.JSONField{
-            Name:     "sections",
-            Required: false,
-        })
-
-        // Remove legacy label fields
-        // (PocketBase removes them by field name)
-        fieldsToRemove := []string{"watchingLabel", "completedLabel", "plannedLabel", "droppedLabel"}
-        for _, name := range fieldsToRemove {
-            f := collection.Fields.GetByName(name)
-            if f != nil {
-                collection.Fields.RemoveByName(name)
-            }
-        }
-
-        return app.Save(collection)
-    }, func(app core.App) error {
-        // Rollback: not needed for forward-only migrations
-        return nil
-    })
-}
-```
-
 > **Note:** PocketBase migrations that remove fields will drop the column
 > data. Any existing custom labels in those fields will be lost. This is the
 > intended trade-off — users will set section labels in the new editor.
+
+**Migration is already done by human manually via admin UI. The schema is ready to use.**
 
 ---
 
@@ -287,14 +250,14 @@ const form = useForm({
 2. Remove the "區塊名稱" divider + 4 `TextInput` fields from the "一般" tab
    (lines ~127-146 in the current file)
 
-3. Add a new "章節" tab:
+3. Add a new "區塊" tab:
 
 ```tsx
 import { IconSections } from '@tabler/icons-react'
 
 // After the "介面" tab:
 <Tabs.Tab value="sections" leftSection={<IconSections size="1em" />}>
-  章節
+  區塊
 </Tabs.Tab>
 
 // New panel:
@@ -366,7 +329,7 @@ Layout:
   Clicking `[Edit]` opens `FilterBuilder` in a `Popover`.
 - **Sort selector** — `Select` for field + `SegmentedControl` for asc/desc
 - **Delete section** — `ActionIcon` (red ✕) with confirmation modal
-- **Add section** — `Button` → creates section with label "新章節" and
+- **Add section** — `Button` → creates section with label "新區塊" and
   a null filter (match all), appended at the bottom
 - **Reset to Defaults** — replaces all sections with `DEFAULT_SECTIONS`
 - **Info tooltip** — explains first-match semantics
@@ -511,7 +474,7 @@ MODIFY:
   client/src/hooks/useAnimeSections.ts      ← Accept new SectionDef, first-match + "Other" catch-all
   client/src/hooks/useUserPreferencesMutation.ts ← Verify sections serialization
   client/src/routes/_auth/index.tsx         ← Use prefs.sections ?? DEFAULT_SECTIONS, remove *Label fallbacks
-  client/src/components/modals/PreferencesModal.tsx ← Remove *Label inputs, add "章節" tab
+  client/src/components/modals/PreferencesModal.tsx ← Remove *Label inputs, add "區塊" tab
   client/src/components/ElevatorWidget/ElevatorWidget.tsx ← Accept dynamic section count
 ```
 
@@ -529,7 +492,7 @@ MODIFY:
 - [ ] Main page shows defaults when `prefs.sections` is null/empty
 - [ ] Main page shows custom sections when `prefs.sections` is populated
 - [ ] `PreferencesModal` no longer shows `*Label` inputs
-- [ ] `PreferencesModal` "章節" tab renders `SectionEditor`
+- [ ] `PreferencesModal` "區塊" tab renders `SectionEditor`
 - [ ] Section editor: add, edit label, edit filter, change sort, delete, reorder
 - [ ] Section editor: "Reset to Defaults" works
 - [ ] Filter summary displays correct Chinese text

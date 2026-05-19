@@ -1,4 +1,6 @@
 import type { RecordModel } from "pocketbase";
+import type { FilterExpression } from './filter'
+import { generateId } from './filter'
 
 export interface TagRecord extends RecordModel {
   userId: string;
@@ -15,9 +17,9 @@ export type SortableField = 'completedAt' | 'startedAt' | 'updated' | 'created' 
 export interface SectionDef {
   key: string
   label: string
-  statuses: NonNullable<AnimeRecord['status']>[]
+  filter: FilterExpression | null   // null = match all records
   sortBy: SortableField
-  sortOrder?: 'asc' | 'desc'
+  sortOrder: 'asc' | 'desc'
 }
 
 export interface AnimeSection {
@@ -29,10 +31,7 @@ export interface AnimeSection {
 export interface UserPreferencesRecord extends RecordModel {
   userId: string
   pageTitle?: string
-  watchingLabel?: string
-  completedLabel?: string
-  plannedLabel?: string
-  droppedLabel?: string
+  sections?: SectionDef[] | null   // null/empty = use built-in defaults
 }
 
 export interface AnimeRecord extends RecordModel {
@@ -57,3 +56,25 @@ export interface AnimeRecord extends RecordModel {
   created: string;
   updated: string;
 }
+
+// ---- Default sections ----
+
+function statusFilter(statuses: string[]): FilterExpression {
+  return {
+    id: generateId(),
+    logic: 'and',
+    conditions: [{
+      id: generateId(),
+      field: 'status',
+      operator: 'in',
+      value: statuses,
+    }],
+  }
+}
+
+export const DEFAULT_SECTIONS: SectionDef[] = [
+  { key: 'watching',  label: '觀看中', filter: statusFilter(['watching']),  sortBy: 'updated',     sortOrder: 'desc' },
+  { key: 'completed', label: '已看完', filter: statusFilter(['completed']), sortBy: 'completedAt', sortOrder: 'asc'  },
+  { key: 'planned',   label: '計畫中', filter: statusFilter(['planned']),   sortBy: 'created',     sortOrder: 'asc'  },
+  { key: 'dropped',   label: '已棄番', filter: statusFilter(['dropped']),   sortBy: 'updated',     sortOrder: 'desc' },
+]

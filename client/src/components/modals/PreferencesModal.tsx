@@ -15,12 +15,13 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconAdjustments, IconDownload, IconExternalLink, IconInfoCircle, IconMinus, IconPlus, IconSettings, IconUpload } from '@tabler/icons-react'
+import { IconAdjustments, IconDownload, IconExternalLink, IconInfoCircle, IconMinus, IconPlus, IconSettings, IconUpload, IconSection } from '@tabler/icons-react'
 import { exportData, importData, type ImportResult } from '@/api/importexport'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
 import { showErrorNotification } from '@/lib/notifications'
 import { pb } from '@/lib/pb'
+import { SectionEditor } from '@/components/modals/SectionEditor'
 
 export function PreferencesModal({ context, id }: ContextModalProps) {
   const { data: prefs, isLoading } = useUserPreferences()
@@ -50,10 +51,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   const form = useForm({
     initialValues: {
       pageTitle: prefs?.pageTitle ?? '',
-      watchingLabel: prefs?.watchingLabel ?? '',
-      completedLabel: prefs?.completedLabel ?? '',
-      plannedLabel: prefs?.plannedLabel ?? '',
-      droppedLabel: prefs?.droppedLabel ?? '',
+      sections: prefs?.sections ?? [],
     },
   })
 
@@ -108,6 +106,9 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
         <Tabs.Tab value="interface" leftSection={<IconAdjustments size="1em" />}>
           介面
         </Tabs.Tab>
+        <Tabs.Tab value="sections" leftSection={<IconSection size="1em" />}>
+          區塊
+        </Tabs.Tab>
         <Tabs.Tab value="importexport" leftSection={<IconDownload size="1em" />}>
           匯入／匯出
         </Tabs.Tab>
@@ -121,27 +122,6 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
               placeholder="我的動畫清單"
               description="顯示在清單頂部的主標題"
               {...form.getInputProps('pageTitle')}
-            />
-            <Divider label="區塊名稱" labelPosition="left" />
-            <TextInput
-              label="觀看中"
-              placeholder="觀看中"
-              {...form.getInputProps('watchingLabel')}
-            />
-            <TextInput
-              label="已看完"
-              placeholder="已看完"
-              {...form.getInputProps('completedLabel')}
-            />
-            <TextInput
-              label="待看"
-              placeholder="待看"
-              {...form.getInputProps('plannedLabel')}
-            />
-            <TextInput
-              label="棄番"
-              placeholder="棄番"
-              {...form.getInputProps('droppedLabel')}
             />
             <Button type="submit" loading={saveMutation.isPending}>
               儲存
@@ -190,6 +170,13 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
             </Button.Group>
           </div>
         </Stack>
+      </Tabs.Panel>
+
+      <Tabs.Panel value="sections">
+        <SectionEditor
+          sections={form.values.sections}
+          onChange={(newSections) => form.setFieldValue('sections', newSections)}
+        />
       </Tabs.Panel>
 
       <Tabs.Panel value="importexport">
