@@ -10,6 +10,7 @@ import {
   Group,
   Image,
   Loader,
+  Modal,
   ScrollArea,
   Spoiler,
   Stack,
@@ -46,7 +47,7 @@ function ExistsBadge() {
   )
 }
 
-export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbSearchInnerProps>) {
+export function TmdbSearchModal({ context, innerProps, title, modalProps }: ContextModalProps<TmdbSearchInnerProps>) {
   const mode = innerProps.mode ?? 'create'
   const linkProps = mode === 'link' ? (innerProps as { mode: 'link'; animeId: string; initialQuery?: string }) : null
   const animeId = linkProps?.animeId ?? null
@@ -378,18 +379,20 @@ export function TmdbSearchModal({ context, innerProps }: ContextModalProps<TmdbS
 
   // ── Layout: stack on mobile, side-by-side on desktop ─────────────────────
 
-  if (isMobile) {
-    return (
-      <Box h={PANEL_H}>
-        {mobileView === 'search' ? searchPanel : detailPanel}
-      </Box>
-    )
-  }
-
-  return (
+  const content = isMobile ? (
+    <Box h={PANEL_H}>
+      {mobileView === 'search' ? searchPanel : detailPanel}
+    </Box>
+  ) : (
     <Group align="stretch" gap={0} h={PANEL_H} wrap="nowrap">
       {searchPanel}
       {detailPanel}
     </Group>
+  )
+
+  return (
+    <Modal title={title} {...modalProps}>
+      {content}
+    </Modal>
   )
 }

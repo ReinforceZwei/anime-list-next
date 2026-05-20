@@ -4,6 +4,7 @@ import {
   Collapse,
   Divider,
   Group,
+  Modal,
   NumberInput,
   Select,
   Stack,
@@ -40,7 +41,7 @@ function parseLocalDateString(val: string | Date | null): Date | null {
   return dayjs(val).toDate()
 }
 
-export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnimeInnerProps>) {
+export function AddAnimeModal({ context, innerProps, title, modalProps }: ContextModalProps<AddAnimeInnerProps>) {
   const { onSaved } = innerProps
   const { createMutation } = useAnimeMutation()
   const { data: tagList } = useTagList()
@@ -111,151 +112,153 @@ export function AddAnimeModal({ context, innerProps }: ContextModalProps<AddAnim
   }
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Stack>
-        <TextInput
-          label="標題"
-          placeholder="動畫標題"
-          data-autofocus
-          ref={inputRef}
-          {...form.getInputProps('title')}
-        />
+    <Modal title={title} {...modalProps}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <Stack>
+          <TextInput
+            label="標題"
+            placeholder="動畫標題"
+            data-autofocus
+            ref={inputRef}
+            {...form.getInputProps('title')}
+          />
 
-        <Button
-          variant="subtle"
-          size="compact-sm"
-          rightSection={advancedOpen ? <IconChevronUp size="1em" /> : <IconChevronDown size="1em" />}
-          onClick={toggleAdvanced}
-          justify="space-between"
-          fullWidth
-        >
-          更多選項
-        </Button>
+          <Button
+            variant="subtle"
+            size="compact-sm"
+            rightSection={advancedOpen ? <IconChevronUp size="1em" /> : <IconChevronDown size="1em" />}
+            onClick={toggleAdvanced}
+            justify="space-between"
+            fullWidth
+          >
+            更多選項
+          </Button>
 
-        <Collapse expanded={advancedOpen}>
-          <Stack>
-            <Select
-              label="觀看狀態"
-              data={[
-                { value: '', label: '無' },
-                ...SELECT_STATUS_OPTIONS,
-              ]}
-              {...form.getInputProps('status')}
-            />
-
-            <Select
-              label="下載狀態"
-              data={[
-                { value: '', label: '無' },
-                ...SELECT_DOWNLOAD_OPTIONS,
-              ]}
-              {...form.getInputProps('downloadStatus')}
-            />
-
-            <RatingInput {...form.getInputProps('rating')} />
-
-            <Textarea
-              label="心得"
-              placeholder="輸入心得…"
-              autosize
-              minRows={2}
-              {...form.getInputProps('comment')}
-            />
-
-            <TextInput
-              label="備註"
-              placeholder="輸入備註…"
-              {...form.getInputProps('remark')}
-            />
-
-            <Group gap="xs" align="flex-end">
-              <TagMultiSelect
-                label="標籤"
-                placeholder="選擇標籤"
-                data={availableTags}
-                value={form.values.tags}
-                onChange={(ids) => form.setFieldValue('tags', ids)}
-                style={{ flex: 1 }}
+          <Collapse expanded={advancedOpen}>
+            <Stack>
+              <Select
+                label="觀看狀態"
+                data={[
+                  { value: '', label: '無' },
+                  ...SELECT_STATUS_OPTIONS,
+                ]}
+                {...form.getInputProps('status')}
               />
-              <Tooltip label="管理標籤" withArrow>
-                <ActionIcon
-                  variant="default"
-                  size="lg"
-                  aria-label="管理標籤"
-                  mb={1}
-                  onClick={openManageTags}
-                >
-                  <IconTags size="1em" />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
 
-            <DateTimePicker
-              label="開始時間"
-              placeholder="選擇日期與時間"
-              clearable
-              value={form.values.startedAt}
-              onChange={(val) => form.setFieldValue('startedAt', parseLocalDateString(val as string | null))}
-            />
+              <Select
+                label="下載狀態"
+                data={[
+                  { value: '', label: '無' },
+                  ...SELECT_DOWNLOAD_OPTIONS,
+                ]}
+                {...form.getInputProps('downloadStatus')}
+              />
 
-            <DateTimePicker
-              label="完成時間"
-              placeholder="選擇日期與時間"
-              clearable
-              value={form.values.completedAt}
-              onChange={(val) => form.setFieldValue('completedAt', parseLocalDateString(val as string | null))}
-            />
+              <RatingInput {...form.getInputProps('rating')} />
 
-            <DateTimePicker
-              label="建立時間（覆蓋）"
-              placeholder="選擇日期與時間"
-              clearable
-              value={form.values.createdOverride}
-              onChange={(val) => form.setFieldValue('createdOverride', parseLocalDateString(val as string | null))}
-            />
+              <Textarea
+                label="心得"
+                placeholder="輸入心得…"
+                autosize
+                minRows={2}
+                {...form.getInputProps('comment')}
+              />
 
-            <Divider label="TMDb 資料" labelPosition="left" />
+              <TextInput
+                label="備註"
+                placeholder="輸入備註…"
+                {...form.getInputProps('remark')}
+              />
 
-            <Text size="xs" c="dimmed">
-              不建議手動填寫 TMDb 欄位，除非您清楚知道自己在做什麼。
-            </Text>
+              <Group gap="xs" align="flex-end">
+                <TagMultiSelect
+                  label="標籤"
+                  placeholder="選擇標籤"
+                  data={availableTags}
+                  value={form.values.tags}
+                  onChange={(ids) => form.setFieldValue('tags', ids)}
+                  style={{ flex: 1 }}
+                />
+                <Tooltip label="管理標籤" withArrow>
+                  <ActionIcon
+                    variant="default"
+                    size="lg"
+                    aria-label="管理標籤"
+                    mb={1}
+                    onClick={openManageTags}
+                  >
+                    <IconTags size="1em" />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
 
-            <NumberInput
-              label="TMDb ID"
-              placeholder="輸入 TMDb ID"
-              min={1}
-              allowDecimal={false}
-              value={form.values.tmdbId ?? ''}
-              onChange={(val) => form.setFieldValue('tmdbId', val === '' ? null : Number(val))}
-            />
+              <DateTimePicker
+                label="開始時間"
+                placeholder="選擇日期與時間"
+                clearable
+                value={form.values.startedAt}
+                onChange={(val) => form.setFieldValue('startedAt', parseLocalDateString(val as string | null))}
+              />
 
-            <Select
-              label="TMDb 媒體類型"
-              data={[
-                { value: '', label: '無' },
-                ...SELECT_MEDIA_OPTIONS,
-              ]}
-              {...form.getInputProps('tmdbMediaType')}
-            />
+              <DateTimePicker
+                label="完成時間"
+                placeholder="選擇日期與時間"
+                clearable
+                value={form.values.completedAt}
+                onChange={(val) => form.setFieldValue('completedAt', parseLocalDateString(val as string | null))}
+              />
 
-            {form.values.tmdbMediaType === 'tv' && (
+              <DateTimePicker
+                label="建立時間（覆蓋）"
+                placeholder="選擇日期與時間"
+                clearable
+                value={form.values.createdOverride}
+                onChange={(val) => form.setFieldValue('createdOverride', parseLocalDateString(val as string | null))}
+              />
+
+              <Divider label="TMDb 資料" labelPosition="left" />
+
+              <Text size="xs" c="dimmed">
+                不建議手動填寫 TMDb 欄位，除非您清楚知道自己在做什麼。
+              </Text>
+
               <NumberInput
-                label="TMDb 季數"
-                placeholder="輸入季數"
-                min={0}
+                label="TMDb ID"
+                placeholder="輸入 TMDb ID"
+                min={1}
                 allowDecimal={false}
-                value={form.values.tmdbSeasonNumber ?? ''}
-                onChange={(val) => form.setFieldValue('tmdbSeasonNumber', val === '' ? null : Number(val))}
+                value={form.values.tmdbId ?? ''}
+                onChange={(val) => form.setFieldValue('tmdbId', val === '' ? null : Number(val))}
               />
-            )}
-          </Stack>
-        </Collapse>
 
-        <Button type="submit" loading={createMutation.isPending}>
-          加入
-        </Button>
-      </Stack>
-    </form>
+              <Select
+                label="TMDb 媒體類型"
+                data={[
+                  { value: '', label: '無' },
+                  ...SELECT_MEDIA_OPTIONS,
+                ]}
+                {...form.getInputProps('tmdbMediaType')}
+              />
+
+              {form.values.tmdbMediaType === 'tv' && (
+                <NumberInput
+                  label="TMDb 季數"
+                  placeholder="輸入季數"
+                  min={0}
+                  allowDecimal={false}
+                  value={form.values.tmdbSeasonNumber ?? ''}
+                  onChange={(val) => form.setFieldValue('tmdbSeasonNumber', val === '' ? null : Number(val))}
+                />
+              )}
+            </Stack>
+          </Collapse>
+
+          <Button type="submit" loading={createMutation.isPending}>
+            加入
+          </Button>
+        </Stack>
+      </form>
+    </Modal>
   )
 }
 

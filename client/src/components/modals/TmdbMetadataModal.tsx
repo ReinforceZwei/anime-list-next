@@ -6,6 +6,7 @@ import {
   Group,
   Image,
   Loader,
+  Modal,
   ScrollArea,
   SimpleGrid,
   Spoiler,
@@ -288,7 +289,7 @@ function MovieContent({ data }: { data: TmdbMovieDetailResult }) {
   )
 }
 
-export function TmdbMetadataModal({ innerProps }: ContextModalProps<TmdbMetadataInnerProps>) {
+export function TmdbMetadataModal({ innerProps, title, modalProps }: ContextModalProps<TmdbMetadataInnerProps>) {
   const { tmdbId, tmdbMediaType } = innerProps
 
   const { data, isFetching } = useTmdbDetail(tmdbMediaType, tmdbId)
@@ -310,68 +311,70 @@ export function TmdbMetadataModal({ innerProps }: ContextModalProps<TmdbMetadata
   }
 
   const posterSrc = data.poster_path || null
-  const title = data.mediaType === 'tv' ? data.name : data.title
-  const originalTitle = data.mediaType === 'tv' ? data.original_name : data.original_title
+  const displayTitle = data.mediaType === 'tv' ? data.name : data.title
+  const displayOriginalTitle = data.mediaType === 'tv' ? data.original_name : data.original_title
 
   return (
-    <ScrollArea>
-      <Stack gap="md" p={4}>
-        {/* Header */}
-        <Group gap="md" align="flex-start" wrap="nowrap">
-          {posterSrc && (
-            <Image
-              src={posterSrc}
-              alt={title}
-              w={90}
-              radius="sm"
-              style={{ flexShrink: 0 }}
-            />
+    <Modal title={title} {...modalProps}>
+      <ScrollArea>
+        <Stack gap="md" p={4}>
+          {/* Header */}
+          <Group gap="md" align="flex-start" wrap="nowrap">
+            {posterSrc && (
+              <Image
+                src={posterSrc}
+                alt={displayTitle}
+                w={90}
+                radius="sm"
+                style={{ flexShrink: 0 }}
+              />
+            )}
+            <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
+              <Text fw={700} size="lg" style={{ lineHeight: 1.2 }}>{displayTitle}</Text>
+              {displayOriginalTitle && displayOriginalTitle !== displayTitle && (
+                <Text size="sm" c="dimmed">{displayOriginalTitle}</Text>
+              )}
+              {data.tagline && (
+                <Text size="sm" fs="italic" c="dimmed">{data.tagline}</Text>
+              )}
+              {data.genres?.length > 0 && (
+                <Group gap={4} mt={4}>
+                  {data.genres.map((g) => (
+                    <Badge key={g.id} size="sm" variant="light">{g.name}</Badge>
+                  ))}
+                </Group>
+              )}
+              <Anchor
+                href={`https://www.themoviedb.org/${data.mediaType}/${data.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="xs"
+                c="dimmed"
+                mt={2}
+              >
+                themoviedb.org ↗
+              </Anchor>
+            </Stack>
+          </Group>
+
+          {/* Overview */}
+          {data.overview && (
+            <>
+              <Divider label="劇情簡介" labelPosition="left" />
+              <Spoiler maxHeight={80} showLabel="展開" hideLabel="收起">
+                <Text size="sm">{data.overview}</Text>
+              </Spoiler>
+            </>
           )}
-          <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
-            <Text fw={700} size="lg" style={{ lineHeight: 1.2 }}>{title}</Text>
-            {originalTitle && originalTitle !== title && (
-              <Text size="sm" c="dimmed">{originalTitle}</Text>
-            )}
-            {data.tagline && (
-              <Text size="sm" fs="italic" c="dimmed">{data.tagline}</Text>
-            )}
-            {data.genres?.length > 0 && (
-              <Group gap={4} mt={4}>
-                {data.genres.map((g) => (
-                  <Badge key={g.id} size="sm" variant="light">{g.name}</Badge>
-                ))}
-              </Group>
-            )}
-            <Anchor
-              href={`https://www.themoviedb.org/${data.mediaType}/${data.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              size="xs"
-              c="dimmed"
-              mt={2}
-            >
-              themoviedb.org ↗
-            </Anchor>
-          </Stack>
-        </Group>
 
-        {/* Overview */}
-        {data.overview && (
-          <>
-            <Divider label="劇情簡介" labelPosition="left" />
-            <Spoiler maxHeight={80} showLabel="展開" hideLabel="收起">
-              <Text size="sm">{data.overview}</Text>
-            </Spoiler>
-          </>
-        )}
-
-        {/* Type-specific content */}
-        {data.mediaType === 'tv' ? (
-          <TvContent data={data} />
-        ) : (
-          <MovieContent data={data} />
-        )}
-      </Stack>
-    </ScrollArea>
+          {/* Type-specific content */}
+          {data.mediaType === 'tv' ? (
+            <TvContent data={data} />
+          ) : (
+            <MovieContent data={data} />
+          )}
+        </Stack>
+      </ScrollArea>
+    </Modal>
   )
 }

@@ -7,7 +7,7 @@
  *   modals.openContextModal / open / openConfirmModal / closeModal / close / closeAll
  */
 
-import { createContext, useContext, useState, useEffect, useMemo, useCallback, type ReactNode } from 'react'
+import { createContext, Fragment, useContext, useState, useEffect, useMemo, useCallback, type ReactNode } from 'react'
 import { Modal, Button, Group } from '@mantine/core'
 import { randomId } from '@mantine/hooks'
 
@@ -81,6 +81,24 @@ export type ContextModalProps<
   id: string
   /** Caller-supplied inner props. */
   innerProps: T
+  /** Modal title. Pass to <Modal title={title}> or render inside <Modal.Title>. */
+  title?: ReactNode
+  /**
+   * Combined modal props (opened, onClose, size, etc).
+   * Spread onto <Modal> for simple usage, or cherry-pick for compound <Modal.Root>.
+   */
+  modalProps: {
+    opened: boolean
+    onClose: () => void
+    keepMounted: true
+    transitionProps?: { duration: number }
+    size?: string | number
+    padding?: string | number
+    withCloseButton?: boolean
+    closeOnClickOutside?: boolean
+    closeOnEscape?: boolean
+    [key: string]: unknown
+  }
 }
 
 // ── Public API types ──────────────────────────────────────────────────────────
@@ -225,14 +243,12 @@ export function ModalStackProvider({
         if (entry.kind === 'context') {
           const Component = registry[entry.modal]
           if (!Component) return null
-          const { sharedProps } = entry
+          const modalProps = {
+            ...entry.sharedProps,
+            ...commonModalProps,
+          }
           return (
-            <Modal
-              key={entry.id}
-              title={entry.title}
-              {...sharedProps}
-              {...commonModalProps}
-            >
+            <Fragment key={entry.id}>
               <Component
                 // Cast: ContextModalProps.context expects full ModalsContextProps,
                 // but our components only use closeModal / closeAll at runtime.
@@ -240,8 +256,10 @@ export function ModalStackProvider({
                 context={modalContext as any}
                 id={entry.id}
                 innerProps={entry.innerProps}
+                title={entry.title}
+                modalProps={modalProps}
               />
-            </Modal>
+            </Fragment>
           )
         }
 

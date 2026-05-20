@@ -50,7 +50,7 @@ function moveItem<T>(arr: T[], from: number, to: number): T[] {
 }
 
 export function SectionEditor({ sections, onChange }: SectionEditorProps) {
-  const [filterEditIndex, setFilterEditIndex] = useState<number | null>(null)
+  const [filterEditKey, setFilterEditKey] = useState<string | null>(null)
 
   function handleLabelChange(index: number, label: string) {
     const next = [...sections]
@@ -77,6 +77,9 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
   }
 
   function handleDelete(index: number) {
+    if (sections[index].key === filterEditKey) {
+      setFilterEditKey(null)
+    }
     const next = sections.filter((_, i) => i !== index)
     onChange(next)
   }
@@ -105,6 +108,7 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
   }
 
   function handleReset() {
+    setFilterEditKey(null)
     onChange([...DEFAULT_SECTIONS])
   }
 
@@ -181,14 +185,14 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
                   variant="outline"
                   size="sm"
                   leftSection={
-                    filterEditIndex === index ? (
+                    filterEditKey === section.key ? (
                       <IconX size="1em" />
                     ) : (
                       <IconFilter size="1em" />
                     )
                   }
                   onClick={() =>
-                    setFilterEditIndex(filterEditIndex === index ? null : index)
+                    setFilterEditKey(filterEditKey === section.key ? null : section.key)
                   }
                   styles={{ root: { flex: 1, overflow: 'hidden' } }}
                 >
@@ -212,7 +216,7 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
               </Group>
 
               {/* Inline FilterBuilder */}
-              {filterEditIndex === index && (
+              {filterEditKey === section.key && (
                 <Paper withBorder p="sm" mt="xs" bg="var(--mantine-color-body)">
                   <FilterBuilder
                     value={section.filter ?? createEmptyFilter()}

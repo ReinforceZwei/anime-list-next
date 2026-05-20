@@ -7,6 +7,7 @@ import {
   ColorSwatch,
   Group,
   Loader,
+  Modal,
   ScrollArea,
   Stack,
   Text,
@@ -19,7 +20,7 @@ import { useTagMutation } from '@/hooks/useTagMutation'
 import type { TagRecord } from '@/types/anime'
 import { sortTags } from '@/lib/animeUtils'
 
-export function ManageTagsModal(_props: ContextModalProps) {
+export function ManageTagsModal({ title, modalProps }: ContextModalProps) {
   const { data: tags, isLoading } = useTagList()
   const { deleteMutation } = useTagMutation()
   const sortedTags = useMemo(() => sortTags(tags ?? []), [tags])
@@ -55,82 +56,84 @@ export function ManageTagsModal(_props: ContextModalProps) {
   }
 
   return (
-    <Stack gap="sm">
-      <Group justify="flex-end">
-        <Button
-          size="xs"
-          leftSection={<IconPlus size="1em" />}
-          onClick={openCreateForm}
-        >
-          新增標籤
-        </Button>
-      </Group>
+    <Modal title={title} {...modalProps}>
+      <Stack gap="sm">
+        <Group justify="flex-end">
+          <Button
+            size="xs"
+            leftSection={<IconPlus size="1em" />}
+            onClick={openCreateForm}
+          >
+            新增標籤
+          </Button>
+        </Group>
 
-      {isLoading ? (
-        <Center py="xl">
-          <Loader size="sm" />
-        </Center>
-      ) : !tags || tags.length === 0 ? (
-        <Center py="xl">
-          <Text size="sm" c="dimmed">尚無標籤，請先新增一個。</Text>
-        </Center>
-      ) : (
-        <ScrollArea.Autosize mah={400} offsetScrollbars>
-          <Stack gap={4}>
-            {sortedTags.map((tag) => (
-              <Group
-                key={tag.id}
-                justify="space-between"
-                wrap="nowrap"
-                px="sm"
-                py="xs"
-                style={{
-                  borderRadius: 'var(--mantine-radius-sm)',
-                  border: '1px solid var(--mantine-color-default-border)',
-                }}
-              >
-                <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
-                  <ColorSwatch
-                    color={tag.color || 'var(--mantine-color-gray-5)'}
-                    size={16}
-                    style={{ flexShrink: 0 }}
-                  />
-                  <Text size="sm" fw={500} lineClamp={1}>{tag.name}</Text>
-                  {tag.weight !== undefined && (
-                    <Badge size="xs" variant="outline" color="gray">
-                      權重 {tag.weight}
-                    </Badge>
-                  )}
-                  {tag.hidden && (
-                    <Badge size="xs" variant="light" color="gray">隱藏</Badge>
-                  )}
-                </Group>
+        {isLoading ? (
+          <Center py="xl">
+            <Loader size="sm" />
+          </Center>
+        ) : !tags || tags.length === 0 ? (
+          <Center py="xl">
+            <Text size="sm" c="dimmed">尚無標籤，請先新增一個。</Text>
+          </Center>
+        ) : (
+          <ScrollArea.Autosize mah={400} offsetScrollbars>
+            <Stack gap={4}>
+              {sortedTags.map((tag) => (
+                <Group
+                  key={tag.id}
+                  justify="space-between"
+                  wrap="nowrap"
+                  px="sm"
+                  py="xs"
+                  style={{
+                    borderRadius: 'var(--mantine-radius-sm)',
+                    border: '1px solid var(--mantine-color-default-border)',
+                  }}
+                >
+                  <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+                    <ColorSwatch
+                      color={tag.color || 'var(--mantine-color-gray-5)'}
+                      size={16}
+                      style={{ flexShrink: 0 }}
+                    />
+                    <Text size="sm" fw={500} lineClamp={1}>{tag.name}</Text>
+                    {tag.weight !== undefined && (
+                      <Badge size="xs" variant="outline" color="gray">
+                        權重 {tag.weight}
+                      </Badge>
+                    )}
+                    {tag.hidden && (
+                      <Badge size="xs" variant="light" color="gray">隱藏</Badge>
+                    )}
+                  </Group>
 
-                <Group gap={4} style={{ flexShrink: 0 }}>
-                  <ActionIcon
-                    variant="subtle"
-                    size="sm"
-                    aria-label="編輯標籤"
-                    onClick={() => openEditForm(tag)}
-                  >
-                    <IconEdit size="1em" />
-                  </ActionIcon>
-                  <ActionIcon
-                    variant="subtle"
-                    size="sm"
-                    color="red"
-                    aria-label="刪除標籤"
-                    loading={deleteMutation.isPending && deleteMutation.variables?.id === tag.id}
-                    onClick={() => confirmDelete(tag)}
-                  >
-                    <IconTrash size="1em" />
-                  </ActionIcon>
+                  <Group gap={4} style={{ flexShrink: 0 }}>
+                    <ActionIcon
+                      variant="subtle"
+                      size="sm"
+                      aria-label="編輯標籤"
+                      onClick={() => openEditForm(tag)}
+                    >
+                      <IconEdit size="1em" />
+                    </ActionIcon>
+                    <ActionIcon
+                      variant="subtle"
+                      size="sm"
+                      color="red"
+                      aria-label="刪除標籤"
+                      loading={deleteMutation.isPending && deleteMutation.variables?.id === tag.id}
+                      onClick={() => confirmDelete(tag)}
+                    >
+                      <IconTrash size="1em" />
+                    </ActionIcon>
+                  </Group>
                 </Group>
-              </Group>
-            ))}
-          </Stack>
-        </ScrollArea.Autosize>
-      )}
-    </Stack>
+              ))}
+            </Stack>
+          </ScrollArea.Autosize>
+        )}
+      </Stack>
+    </Modal>
   )
 }
