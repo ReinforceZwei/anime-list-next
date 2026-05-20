@@ -40,8 +40,8 @@ function describeCondition(cond: FilterCondition): string {
     case 'gte':      return `${label} ≥ ${value}`
     case 'lt':       return `${label} < ${value}`
     case 'lte':      return `${label} ≤ ${value}`
-    case 'in':       return `${label} 在 [${(value as string[]).join(', ')}]`
-    case 'notIn':    return `${label} 不在 [${(value as string[]).join(', ')}]`
+    case 'in':       return `${label} 符合 [${(value as string[]).join(', ')}]`
+    case 'notIn':    return `${label} 不符合 [${(value as string[]).join(', ')}]`
     case 'between':  return `${label} 在 ${(value as [string,string]).join(' 到 ')} 之間`
     case 'before':   return `${label} 在 ${value} 之前`
     case 'after':    return `${label} 在 ${value} 之後`
