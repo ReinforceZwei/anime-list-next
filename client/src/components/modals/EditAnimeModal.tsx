@@ -64,7 +64,6 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
     },
   })
   function handleSubmit(values: typeof form.values) {
-    const statusChanged = values.status !== anime.status
     updateMutation.mutate(
       {
         ...anime,
@@ -85,7 +84,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
       {
         onSuccess: (record) => {
           context.closeModal(id)
-          if (statusChanged) onSaved?.(record.id)
+          onSaved?.(record.id)
         },
       },
     )
