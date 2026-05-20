@@ -391,7 +391,7 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
   )
 
   return (
-    <Modal title={title} {...modalProps}>
+    <Modal title={title} size="xl" {...modalProps}>
       {content}
     </Modal>
   )

@@ -121,7 +121,7 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
   }
 
   return (
-    <Modal.Root {...modalProps}>
+    <Modal.Root closeOnClickOutside={false} closeOnEscape={false} {...modalProps}>
       <Modal.Overlay />
       <Modal.Content
         styles={{
@@ -254,7 +254,6 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
                       modals.openContextModal({
                         modal: 'tmdbSearch',
                         title: '重新連結至 TMDb',
-                        size: '56rem',
                         innerProps: { mode: 'link', animeId: anime.id, initialQuery: anime.customName || anime.cachedTitle || '' },
                       })
                     }}

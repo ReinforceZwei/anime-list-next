@@ -315,7 +315,7 @@ export function TmdbMetadataModal({ innerProps, title, modalProps }: ContextModa
   const displayOriginalTitle = data.mediaType === 'tv' ? data.original_name : data.original_title
 
   return (
-    <Modal title={title} {...modalProps}>
+    <Modal title={title} size="xl" {...modalProps}>
       <ScrollArea>
         <Stack gap="md" p={4}>
           {/* Header */}

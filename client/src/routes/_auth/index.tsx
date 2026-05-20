@@ -63,7 +63,6 @@ function Index() {
     modals.openContextModal({
       modal: "tmdbSearch",
       title: "搜尋 TMDb",
-      size: "56rem",
       innerProps: { onSaved: jumpTo },
     });
   }

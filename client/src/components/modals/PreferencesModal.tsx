@@ -106,7 +106,7 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
   }
 
   return (
-    <Modal.Root {...modalProps}>
+    <Modal.Root size="lg" {...modalProps}>
       <Modal.Overlay />
       <Modal.Content
         styles={{

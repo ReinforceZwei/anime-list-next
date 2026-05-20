@@ -51,8 +51,6 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
       modal: 'editAnime',
       title: '編輯動畫',
       innerProps: { anime, onSaved: onJumpTo, onDeleted: onClose },
-      closeOnClickOutside: false,
-      closeOnEscape: false,
     })
   }
 
