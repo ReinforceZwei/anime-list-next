@@ -2,8 +2,8 @@ import type { AnimeRecord, AnimeSection, SectionDef, SortableField } from '@/typ
 import { evaluateFilter as evalFilter } from '@/lib/filterEngine'
 
 /**
- * Sort anime records by a given field. Nullish values are treated as empty strings
- * and sorted to the beginning.
+ * Sort anime records by a given field. Nullish values are treated as empty
+ * strings and sort naturally (first in ascending, last in descending).
  */
 export function sortItems(
   items: AnimeRecord[],
