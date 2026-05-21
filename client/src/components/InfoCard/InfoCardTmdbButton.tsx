@@ -15,7 +15,6 @@ export default function InfoCardTmdbButton() {
     modals.openContextModal({
       modal: 'tmdbMetadata',
       title: 'TMDb 詳細資料',
-      size: '56rem',
       innerProps: {
         tmdbId: anime.tmdbId,
         tmdbMediaType: anime.tmdbMediaType,

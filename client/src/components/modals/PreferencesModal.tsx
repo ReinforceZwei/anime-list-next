@@ -8,6 +8,8 @@ import {
   FileButton,
   Group,
   Loader,
+  Modal,
+  Scroller,
   Stack,
   Tabs,
   Text,
@@ -15,14 +17,15 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconAdjustments, IconDownload, IconExternalLink, IconInfoCircle, IconMinus, IconPlus, IconSettings, IconUpload } from '@tabler/icons-react'
+import { IconAdjustments, IconDownload, IconExternalLink, IconInfoCircle, IconMinus, IconPlus, IconSettings, IconUpload, IconSection } from '@tabler/icons-react'
 import { exportData, importData, type ImportResult } from '@/api/importexport'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
 import { showErrorNotification } from '@/lib/notifications'
 import { pb } from '@/lib/pb'
+import { SectionEditor } from '@/components/modals/SectionEditor'
 
-export function PreferencesModal({ context, id }: ContextModalProps) {
+export function PreferencesModal({ context, id, title, modalProps }: ContextModalProps) {
   const { data: prefs, isLoading } = useUserPreferences()
   const { saveMutation } = useUserPreferencesMutation()
 
@@ -36,6 +39,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
     return `${base}/_/`
   }, [])
 
+  const [activeTab, setActiveTab] = useState<string | null>('general')
   const [uiScale, setUiScale] = useState<number>(() => {
     const stored = localStorage.getItem('ui-scale')
     return stored ? parseInt(stored, 10) : 100
@@ -50,10 +54,7 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   const form = useForm({
     initialValues: {
       pageTitle: prefs?.pageTitle ?? '',
-      watchingLabel: prefs?.watchingLabel ?? '',
-      completedLabel: prefs?.completedLabel ?? '',
-      plannedLabel: prefs?.plannedLabel ?? '',
-      droppedLabel: prefs?.droppedLabel ?? '',
+      sections: prefs?.sections ?? [],
     },
   })
 
@@ -68,7 +69,12 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   function handleSubmit(values: typeof form.values) {
     saveMutation.mutate(
       { id: prefs?.id, ...values },
-      { onSuccess: () => context.closeModal(id) },
+      {
+        onSuccess: () => {
+          form.resetDirty()
+          context.closeModal(id)
+        },
+      },
     )
   }
 
@@ -100,155 +106,176 @@ export function PreferencesModal({ context, id }: ContextModalProps) {
   }
 
   return (
-    <Tabs defaultValue="general">
-      <Tabs.List mb="md">
-        <Tabs.Tab value="general" leftSection={<IconSettings size="1em" />}>
-          一般
-        </Tabs.Tab>
-        <Tabs.Tab value="interface" leftSection={<IconAdjustments size="1em" />}>
-          介面
-        </Tabs.Tab>
-        <Tabs.Tab value="importexport" leftSection={<IconDownload size="1em" />}>
-          匯入／匯出
-        </Tabs.Tab>
-      </Tabs.List>
+    <Modal.Root size="lg" {...modalProps}>
+      <Modal.Overlay />
+      <Modal.Content
+        styles={{
+          content: {
+            overflowY: 'unset',
+            display: 'flex',
+            flexDirection: 'column',
+          }
+        }}
+      >
+        <Modal.Header>
+          <Modal.Title>{title}</Modal.Title>
+          <Modal.CloseButton />
+        </Modal.Header>
+        <Modal.Body styles={{ body: { overflowY: 'auto' }}}>
+          <form id="preferences-form" onSubmit={form.onSubmit(handleSubmit)}>
+            <Tabs value={activeTab} onChange={setActiveTab}>
+              <Tabs.List mb="md">
+                <Scroller>
+                  <Tabs.Tab value="general" leftSection={<IconSettings size="1em" />}>
+                    一般
+                  </Tabs.Tab>
+                  <Tabs.Tab value="sections" leftSection={<IconSection size="1em" />}>
+                    區塊
+                  </Tabs.Tab>
+                  <Tabs.Tab value="interface" leftSection={<IconAdjustments size="1em" />}>
+                    介面
+                  </Tabs.Tab>
+                  <Tabs.Tab value="importexport" leftSection={<IconDownload size="1em" />}>
+                    匯入／匯出
+                  </Tabs.Tab>
+                </Scroller>
+              </Tabs.List>
 
-      <Tabs.Panel value="general">
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack>
-            <TextInput
-              label="頁面標題"
-              placeholder="我的動畫清單"
-              description="顯示在清單頂部的主標題"
-              {...form.getInputProps('pageTitle')}
-            />
-            <Divider label="區塊名稱" labelPosition="left" />
-            <TextInput
-              label="觀看中"
-              placeholder="觀看中"
-              {...form.getInputProps('watchingLabel')}
-            />
-            <TextInput
-              label="已看完"
-              placeholder="已看完"
-              {...form.getInputProps('completedLabel')}
-            />
-            <TextInput
-              label="待看"
-              placeholder="待看"
-              {...form.getInputProps('plannedLabel')}
-            />
-            <TextInput
-              label="棄番"
-              placeholder="棄番"
-              {...form.getInputProps('droppedLabel')}
-            />
-            <Button type="submit" loading={saveMutation.isPending}>
-              儲存
-            </Button>
-            <Divider />
-            <Anchor
-              href={pbAdminUrl}
-              size="sm"
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              <Group gap="xs">
-                <IconExternalLink size="1em" />
-                前往 Pocketbase 控制台
-              </Group>
-            </Anchor>
-          </Stack>
-        </form>
-      </Tabs.Panel>
-
-      <Tabs.Panel value="interface">
-        <Stack>
-          <Divider label="介面縮放" labelPosition="left" />
-          <div>
-            <Text size="sm" fw={500} mb="xs">
-              縮放比例
-            </Text>
-            <Button.Group>
-              <Button
-                variant="default"
-                disabled={uiScale <= 70}
-                onClick={() => handleUiScaleChange(uiScale - 10)}
-              >
-                <IconMinus size="1em" />
-              </Button>
-              <Button.GroupSection variant="default" bg="var(--mantine-color-body)" miw={60} ta="center">
-                {uiScale}%
-              </Button.GroupSection>
-              <Button
-                variant="default"
-                disabled={uiScale >= 150}
-                onClick={() => handleUiScaleChange(uiScale + 10)}
-              >
-                <IconPlus size="1em" />
-              </Button>
-            </Button.Group>
-          </div>
-        </Stack>
-      </Tabs.Panel>
-
-      <Tabs.Panel value="importexport">
-        <Stack>
-          <div>
-            <Text fw={500} size="sm" mb={4}>
-              匯出
-            </Text>
-            <Text size="xs" c="dimmed" mb="xs">
-              將所有動畫紀錄與標籤下載為 JSON 檔。
-            </Text>
-            <Button
-              leftSection={<IconDownload size="1em" />}
-              variant="default"
-              loading={isExporting}
-              onClick={handleExport}
-            >
-              匯出資料
-            </Button>
-          </div>
-
-          <Divider />
-
-          <div>
-            <Text fw={500} size="sm" mb={4}>
-              匯入
-            </Text>
-            <Text size="xs" c="dimmed" mb="xs">
-              從先前匯出的 JSON 檔還原。相同 ID 的既有紀錄將被更新。
-            </Text>
-            <Group>
-              <FileButton resetRef={resetFileRef} onChange={handleImport} accept="application/json">
-                {(props) => (
-                  <Button
-                    {...props}
-                    leftSection={<IconUpload size="1em" />}
-                    variant="default"
-                    loading={isImporting}
+              <Tabs.Panel value="general">
+                <Stack>
+                  <TextInput
+                    label="頁面標題"
+                    placeholder="我的動畫清單"
+                    description="顯示在清單頂部的主標題"
+                    {...form.getInputProps('pageTitle')}
+                  />
+                  {/* <Divider /> */}
+                  <Anchor
+                    href={pbAdminUrl}
+                    size="sm"
+                    target='_blank'
+                    rel='noopener noreferrer'
                   >
-                    選擇檔案
-                  </Button>
-                )}
-              </FileButton>
-            </Group>
+                    <Group gap="xs">
+                      <IconExternalLink size="1em" />
+                      前往 Pocketbase 控制台
+                    </Group>
+                  </Anchor>
+                </Stack>
+              </Tabs.Panel>
 
-            {importResult && (
-              <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="green" variant="light">
-                已匯入 {importResult.importedRecords} 筆動畫紀錄與 {importResult.importedTags} 個標籤。
-              </Alert>
-            )}
+              <Tabs.Panel value="interface">
+                <Stack>
+                  <Divider label="介面縮放" labelPosition="left" />
+                  <div>
+                    <Text size="sm" fw={500} mb="xs">
+                      縮放比例
+                    </Text>
+                    <Button.Group>
+                      <Button
+                        variant="default"
+                        disabled={uiScale <= 70}
+                        onClick={() => handleUiScaleChange(uiScale - 10)}
+                      >
+                        <IconMinus size="1em" />
+                      </Button>
+                      <Button.GroupSection variant="default" bg="var(--mantine-color-body)" miw={60} ta="center">
+                        {uiScale}%
+                      </Button.GroupSection>
+                      <Button
+                        variant="default"
+                        disabled={uiScale >= 150}
+                        onClick={() => handleUiScaleChange(uiScale + 10)}
+                      >
+                        <IconPlus size="1em" />
+                      </Button>
+                    </Button.Group>
+                  </div>
+                </Stack>
+              </Tabs.Panel>
 
-            {importError && (
-              <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="red" variant="light">
-                {importError}
-              </Alert>
-            )}
-          </div>
-        </Stack>
-      </Tabs.Panel>
-    </Tabs>
+              <Tabs.Panel value="sections">
+                <SectionEditor
+                  sections={form.values.sections}
+                  onChange={(newSections) => form.setFieldValue('sections', newSections)}
+                />
+              </Tabs.Panel>
+
+              <Tabs.Panel value="importexport">
+                <Stack>
+                  <div>
+                    <Text fw={500} size="sm" mb={4}>
+                      匯出
+                    </Text>
+                    <Text size="xs" c="dimmed" mb="xs">
+                      將所有動畫紀錄與標籤下載為 JSON 檔。
+                    </Text>
+                    <Button
+                      leftSection={<IconDownload size="1em" />}
+                      variant="default"
+                      loading={isExporting}
+                      onClick={handleExport}
+                    >
+                      匯出資料
+                    </Button>
+                  </div>
+
+                  <Divider />
+
+                  <div>
+                    <Text fw={500} size="sm" mb={4}>
+                      匯入
+                    </Text>
+                    <Text size="xs" c="dimmed" mb="xs">
+                      從先前匯出的 JSON 檔還原。相同 ID 的既有紀錄將被更新。
+                    </Text>
+                    <Group>
+                      <FileButton resetRef={resetFileRef} onChange={handleImport} accept="application/json">
+                        {(props) => (
+                          <Button
+                            {...props}
+                            leftSection={<IconUpload size="1em" />}
+                            variant="default"
+                            loading={isImporting}
+                          >
+                            選擇檔案
+                          </Button>
+                        )}
+                      </FileButton>
+                    </Group>
+
+                    {importResult && (
+                      <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="green" variant="light">
+                        已匯入 {importResult.importedRecords} 筆動畫紀錄與 {importResult.importedTags} 個標籤。
+                      </Alert>
+                    )}
+
+                    {importError && (
+                      <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="red" variant="light">
+                        {importError}
+                      </Alert>
+                    )}
+                  </div>
+                </Stack>
+              </Tabs.Panel>
+            </Tabs>
+
+          </form>
+        </Modal.Body>
+        <Group
+          justify="flex-end"
+          p="md"
+          wrap="nowrap"
+          style={{
+            borderTop: form.isDirty() ? '1px solid var(--mantine-color-default-border)' : '1px solid transparent',
+            transition: 'border-color 200ms ease',
+          }}
+        >
+          <Button type="submit" form="preferences-form" loading={saveMutation.isPending} disabled={!form.isDirty()}>
+            儲存
+          </Button>
+        </Group>
+      </Modal.Content>
+    </Modal.Root>
   )
 }

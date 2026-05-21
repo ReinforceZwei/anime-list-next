@@ -32,7 +32,6 @@ function RouteComponent() {
     modals.openContextModal({
       modal: 'tmdbSearch',
       title: 'Search TMDb',
-      size: '56rem',
       innerProps: {},
     })
   }

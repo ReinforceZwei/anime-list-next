@@ -56,18 +56,6 @@ export interface FilterGroup {
 // A root filter is just a FilterGroup
 export type FilterExpression = FilterGroup
 
-// ---- Section definition (for Phase 3, defined here for reference) ----
-
-export type SortableField = 'completedAt' | 'startedAt' | 'updated' | 'created' | 'rating'
-
-export interface SectionDefV2 {
-  key: string
-  label: string
-  filter: FilterExpression | null
-  sortBy: SortableField
-  sortOrder: 'asc' | 'desc'
-}
-
 // ---- Action rule (for Phase 4, defined here for reference) ----
 
 export interface ActionRule {
@@ -87,7 +75,7 @@ export type ActionDef =
 
 // ---- Fallback UUID generator (crypto.randomUUID requires secure context) ----
 
-function generateId(): string {
+export function generateId(): string {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID()
   }

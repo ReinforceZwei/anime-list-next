@@ -20,7 +20,6 @@ export default function InfoCardPoster() {
               modals.openContextModal({
                 modal: 'tmdbSearch',
                 title: '連結至 TMDb',
-                size: '56rem',
                 innerProps: { mode: 'link', animeId: anime.id, initialQuery: anime.customName ?? '' },
               })
             }}

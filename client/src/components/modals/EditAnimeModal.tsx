@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   Group,
+  Modal,
   NumberInput,
   Select,
   Stack,
@@ -39,7 +40,7 @@ function parseLocalDateString(val: string | Date | null): Date | null {
   return dayjs(val).toDate()
 }
 
-export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<EditAnimeInnerProps>) {
+export function EditAnimeModal({ context, id, innerProps, title, modalProps }: ContextModalProps<EditAnimeInnerProps>) {
   const { anime, onSaved, onDeleted } = innerProps
   const { updateMutation, deleteMutation } = useAnimeMutation()
   const { data: tagList } = useTagList()
@@ -64,7 +65,6 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
     },
   })
   function handleSubmit(values: typeof form.values) {
-    const statusChanged = values.status !== anime.status
     updateMutation.mutate(
       {
         ...anime,
@@ -85,7 +85,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
       {
         onSuccess: (record) => {
           context.closeModal(id)
-          if (statusChanged) onSaved?.(record.id)
+          onSaved?.(record.id)
         },
       },
     )
@@ -107,7 +107,7 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
         // .then() always fires regardless of observer lifecycle.
         deleteMutation.mutateAsync({ id: anime.id })
           .then(() => { modals.closeAll(); onDeleted?.() })
-          .catch(() => {})
+          .catch(() => { })
       },
     })
   }
@@ -121,192 +121,215 @@ export function EditAnimeModal({ context, id, innerProps }: ContextModalProps<Ed
   }
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
-      {Boolean(anime.tmdbId) && (anime.cachedTitle || anime.cachedSeasonName) && (
-        <>
-          <Stack gap={2} mb="xs">
-            {anime.cachedTitle && (
-              <Text fw={600} size="md" lineClamp={2}>
-                {anime.cachedTitle}
-              </Text>
+    <Modal.Root closeOnClickOutside={false} closeOnEscape={false} {...modalProps}>
+      <Modal.Overlay />
+      <Modal.Content
+        styles={{
+          content: {
+            overflowY: 'unset',
+            display: 'flex',
+            flexDirection: 'column',
+          }
+        }}
+      >
+        <Modal.Header>
+          <Modal.Title>{title}</Modal.Title>
+          <Modal.CloseButton />
+        </Modal.Header>
+        <Modal.Body styles={{ body: { overflowY: 'auto' } }}>
+          <form id="edit-anime-form" onSubmit={form.onSubmit(handleSubmit)}>
+            {Boolean(anime.tmdbId) && (anime.cachedTitle || anime.cachedSeasonName) && (
+              <>
+                <Stack gap={2} mb="xs">
+                  {anime.cachedTitle && (
+                    <Text fw={600} size="md" lineClamp={2}>
+                      {anime.cachedTitle}
+                    </Text>
+                  )}
+                  {anime.cachedSeasonName && (
+                    <Text size="sm" c="dimmed">
+                      {anime.cachedSeasonName}
+                    </Text>
+                  )}
+                </Stack>
+                <Divider mb="md" />
+              </>
             )}
-            {anime.cachedSeasonName && (
-              <Text size="sm" c="dimmed">
-                {anime.cachedSeasonName}
-              </Text>
-            )}
-          </Stack>
-          <Divider mb="md" />
-        </>
-      )}
 
-      <Tabs defaultValue="general">
-        <Tabs.List>
-          <Tabs.Tab value="general">一般</Tabs.Tab>
-          <Tabs.Tab value="other">其他</Tabs.Tab>
-        </Tabs.List>
+            <Tabs defaultValue="general">
+              <Tabs.List>
+                <Tabs.Tab value="general">一般</Tabs.Tab>
+                <Tabs.Tab value="other">其他</Tabs.Tab>
+              </Tabs.List>
 
-        <Tabs.Panel value="general" pt="md">
-          <Stack>
-            <TextInput
-              label="自訂名稱"
-              placeholder="輸入名稱"
-              {...form.getInputProps('customName')}
-            />
+              <Tabs.Panel value="general" pt="md">
+                <Stack>
+                  <TextInput
+                    label="自訂名稱"
+                    placeholder="輸入名稱"
+                    {...form.getInputProps('customName')}
+                  />
 
-            <Select
-              label="觀看狀態"
-              data={[
-                { value: '', label: '無' },
-                ...SELECT_STATUS_OPTIONS,
-              ]}
-              {...form.getInputProps('status')}
-            />
+                  <Select
+                    label="觀看狀態"
+                    data={[
+                      { value: '', label: '無' },
+                      ...SELECT_STATUS_OPTIONS,
+                    ]}
+                    {...form.getInputProps('status')}
+                  />
 
-            <Select
-              label="下載狀態"
-              data={[
-                { value: '', label: '無' },
-                ...SELECT_DOWNLOAD_OPTIONS,
-              ]}
-              {...form.getInputProps('downloadStatus')}
-            />
+                  <Select
+                    label="下載狀態"
+                    data={[
+                      { value: '', label: '無' },
+                      ...SELECT_DOWNLOAD_OPTIONS,
+                    ]}
+                    {...form.getInputProps('downloadStatus')}
+                  />
 
-            <RatingInput {...form.getInputProps('rating')} />
+                  <RatingInput {...form.getInputProps('rating')} />
 
-            <Textarea
-              label="心得"
-              placeholder="輸入心得…"
-              autosize
-              minRows={2}
-              {...form.getInputProps('comment')}
-            />
+                  <Textarea
+                    label="心得"
+                    placeholder="輸入心得…"
+                    autosize
+                    minRows={2}
+                    {...form.getInputProps('comment')}
+                  />
 
-            <TextInput
-              label="備註"
-              placeholder="輸入備註…"
-              {...form.getInputProps('remark')}
-            />
+                  <TextInput
+                    label="備註"
+                    placeholder="輸入備註…"
+                    {...form.getInputProps('remark')}
+                  />
 
-            <Group gap="xs" align="flex-end">
-              <TagMultiSelect
-                label="標籤"
-                placeholder="選擇標籤"
-                data={availableTags}
-                value={form.values.tags}
-                onChange={(ids) => form.setFieldValue('tags', ids)}
-                style={{ flex: 1 }}
-              />
-              <Tooltip label="管理標籤" withArrow>
-                <ActionIcon
-                  variant="default"
-                  size="lg"
-                  aria-label="管理標籤"
-                  mb={1}
-                  onClick={openManageTags}
-                >
-                  <IconTags size="1em" />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </Stack>
-        </Tabs.Panel>
+                  <Group gap="xs" align="flex-end">
+                    <TagMultiSelect
+                      label="標籤"
+                      placeholder="選擇標籤"
+                      data={availableTags}
+                      value={form.values.tags}
+                      onChange={(ids) => form.setFieldValue('tags', ids)}
+                      style={{ flex: 1 }}
+                    />
+                    <Tooltip label="管理標籤" withArrow>
+                      <ActionIcon
+                        variant="default"
+                        size="lg"
+                        aria-label="管理標籤"
+                        mb={1}
+                        onClick={openManageTags}
+                      >
+                        <IconTags size="1em" />
+                      </ActionIcon>
+                    </Tooltip>
+                  </Group>
+                </Stack>
+              </Tabs.Panel>
 
-        <Tabs.Panel value="other" pt="md">
-          <Stack>
-            <DateTimePicker
-              label="開始時間"
-              placeholder="選擇日期與時間"
-              clearable
-              value={form.values.startedAt}
-              onChange={(val) => form.setFieldValue('startedAt', parseLocalDateString(val as string | null))}
-            />
-            <DateTimePicker
-              label="完成時間"
-              placeholder="選擇日期與時間"
-              clearable
-              value={form.values.completedAt}
-              onChange={(val) => form.setFieldValue('completedAt', parseLocalDateString(val as string | null))}
-            />
+              <Tabs.Panel value="other" pt="md">
+                <Stack>
+                  <DateTimePicker
+                    label="開始時間"
+                    placeholder="選擇日期與時間"
+                    clearable
+                    value={form.values.startedAt}
+                    onChange={(val) => form.setFieldValue('startedAt', parseLocalDateString(val as string | null))}
+                  />
+                  <DateTimePicker
+                    label="完成時間"
+                    placeholder="選擇日期與時間"
+                    clearable
+                    value={form.values.completedAt}
+                    onChange={(val) => form.setFieldValue('completedAt', parseLocalDateString(val as string | null))}
+                  />
 
-            <Divider label="TMDb 資料" labelPosition="left" />
+                  <Divider label="TMDb 資料" labelPosition="left" />
 
-            <Button
-              variant="default"
-              leftSection={<IconLink size="1em" />}
-              onClick={() => {
-                modals.openContextModal({
-                  modal: 'tmdbSearch',
-                  title: '重新連結至 TMDb',
-                  size: '56rem',
-                  innerProps: { mode: 'link', animeId: anime.id, initialQuery: anime.customName || anime.cachedTitle || '' },
-                })
-              }}
+                  <Button
+                    variant="default"
+                    leftSection={<IconLink size="1em" />}
+                    onClick={() => {
+                      modals.openContextModal({
+                        modal: 'tmdbSearch',
+                        title: '重新連結至 TMDb',
+                        innerProps: { mode: 'link', animeId: anime.id, initialQuery: anime.customName || anime.cachedTitle || '' },
+                      })
+                    }}
+                  >
+                    重新連結至 TMDb
+                  </Button>
+
+                  <Alert
+                    icon={<IconAlertTriangle size="1em" />}
+                    color="yellow"
+                    variant="light"
+                  >
+                    不建議手動修改 TMDb 欄位，除非您清楚知道自己在做什麼。
+                  </Alert>
+
+                  <NumberInput
+                    label="TMDb ID"
+                    placeholder="輸入 TMDb ID"
+                    min={1}
+                    allowDecimal={false}
+                    value={form.values.tmdbId ?? ''}
+                    onChange={(val) => form.setFieldValue('tmdbId', val === '' ? null : Number(val))}
+                  />
+
+                  <Select
+                    label="TMDb 媒體類型"
+                    data={[
+                      { value: '', label: '無' },
+                      ...SELECT_MEDIA_OPTIONS,
+                    ]}
+                    {...form.getInputProps('tmdbMediaType')}
+                  />
+
+                  {form.values.tmdbMediaType === 'tv' && (
+                    <NumberInput
+                      label="TMDb 季數"
+                      placeholder="輸入季數"
+                      min={0}
+                      allowDecimal={false}
+                      value={form.values.tmdbSeasonNumber ?? ''}
+                      onChange={(val) => form.setFieldValue('tmdbSeasonNumber', val === '' ? null : Number(val))}
+                    />
+                  )}
+                </Stack>
+              </Tabs.Panel>
+            </Tabs>
+
+          </form>
+        </Modal.Body>
+        <Group
+          justify="flex-end"
+          p="md"
+          wrap="nowrap"
+          style={{ borderTop: '1px solid var(--mantine-color-default-border)' }}
+        >
+          <Tooltip label="刪除動畫" withArrow>
+            <ActionIcon
+              color="red"
+              variant="subtle"
+              size="lg"
+              aria-label="刪除動畫"
+              loading={deleteMutation.isPending}
+              onClick={handleDelete}
+              mr="auto"
             >
-              重新連結至 TMDb
-            </Button>
-
-            <Alert
-              icon={<IconAlertTriangle size="1em" />}
-              color="yellow"
-              variant="light"
-            >
-              不建議手動修改 TMDb 欄位，除非您清楚知道自己在做什麼。
-            </Alert>
-
-            <NumberInput
-              label="TMDb ID"
-              placeholder="輸入 TMDb ID"
-              min={1}
-              allowDecimal={false}
-              value={form.values.tmdbId ?? ''}
-              onChange={(val) => form.setFieldValue('tmdbId', val === '' ? null : Number(val))}
-            />
-
-            <Select
-              label="TMDb 媒體類型"
-              data={[
-                { value: '', label: '無' },
-                ...SELECT_MEDIA_OPTIONS,
-              ]}
-              {...form.getInputProps('tmdbMediaType')}
-            />
-
-            {form.values.tmdbMediaType === 'tv' && (
-              <NumberInput
-                label="TMDb 季數"
-                placeholder="輸入季數"
-                min={0}
-                allowDecimal={false}
-                value={form.values.tmdbSeasonNumber ?? ''}
-                onChange={(val) => form.setFieldValue('tmdbSeasonNumber', val === '' ? null : Number(val))}
-              />
-            )}
-          </Stack>
-        </Tabs.Panel>
-      </Tabs>
-
-      <Group justify="flex-end" mt="lg">
-        <Tooltip label="刪除動畫" withArrow>
-          <ActionIcon
-            color="red"
-            variant="subtle"
-            size="lg"
-            aria-label="刪除動畫"
-            loading={deleteMutation.isPending}
-            onClick={handleDelete}
-            mr="auto"
-          >
-            <IconTrash size="1em" />
-          </ActionIcon>
-        </Tooltip>
-        <Button variant="default" onClick={() => context.closeModal(id)}>
-          取消
-        </Button>
-        <Button type="submit" loading={updateMutation.isPending}>
-          儲存
-        </Button>
-      </Group>
-    </form>
+              <IconTrash size="1em" />
+            </ActionIcon>
+          </Tooltip>
+          <Button variant="default" onClick={() => context.closeModal(id)}>
+            取消
+          </Button>
+          <Button type="submit" form="edit-anime-form" loading={updateMutation.isPending}>
+            儲存
+          </Button>
+        </Group>
+      </Modal.Content>
+    </Modal.Root>
   )
 }
