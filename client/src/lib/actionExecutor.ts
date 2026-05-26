@@ -49,18 +49,18 @@ export function applyActions(record: AnimeRecord, actions: ActionDef[]): Partial
   return merged
 }
 
-/** Shallow-merge two patches; for tags arrays, concatenate deduplicated. */
+/**
+ * Shallow-merge two patches.
+ *
+ * Tags are handled by simple override: if `next` provides a tags array it wins,
+ * otherwise `base.tags` is kept. No concatenation happens here because each
+ * individual action (addTag / removeTag) already produces a complete, fully-
+ * computed tags array in applySingleAction.
+ */
 function deepMergePatch(base: Partial<AnimeRecord>, next: Partial<AnimeRecord>): Partial<AnimeRecord> {
   const result = { ...base, ...next }
-  // Merge tags arrays specially — the next patch may add or remove
   if (base.tags !== undefined || next.tags !== undefined) {
-    // If next explicitly sets tags (removeTag case), it takes priority
-    // since removeTag returns a fresh filtered array
-    if (next.tags !== undefined) {
-      result.tags = next.tags
-    } else {
-      result.tags = base.tags
-    }
+    result.tags = next.tags !== undefined ? next.tags : base.tags
   }
   return result
 }

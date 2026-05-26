@@ -17,12 +17,16 @@ import InfoCardQuickActions from './InfoCardQuickActions'
 import InfoCardRelatedSeasons from './InfoCardRelatedSeasons'
 import InfoCardTmdbButton from './InfoCardTmdbButton'
 import styles from './InfoCard.module.css'
+import type { ActionButton } from '@/types/filter'
 
 interface InfoCardProps
   extends Omit<InfoCardContextValue, 'tags'> {
   tags?: TagRecord[]
   children: ReactNode
 }
+
+const EMPTY_ACTION_BUTTONS: ActionButton[] = []
+const EMPTY_TAG_MAP = new Map<string, TagRecord>()
 
 function InfoCard({
   anime,
@@ -34,8 +38,8 @@ function InfoCard({
   onEdit,
   onPosterClick,
   onJumpTo,
-  actionButtons = [],
-  tagMap = new Map(),
+  actionButtons = EMPTY_ACTION_BUTTONS,
+  tagMap = EMPTY_TAG_MAP,
   children,
 }: InfoCardProps) {
   return (

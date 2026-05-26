@@ -47,6 +47,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
                     size="lg"
                     onClick={() => onChange(opt.name)}
                     title={opt.name}
+                    aria-label={opt.name}
                   >
                     <OptIcon size="1em" />
                   </ActionIcon>

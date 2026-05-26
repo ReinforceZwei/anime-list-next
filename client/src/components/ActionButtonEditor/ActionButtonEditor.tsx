@@ -207,7 +207,6 @@ export function ActionButtonEditor({ buttons, onChange }: ActionButtonEditorProp
                     <ColorInput
                       label="按鈕顏色"
                       placeholder="預設"
-                      __clearable
                       value={button.color ?? ''}
                       onChange={(v) => handleColorChange(button.id, v || undefined)}
                       swatches={[
