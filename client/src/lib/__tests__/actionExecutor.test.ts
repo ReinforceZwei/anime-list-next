@@ -230,6 +230,30 @@ describe('describeAction', () => {
       const desc = describeAction(action, map)
       expect(desc).toBe('將評分設為「5」')
     })
+
+    it('falls back to (空白) when value is null', () => {
+      const action = { type: 'setField' as const, field: 'status' as const, value: null as unknown as string }
+      const desc = describeAction(action, map)
+      expect(desc).toBe('將狀態設為「(空白)」')
+    })
+
+    it('falls back to (空白) when value is undefined', () => {
+      const action = { type: 'setField' as const, field: 'status' as const, value: undefined as unknown as string }
+      const desc = describeAction(action, map)
+      expect(desc).toBe('將狀態設為「(空白)」')
+    })
+
+    it('falls back to (空白) when value is empty string', () => {
+      const action = setField('status', '')
+      const desc = describeAction(action, map)
+      expect(desc).toBe('將狀態設為「(空白)」')
+    })
+
+    it('falls back to (空白) when value is whitespace only', () => {
+      const action = setField('status', '   ')
+      const desc = describeAction(action, map)
+      expect(desc).toBe('將狀態設為「(空白)」')
+    })
   })
 
   describe('addTag', () => {

@@ -73,11 +73,12 @@ export function describeAction(action: ActionDef, tagMap?: Map<string, TagRecord
     case 'setField': {
       const def = getFieldDef(action.field)
       const fieldLabel = def?.label ?? action.field
+      const displayValue = action.value != null && String(action.value).trim() !== '' ? String(action.value) : '(空白)'
       if (def?.options) {
         const opt = def.options.find(o => o.value === String(action.value))
-        return `將${fieldLabel}設為「${opt?.label ?? action.value}」`
+        return `將${fieldLabel}設為「${opt?.label ?? displayValue}」`
       }
-      return `將${fieldLabel}設為「${action.value}」`
+      return `將${fieldLabel}設為「${displayValue}」`
     }
 
     case 'addTag': {
