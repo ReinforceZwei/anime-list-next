@@ -79,7 +79,7 @@ export default function InfoCardQuickActions({ onMutate }: InfoCardQuickActionsP
 
   // --- Custom user buttons ---
   const matchedButtons = anime
-    ? actionButtons.filter(b => b.condition.conditions.length > 0 && evaluateFilter(b.condition, anime))
+    ? actionButtons.filter(b => evaluateFilter(b.condition, anime))
     : []
 
   function handleButtonClick(button: ActionButton) {
