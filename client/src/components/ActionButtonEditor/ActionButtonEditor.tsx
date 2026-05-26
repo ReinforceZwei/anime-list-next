@@ -164,7 +164,16 @@ export function ActionButtonEditor({ buttons, onChange }: ActionButtonEditorProp
                   gap="xs"
                   wrap="nowrap"
                   style={{ flex: 1, cursor: 'pointer', marginLeft: 4 }}
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isExpanded}
                   onClick={() => toggleExpand(button.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault()
+                      toggleExpand(button.id)
+                    }
+                  }}
                 >
                   {isExpanded ? <IconChevronDownExpand size="1em" /> : <IconChevronRight size="1em" />}
                   <Text size="sm" fw={500} lineClamp={1}>
