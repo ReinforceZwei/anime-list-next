@@ -303,7 +303,7 @@ interface ActionRule {
   label: string;                          // button text
   icon?: string;                          // optional icon
   condition: FilterExpression;            // when to show this button
-  action: ActionDef;                      // what happens on click
+  actions: ActionDef[];                   // what happens on click
 }
 
 type ActionDef =

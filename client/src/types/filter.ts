@@ -56,22 +56,62 @@ export interface FilterGroup {
 // A root filter is just a FilterGroup
 export type FilterExpression = FilterGroup
 
-// ---- Action rule (for Phase 4, defined here for reference) ----
+// ---- Actionable fields (subset of filterable fields, excludes tags) ----
 
-export interface ActionRule {
-  id: string
-  label: string
-  icon?: string
-  condition: FilterExpression
-  action: ActionDef
+export type ActionableField =
+  | 'status'
+  | 'downloadStatus'
+  | 'rating'
+  | 'comment'
+  | 'remark'
+
+// ---- Action types ----
+
+export interface SetFieldAction {
+  type: 'setField'
+  field: ActionableField
+  value: string | number | null
 }
 
-export type ActionDef =
-  | { type: 'setStatus'; status: 'planned' | 'watching' | 'completed' | 'dropped' }
-  | { type: 'setDownloadStatus'; downloadStatus: 'pending' | 'downloading' | 'downloaded' }
-  | { type: 'setRating'; rating: number }
-  | { type: 'addTag'; tagId: string }
-  | { type: 'removeTag'; tagId: string }
+export interface AddTagAction {
+  type: 'addTag'
+  tagIds: string[]
+}
+
+export interface RemoveTagAction {
+  type: 'removeTag'
+  tagIds: string[]
+}
+
+export type ActionDef = SetFieldAction | AddTagAction | RemoveTagAction
+
+// ---- Action button (user-defined) ----
+
+export interface ActionButton {
+  id: string
+  label: string                          // button text (or tooltip text when showAsIcon)
+  icon?: string                          // icon name from ICON_OPTIONS; undefined = no icon
+  color?: string                         // optional color for the button (Mantine color)
+  condition: FilterExpression            // when this filter matches the record, show the button
+  actions: ActionDef[]                   // chain of actions executed in order
+  askConfirmation?: boolean              // show confirm dialog before executing (default false)
+  showAsIcon?: boolean                   // render as icon-only with tooltip (default false)
+}
+
+// ---- Helper ----
+
+export function createEmptyActionButton(): ActionButton {
+  return {
+    id: generateId(),
+    label: '新按鈕',
+    condition: createEmptyFilter(),
+    actions: [{ type: 'setField', field: 'status', value: 'watching' }],
+  }
+}
+
+export function createEmptyActionDef(): ActionDef {
+  return { type: 'setField', field: 'status', value: 'watching' }
+}
 
 // ---- Fallback UUID generator (crypto.randomUUID requires secure context) ----
 

@@ -28,6 +28,7 @@ import { createEmptyFilter, generateId } from '@/types/filter'
 import type { FilterExpression } from '@/types/filter'
 import type { SectionDef, SortableField } from '@/types/anime'
 import { DEFAULT_SECTIONS } from '@/types/anime'
+import { moveItem } from '@/lib/arrayUtils'
 
 interface SectionEditorProps {
   sections: SectionDef[]
@@ -41,13 +42,6 @@ const SORT_FIELD_OPTIONS: { value: SortableField; label: string }[] = [
   { value: 'startedAt', label: '開始日期' },
   { value: 'completedAt', label: '完成日期' },
 ]
-
-function moveItem<T>(arr: T[], from: number, to: number): T[] {
-  const next = [...arr]
-  const [item] = next.splice(from, 1)
-  next.splice(to, 0, item)
-  return next
-}
 
 export function SectionEditor({ sections, onChange }: SectionEditorProps) {
   const [filterEditKey, setFilterEditKey] = useState<string | null>(null)

@@ -34,11 +34,13 @@ function InfoCard({
   onEdit,
   onPosterClick,
   onJumpTo,
+  actionButtons = [],
+  tagMap = new Map(),
   children,
 }: InfoCardProps) {
   return (
     <InfoCardContext.Provider
-      value={{ anime, tags, loading, posterUrl, hasTmdbId, onClose, onEdit, onPosterClick, onJumpTo }}
+      value={{ anime, tags, loading, posterUrl, hasTmdbId, onClose, onEdit, onPosterClick, onJumpTo, actionButtons, tagMap }}
     >
       <Paper radius="md" shadow="xl" className={styles.card} withBorder>
         {children}
