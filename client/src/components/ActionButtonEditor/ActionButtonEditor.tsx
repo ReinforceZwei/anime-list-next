@@ -231,7 +231,7 @@ export function ActionButtonEditor({ buttons, onChange }: ActionButtonEditorProp
                   {/* Filter condition */}
                   <div>
                     <Text size="sm" fw={500} mb={4}>
-                      觸發條件
+                      顯示條件
                     </Text>
                     <Group gap="xs" wrap="nowrap">
                       <Button
@@ -269,7 +269,7 @@ export function ActionButtonEditor({ buttons, onChange }: ActionButtonEditorProp
                   {/* Actions list */}
                   <div>
                     <Text size="sm" fw={500} mb={4}>
-                      動作列表
+                      動作
                     </Text>
                     <Stack gap="xs">
                       {button.actions.map((actionDef, actionIndex) => (
