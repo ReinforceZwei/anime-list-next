@@ -259,6 +259,20 @@ function evaluateTags(
       }
       return false
     }
+    case 'notContainsAll': {
+      // Record does NOT have all filter tags (at least one is missing)
+      for (const f of filterSet) {
+        if (!tagSet.has(f)) return true
+      }
+      return false
+    }
+    case 'notContainsAny': {
+      // Record has NONE of the filter tags
+      for (const f of filterSet) {
+        if (tagSet.has(f)) return false
+      }
+      return true
+    }
     case 'isEmpty':
       return tagSet.size === 0
     case 'isNotEmpty':

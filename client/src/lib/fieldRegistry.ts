@@ -50,7 +50,7 @@ const MEDIA_TYPE_OPERATORS: FilterOperator[] = [
 ]
 
 const TAGS_OPERATORS: FilterOperator[] = [
-  'containsAll', 'containsAny', 'isEmpty', 'isNotEmpty',
+  'containsAll', 'notContainsAll', 'containsAny', 'notContainsAny', 'isEmpty', 'isNotEmpty',
 ]
 
 export const FIELD_REGISTRY: FieldDef[] = [
@@ -112,6 +112,8 @@ export function getOperatorLabel(op: FilterOperator): string {
     isNotEmpty: '非空',
     containsAll: '包含全部',
     containsAny: '包含任一',
+    notContainsAll: '不含全部',
+    notContainsAny: '不含任一',
   }
   return labels[op] ?? op
 }
@@ -147,6 +149,8 @@ export function getValueShape(op: FilterOperator): ValueShape {
     case 'notIn':
     case 'containsAll':
     case 'containsAny':
+    case 'notContainsAll':
+    case 'notContainsAny':
       return 'array'
     default:
       return 'scalar'

@@ -472,6 +472,45 @@ describe('evaluateFilter - tags', () => {
     })
   })
 
+  describe('notContainsAll', () => {
+    it('true when record is missing at least one filter tag', () => {
+      const filter: FilterExpression = group('and', [cond('tags', 'notContainsAll', ['action', 'fantasy'])])
+      // missing fantasy
+      expect(evaluateFilter(filter, makeRecord({ tags: ['action', 'comedy'] }))).toBe(true)
+      // missing action
+      expect(evaluateFilter(filter, makeRecord({ tags: ['fantasy', 'comedy'] }))).toBe(true)
+    })
+
+    it('false when record has all filter tags', () => {
+      const filter: FilterExpression = group('and', [cond('tags', 'notContainsAll', ['action', 'fantasy'])])
+      expect(evaluateFilter(filter, makeRecord({ tags: ['action', 'fantasy', 'comedy'] }))).toBe(false)
+    })
+
+    it('true when filter is empty (no constraint)', () => {
+      const filter: FilterExpression = group('and', [cond('tags', 'notContainsAll', [])])
+      // With empty filter value, evaluateTags returns true (early bail-out path)
+      expect(evaluateFilter(filter, makeRecord({ tags: ['action'] }))).toBe(true)
+    })
+  })
+
+  describe('notContainsAny', () => {
+    it('true when record has none of the filter tags', () => {
+      const filter: FilterExpression = group('and', [cond('tags', 'notContainsAny', ['action', 'fantasy'])])
+      expect(evaluateFilter(filter, makeRecord({ tags: ['comedy', 'romance'] }))).toBe(true)
+    })
+
+    it('false when record has any filter tag', () => {
+      const filter: FilterExpression = group('and', [cond('tags', 'notContainsAny', ['action', 'fantasy'])])
+      expect(evaluateFilter(filter, makeRecord({ tags: ['action', 'comedy'] }))).toBe(false)
+      expect(evaluateFilter(filter, makeRecord({ tags: ['fantasy'] }))).toBe(false)
+    })
+
+    it('true when record has no tags', () => {
+      const filter: FilterExpression = group('and', [cond('tags', 'notContainsAny', ['action', 'fantasy'])])
+      expect(evaluateFilter(filter, makeRecord({ tags: [] }))).toBe(true)
+    })
+  })
+
   describe('isEmpty', () => {
     it('true when tags is empty array', () => {
       const filter: FilterExpression = group('and', [cond('tags', 'isEmpty', [])])

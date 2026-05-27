@@ -49,6 +49,8 @@ function describeCondition(cond: FilterCondition): string {
     case 'isNotEmpty': return `${label} 不為空`
     case 'containsAll': return `${label} 包含全部`
     case 'containsAny': return `${label} 包含任一`
+    case 'notContainsAll': return `${label} 不含全部`
+    case 'notContainsAny': return `${label} 不含任一`
     default:         return `${label} ${operator} ${value}`
   }
 }

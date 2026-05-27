@@ -30,7 +30,7 @@ export type FilterOperator =
   // Select
   | 'in' | 'notIn'
   // Tags (multi-select relation)
-  | 'containsAll' | 'containsAny'
+  | 'containsAll' | 'containsAny' | 'notContainsAll' | 'notContainsAny'
 
 // ---- Value types ----
 
