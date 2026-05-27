@@ -1,5 +1,5 @@
 import { pb, Collections } from "@/lib/pb";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AnimeRecord } from "@/types/anime";
 import { showErrorNotification } from "@/lib/notifications";
 
@@ -25,21 +25,40 @@ export type TmdbQuickCreateInput = {
 
 export function useAnimeMutation() {
   const userId = pb.authStore.record?.id
+  const queryClient = useQueryClient()
   if (!userId) {
     console.warn('useAnimeMutation() hook is called without authenticated user. Mutation will likely fail.')
   }
   const createMutation = useMutation({
-    mutationFn: (anime: AnimeCreateInput) => pb.collection(Collections.Animes).create({ ...anime, userId }),
+    mutationFn: (anime: AnimeCreateInput) => pb.collection<AnimeRecord>(Collections.Animes).create({ ...anime, userId }),
+    onSuccess: (data) => {
+      queryClient.setQueryData<AnimeRecord[]>(
+        [Collections.Animes, userId],
+        (old) => [...(old ?? []), data],
+      )
+    },
     onError: showErrorNotification,
   })
 
   const updateMutation = useMutation({
-    mutationFn: (anime: AnimeUpdateInput) => pb.collection(Collections.Animes).update(anime.id, anime),
+    mutationFn: (anime: AnimeUpdateInput) => pb.collection<AnimeRecord>(Collections.Animes).update(anime.id, anime),
+    onSuccess: (data) => {
+      queryClient.setQueryData<AnimeRecord[]>(
+        [Collections.Animes, userId],
+        (old) => old?.map((item) => (item.id === data.id ? data : item)) ?? [],
+      )
+    },
     onError: showErrorNotification,
   })
 
   const deleteMutation = useMutation({
     mutationFn: (input: AnimeDeleteInput) => pb.collection(Collections.Animes).delete(input.id),
+    onSuccess: (_data, variables) => {
+      queryClient.setQueryData<AnimeRecord[]>(
+        [Collections.Animes, userId],
+        (old) => old?.filter((item) => item.id !== variables.id) ?? [],
+      )
+    },
     onError: showErrorNotification,
   })
 
