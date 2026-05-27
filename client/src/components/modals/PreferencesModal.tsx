@@ -17,13 +17,15 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconAdjustments, IconDownload, IconExternalLink, IconInfoCircle, IconMinus, IconPlus, IconSettings, IconUpload, IconSection } from '@tabler/icons-react'
+import { IconAdjustments, IconClick, IconDownload, IconExternalLink, IconInfoCircle, IconMinus, IconPlus, IconSettings, IconUpload, IconSection } from '@tabler/icons-react'
 import { exportData, importData, type ImportResult } from '@/api/importexport'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
 import { showErrorNotification } from '@/lib/notifications'
 import { pb } from '@/lib/pb'
 import { SectionEditor } from '@/components/modals/SectionEditor'
+import { ActionButtonEditor } from '@/components/ActionButtonEditor/ActionButtonEditor'
+import type { ActionButton } from '@/types/filter'
 
 export function PreferencesModal({ context, id, title, modalProps }: ContextModalProps) {
   const { data: prefs, isLoading } = useUserPreferences()
@@ -55,6 +57,7 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
     initialValues: {
       pageTitle: prefs?.pageTitle ?? '',
       sections: prefs?.sections ?? [],
+      actionButtons: prefs?.actionButtons ?? [],
     },
   })
 
@@ -132,6 +135,9 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
                   <Tabs.Tab value="sections" leftSection={<IconSection size="1em" />}>
                     區塊
                   </Tabs.Tab>
+                  <Tabs.Tab value="actionButtons" leftSection={<IconClick size="1em" />}>
+                    自訂按鈕
+                  </Tabs.Tab>
                   <Tabs.Tab value="interface" leftSection={<IconAdjustments size="1em" />}>
                     介面
                   </Tabs.Tab>
@@ -162,6 +168,13 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
                     </Group>
                   </Anchor>
                 </Stack>
+              </Tabs.Panel>
+
+              <Tabs.Panel value="actionButtons">
+                <ActionButtonEditor
+                  buttons={(form.values as { actionButtons: ActionButton[] }).actionButtons}
+                  onChange={(newButtons) => form.setFieldValue('actionButtons', newButtons)}
+                />
               </Tabs.Panel>
 
               <Tabs.Panel value="interface">

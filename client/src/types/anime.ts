@@ -1,5 +1,5 @@
 import type { RecordModel } from "pocketbase";
-import type { FilterExpression } from './filter'
+import type { FilterExpression, ActionButton } from './filter'
 import { generateId } from './filter'
 
 export interface TagRecord extends RecordModel {
@@ -32,6 +32,7 @@ export interface UserPreferencesRecord extends RecordModel {
   userId: string
   pageTitle?: string
   sections?: SectionDef[] | null   // null/empty = use built-in defaults
+  actionButtons?: ActionButton[] | null    // user-defined action buttons
 }
 
 export interface AnimeRecord extends RecordModel {

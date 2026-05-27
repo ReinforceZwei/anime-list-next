@@ -3,6 +3,7 @@ import { Image } from '@mantine/core'
 import { modals } from '@/lib/modalStack'
 import { useAnimeList } from '@/hooks/useAnimeList'
 import { useTagMap } from '@/hooks/useTagMap'
+import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import type { AnimeRecord } from '@/types/anime'
@@ -21,6 +22,7 @@ interface AnimeCardProps {
 export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps) {
   const { data: animeList, isLoading: listLoading } = useAnimeList()
   const tagMap = useTagMap()
+  const { data: prefs } = useUserPreferences()
   const { updateMutation } = useAnimeMutation()
 
   const anime = useMemo(
@@ -42,6 +44,8 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
       anime.tags.map((id) => tagMap.get(id)).filter((t): t is NonNullable<typeof t> => !!t),
     )
   }, [anime?.tags, tagMap])
+
+  const actionButtons = prefs?.actionButtons ?? []
 
   const title = anime ? getDisplayTitle(anime) : undefined
 
@@ -73,22 +77,12 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
     })
   }
 
-  function handleStatusChange(targetStatus: NonNullable<AnimeRecord['status']>) {
+  function handleMutate(patch: Partial<AnimeRecord>) {
     if (!anime) return
-    const now = new Date().toISOString()
-    const patch: Partial<AnimeRecord> = { status: targetStatus }
-    if (targetStatus === 'watching' && !anime.startedAt) patch.startedAt = now
-    if (targetStatus === 'completed' && !anime.completedAt) patch.completedAt = now
     updateMutation.mutate(
       { ...anime, ...patch },
-      // FIXME: setTimeout to wait for the anime list to update, should be replaced with a more robust solution
       { onSuccess: (record) => setTimeout(() => onJumpTo?.(record.id), 1000) },
     )
-  }
-
-  function handleDownloadStatusChange(targetStatus: NonNullable<AnimeRecord['downloadStatus']>) {
-    if (!anime) return
-    updateMutation.mutate({ ...anime, downloadStatus: targetStatus })
   }
 
   return (
@@ -102,6 +96,8 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
       onEdit={handleEdit}
       onPosterClick={handlePosterClick}
       onJumpTo={onJumpTo}
+      actionButtons={actionButtons}
+      tagMap={tagMap}
     >
       <InfoCard.CloseButton />
       <InfoCard.Poster />
@@ -117,10 +113,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
         <InfoCard.TextSection label="備註" contentKey="remark" />
         <InfoCard.RelatedSeasons />
       </InfoCard.Content>
-      <InfoCard.QuickActions
-        onStatusChange={handleStatusChange}
-        onDownloadStatusChange={handleDownloadStatusChange}
-      />
+      <InfoCard.QuickActions onMutate={handleMutate} />
     </InfoCard>
   )
 }

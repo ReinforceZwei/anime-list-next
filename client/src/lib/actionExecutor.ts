@@ -1,0 +1,106 @@
+import type { AnimeRecord, TagRecord } from '@/types/anime'
+import type { ActionDef } from '@/types/filter'
+import { getFieldDef } from '@/lib/fieldRegistry'
+
+/**
+ * Apply a single action against a record, returning a partial patch.
+ * Does NOT mutate — the caller merges results.
+ */
+export function applySingleAction(record: AnimeRecord, action: ActionDef): Partial<AnimeRecord> {
+  switch (action.type) {
+    case 'setField':
+      return { [action.field]: action.value }
+
+    case 'addTag': {
+      const current = record.tags ?? []
+      const toAdd = action.tagIds.filter(id => !current.includes(id))
+      if (toAdd.length === 0) return {}
+      return { tags: [...current, ...toAdd] }
+    }
+
+    case 'removeTag': {
+      const current = record.tags ?? []
+      const removeSet = new Set(action.tagIds)
+      const filtered = current.filter(id => !removeSet.has(id))
+      if (filtered.length === current.length) return {}
+      return { tags: filtered }
+    }
+
+    default:
+      return {}
+  }
+}
+
+/**
+ * Apply a list of actions sequentially, merging all patches into one.
+ * Each action operates against the original record plus previous patches,
+ * so chained mutations compose correctly.
+ */
+export function applyActions(record: AnimeRecord, actions: ActionDef[]): Partial<AnimeRecord> {
+  let merged: Partial<AnimeRecord> = {}
+  let current = record
+  for (const action of actions) {
+    const patch = applySingleAction(current, action)
+    if (Object.keys(patch).length > 0) {
+      merged = deepMergePatch(merged, patch)
+      current = { ...current, ...patch }
+    }
+  }
+  return merged
+}
+
+/**
+ * Shallow-merge two patches.
+ *
+ * Tags are handled by simple override: if `next` provides a tags array it wins,
+ * otherwise `base.tags` is kept. No concatenation happens here because each
+ * individual action (addTag / removeTag) already produces a complete, fully-
+ * computed tags array in applySingleAction.
+ */
+function deepMergePatch(base: Partial<AnimeRecord>, next: Partial<AnimeRecord>): Partial<AnimeRecord> {
+  const result = { ...base, ...next }
+  if (base.tags !== undefined || next.tags !== undefined) {
+    result.tags = next.tags !== undefined ? next.tags : base.tags
+  }
+  return result
+}
+
+/**
+ * Returns a human-readable Chinese description of a single action.
+ */
+export function describeAction(action: ActionDef, tagMap?: Map<string, TagRecord>): string {
+  switch (action.type) {
+    case 'setField': {
+      const def = getFieldDef(action.field)
+      const fieldLabel = def?.label ?? action.field
+      const displayValue = action.value != null && String(action.value).trim() !== '' ? String(action.value) : '(空白)'
+      if (def?.options) {
+        const opt = def.options.find(o => o.value === String(action.value))
+        return `將${fieldLabel}設為「${opt?.label ?? displayValue}」`
+      }
+      return `將${fieldLabel}設為「${displayValue}」`
+    }
+
+    case 'addTag': {
+      const names = action.tagIds.map(id => tagMap?.get(id)?.name ?? id)
+      return `加入標籤「${names.join('、')}」`
+    }
+
+    case 'removeTag': {
+      const names = action.tagIds.map(id => tagMap?.get(id)?.name ?? id)
+      return `移除標籤「${names.join('、')}」`
+    }
+
+    default:
+      return '未知動作'
+  }
+}
+
+/**
+ * Returns a human-readable Chinese description of a list of actions.
+ * Used in the confirmation dialog and editor summary.
+ */
+export function describeActions(actions: ActionDef[], tagMap?: Map<string, TagRecord>): string {
+  if (actions.length === 0) return '(無動作)'
+  return actions.map(a => describeAction(a, tagMap)).join('，然後')
+}
