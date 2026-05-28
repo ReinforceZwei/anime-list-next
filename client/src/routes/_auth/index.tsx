@@ -44,7 +44,7 @@ function Index() {
   const { sections, isLoading, isError, error } = useAnimeSections(sectionDefs);
   const [selectedAnimeId, setSelectedAnimeId] = useState<string | null>(null);
   const [globalFilter, setGlobalFilter] = useState<FilterExpression | null>(null);
-  const pageTitle = prefs?.pageTitle || "動漫清單";
+  const pageTitle = prefs?.uiConfig?.pageTitle || "動漫清單";
   const markerRefs = useRef<(HTMLParagraphElement | null)[]>([]);
   const { getRef, jumpTo } = useScrollToRecord();
 

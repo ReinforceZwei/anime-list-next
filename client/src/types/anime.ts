@@ -28,11 +28,19 @@ export interface AnimeSection {
   items: AnimeRecord[]
 }
 
+export interface UIConfig {
+  pageTitle?: string
+}
+
+export const DEFAULT_UI_CONFIG: UIConfig = {
+  pageTitle: ''
+}
+
 export interface UserPreferencesRecord extends RecordModel {
   userId: string
-  pageTitle?: string
   sections?: SectionDef[] | null   // null/empty = use built-in defaults
   actionButtons?: ActionButton[] | null    // user-defined action buttons
+  uiConfig?: UIConfig
 }
 
 export interface AnimeRecord extends RecordModel {

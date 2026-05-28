@@ -26,6 +26,7 @@ import { pb } from '@/lib/pb'
 import { SectionEditor } from '@/components/modals/SectionEditor'
 import { ActionButtonEditor } from '@/components/ActionButtonEditor/ActionButtonEditor'
 import type { ActionButton } from '@/types/filter'
+import { DEFAULT_UI_CONFIG } from '@/types/anime'
 
 export function PreferencesModal({ context, id, title, modalProps }: ContextModalProps) {
   const { data: prefs, isLoading } = useUserPreferences()
@@ -55,7 +56,7 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
 
   const form = useForm({
     initialValues: {
-      pageTitle: prefs?.pageTitle ?? '',
+      uiConfig: prefs?.uiConfig ?? DEFAULT_UI_CONFIG,
       sections: prefs?.sections ?? [],
       actionButtons: prefs?.actionButtons ?? [],
     },
@@ -153,7 +154,7 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
                     label="頁面標題"
                     placeholder="我的動畫清單"
                     description="顯示在清單頂部的主標題"
-                    {...form.getInputProps('pageTitle')}
+                    {...form.getInputProps('uiConfig.pageTitle')}
                   />
                   {/* <Divider /> */}
                   <Anchor
