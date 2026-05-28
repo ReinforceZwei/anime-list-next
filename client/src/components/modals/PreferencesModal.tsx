@@ -189,8 +189,11 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
                 <Stack>
                   <Divider label="介面縮放" labelPosition="left" />
                   <div>
-                    <Text size="sm" fw={500} mb="xs">
+                    <Text size="sm" fw={500} mb={4}>
                       縮放比例
+                    </Text>
+                    <Text size="xs" c="dimmed" mb="xs">
+                      僅限此裝置
                     </Text>
                     <Button.Group>
                       <Button
