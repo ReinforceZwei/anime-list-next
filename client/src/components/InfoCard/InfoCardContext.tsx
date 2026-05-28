@@ -16,6 +16,8 @@ export interface InfoCardContextValue {
   actionButtons: ActionButton[]
   /** Map of tag ID → TagRecord, for resolving tag names in confirmation dialogs */
   tagMap: Map<string, TagRecord>
+  /** Whether to show built-in status-transition buttons (from UIConfig) */
+  showBuiltInActions: boolean
 }
 
 export const InfoCardContext = createContext<InfoCardContextValue | null>(null)

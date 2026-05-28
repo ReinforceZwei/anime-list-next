@@ -46,6 +46,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
   }, [anime?.tags, tagMap])
 
   const actionButtons = prefs?.actionButtons ?? []
+  const showBuiltInActions = prefs?.uiConfig?.showBuiltInActions ?? true
 
   const title = anime ? getDisplayTitle(anime) : undefined
 
@@ -98,6 +99,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
       onJumpTo={onJumpTo}
       actionButtons={actionButtons}
       tagMap={tagMap}
+      showBuiltInActions={showBuiltInActions}
     >
       <InfoCard.CloseButton />
       <InfoCard.Poster />

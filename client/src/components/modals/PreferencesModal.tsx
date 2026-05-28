@@ -11,6 +11,7 @@ import {
   Modal,
   Scroller,
   Stack,
+  Switch,
   Tabs,
   Text,
   TextInput,
@@ -155,6 +156,12 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
                     placeholder="我的動畫清單"
                     description="顯示在清單頂部的主標題"
                     {...form.getInputProps('uiConfig.pageTitle')}
+                  />
+                  <Switch
+                    label="顯示內建快捷按鈕"
+                    description="在動畫資訊卡中顯示內建的狀態轉換按鈕（如「開始觀看」、「標記為已看完」等）"
+                    labelPosition="left"
+                    {...form.getInputProps('uiConfig.showBuiltInActions', { type: 'checkbox' })}
                   />
                   {/* <Divider /> */}
                   <Anchor

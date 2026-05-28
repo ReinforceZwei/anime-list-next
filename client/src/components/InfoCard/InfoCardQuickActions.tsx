@@ -64,7 +64,7 @@ interface InfoCardQuickActionsProps {
 }
 
 export default function InfoCardQuickActions({ onMutate }: InfoCardQuickActionsProps) {
-  const { anime, loading, actionButtons, tagMap } = useInfoCard()
+  const { anime, loading, actionButtons, tagMap, showBuiltInActions } = useInfoCard()
   const [confirmingButton, setConfirmingButton] = useState<ActionButton | null>(null)
 
   if (loading) {
@@ -99,13 +99,14 @@ export default function InfoCardQuickActions({ onMutate }: InfoCardQuickActionsP
     setConfirmingButton(null)
   }
 
-  if (!defaultActions.length && matchedButtons.length === 0) return null
+  const hasBuiltInActions = showBuiltInActions && defaultActions.length > 0
+  if (!hasBuiltInActions && matchedButtons.length === 0) return null
 
   return (
     <div className={styles.quickActionsBar}>
       <Group gap="xs">
-        {/* Built-in defaults */}
-        {defaultActions.map(action => (
+        {/* Built-in defaults (controlled by UIConfig.showBuiltInActions) */}
+        {showBuiltInActions && defaultActions.map(action => (
           <Button
             key={action.label}
             size="xs"

@@ -35,6 +35,7 @@ import { IconPicker } from './IconPicker'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
 import { useTagMap } from '@/hooks/useTagMap'
+import { getBuiltInActionButtons } from '@/types/anime'
 
 interface ActionButtonEditorProps {
   buttons: ActionButton[]
@@ -114,6 +115,10 @@ export function ActionButtonEditor({ buttons, onChange }: ActionButtonEditorProp
     setExpandedId(newButton.id)
   }
 
+  function handleCreateFromBuiltIn() {
+    onChange(getBuiltInActionButtons())
+  }
+
   function toggleExpand(id: string) {
     setExpandedId(expandedId === id ? null : id)
     if (filterEditId !== id) setFilterEditId(null)
@@ -122,9 +127,29 @@ export function ActionButtonEditor({ buttons, onChange }: ActionButtonEditorProp
   return (
     <Stack gap="sm">
       {buttons.length === 0 && (
-        <Text c="dimmed" size="sm" ta="center" py="md">
-          尚無自訂按鈕。點擊下方按鈕新增。
-        </Text>
+        <Stack gap="sm" align="center" py="md">
+          <Text c="dimmed" size="sm">
+            尚無自訂按鈕。您可以手動新增，或從內建按鈕建立。
+          </Text>
+          <Group>
+            <Button
+              variant="light"
+              size="sm"
+              leftSection={<IconPlus size="1em" />}
+              onClick={handleAdd}
+            >
+              手動新增
+            </Button>
+            <Button
+              variant="light"
+              size="sm"
+              leftSection={<IconPlus size="1em" />}
+              onClick={handleCreateFromBuiltIn}
+            >
+              從內建按鈕建立
+            </Button>
+          </Group>
+        </Stack>
       )}
 
       {buttons.map((button, index) => {

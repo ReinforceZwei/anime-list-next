@@ -30,10 +30,79 @@ export interface AnimeSection {
 
 export interface UIConfig {
   pageTitle?: string
+  /** Show built-in quick-action buttons (status transitions) on the InfoCard. Default: true */
+  showBuiltInActions?: boolean
 }
 
 export const DEFAULT_UI_CONFIG: UIConfig = {
-  pageTitle: ''
+  pageTitle: '',
+  showBuiltInActions: true,
+}
+
+/** Convert built-in quick actions into ActionButton format so users can import them into the custom button editor. */
+export function getBuiltInActionButtons(): ActionButton[] {
+  return [
+    {
+      id: generateId(),
+      label: '開始觀看',
+      icon: 'IconPlayerPlay',
+      color: '#228be6',
+      condition: {
+        id: generateId(),
+        logic: 'and',
+        conditions: [{ id: generateId(), field: 'status', operator: 'eq', value: 'planned' }],
+      },
+      actions: [{ type: 'setField', field: 'status', value: 'watching' }],
+    },
+    {
+      id: generateId(),
+      label: '標記為已看完',
+      icon: 'IconCheck',
+      color: '#12b886',
+      condition: {
+        id: generateId(),
+        logic: 'and',
+        conditions: [{ id: generateId(), field: 'status', operator: 'eq', value: 'watching' }],
+      },
+      actions: [{ type: 'setField', field: 'status', value: 'completed' }],
+    },
+    {
+      id: generateId(),
+      label: '列入待看',
+      icon: 'IconCalendar',
+      color: '#868e96',
+      condition: {
+        id: generateId(),
+        logic: 'and',
+        conditions: [{ id: generateId(), field: 'status', operator: 'isEmpty', value: null }],
+      },
+      actions: [{ type: 'setField', field: 'status', value: 'planned' }],
+    },
+    {
+      id: generateId(),
+      label: '開始下載',
+      icon: 'IconDownload',
+      color: '#fd7e14',
+      condition: {
+        id: generateId(),
+        logic: 'and',
+        conditions: [{ id: generateId(), field: 'downloadStatus', operator: 'eq', value: 'pending' }],
+      },
+      actions: [{ type: 'setField', field: 'downloadStatus', value: 'downloading' }],
+    },
+    {
+      id: generateId(),
+      label: '標記為已下載',
+      icon: 'IconCheck',
+      color: '#40c057',
+      condition: {
+        id: generateId(),
+        logic: 'and',
+        conditions: [{ id: generateId(), field: 'downloadStatus', operator: 'eq', value: 'downloading' }],
+      },
+      actions: [{ type: 'setField', field: 'downloadStatus', value: 'downloaded' }],
+    },
+  ]
 }
 
 export interface UserPreferencesRecord extends RecordModel {
