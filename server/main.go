@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"time"
@@ -22,6 +23,12 @@ import (
 	_ "github.com/ReinforceZwei/anime-list-next/server/migrations"
 	"github.com/ReinforceZwei/anime-list-next/server/routes"
 )
+
+func init() {
+	// Register .webmanifest MIME type so the static file server returns
+	// application/manifest+json instead of text/plain.
+	mime.AddExtensionType(".webmanifest", "application/manifest+json")
+}
 
 var (
 	version   = "dev"
