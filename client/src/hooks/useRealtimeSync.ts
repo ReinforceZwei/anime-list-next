@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import type { RecordModel } from "pocketbase";
 import type { LastUpdateRecord } from "@/types/lastUpdate";
+import { useLastUpdate } from "./useLastUpdate";
 
 function useCollectionRealtimeSync<T extends RecordModel>(
   collection: string,
@@ -88,6 +89,9 @@ function useSingleRecordRealtimeSync<T extends RecordModel>(
 function useStaleDetectionSync() {
   const queryClient = useQueryClient()
   const userId = pb.authStore.record?.id
+
+  // Fetch last update data and cache it
+  useLastUpdate()
 
   useEffect(() => {
     const unsub = pb.realtime.subscribe('PB_CONNECT', async (data) => {
