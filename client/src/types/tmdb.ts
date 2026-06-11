@@ -86,6 +86,8 @@ export interface TmdbEpisode {
 
 export interface TmdbTvDetailResult {
   mediaType: 'tv'
+  /** Original-size poster URL (resolved at backend) for fullscreen view */
+  posterOriginal: string
   id: number
   backdrop_path: string
   created_by: TmdbCreatedBy[]
@@ -107,7 +109,7 @@ export interface TmdbTvDetailResult {
   original_name: string
   overview: string
   popularity: number
-  /** Full poster image path (already resolved at backend) */
+  /** w500 poster URL (resolved at backend) for preview */
   poster_path: string
   production_companies: TmdbProductionCompany[]
   production_countries: TmdbProductionCountry[]
@@ -121,6 +123,8 @@ export interface TmdbTvDetailResult {
 
 export interface TmdbMovieDetailResult {
   mediaType: 'movie'
+  /** Original-size poster URL (resolved at backend) for fullscreen view */
+  posterOriginal: string
   adult: boolean
   backdrop_path: string
   belongs_to_collection: TmdbBelongsToCollection
@@ -133,7 +137,7 @@ export interface TmdbMovieDetailResult {
   original_title: string
   overview: string
   popularity: number
-  /** Full poster image path (already resolved at backend) */
+  /** w500 poster URL (resolved at backend) for preview */
   poster_path: string
   origin_country: string[]
   production_companies: TmdbProductionCompany[]

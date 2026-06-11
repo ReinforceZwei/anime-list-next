@@ -14,8 +14,9 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 )
 
-var (
-	posterSize = tmdb.Original
+const (
+	sizePreview  = tmdb.W500
+	sizeOriginal = tmdb.Original
 )
 
 type TmdbSearchItem struct {
@@ -31,14 +32,16 @@ type TmdbSearchItem struct {
 // TvDetailResponse wraps the raw TMDb TVDetails response with a mediaType field.
 // Poster paths are resolved to full URLs before returning.
 type TvDetailResponse struct {
-	MediaType string `json:"mediaType"`
+	MediaType      string `json:"mediaType"`
+	PosterOriginal string `json:"posterOriginal"`
 	*tmdb.TVDetails
 }
 
 // MovieDetailResponse wraps the raw TMDb MovieDetails response with a mediaType field.
 // PosterPath is resolved to a full URL before returning.
 type MovieDetailResponse struct {
-	MediaType string `json:"mediaType"`
+	MediaType      string `json:"mediaType"`
+	PosterOriginal string `json:"posterOriginal"`
 	*tmdb.MovieDetails
 }
 
@@ -173,7 +176,7 @@ func (r *TmdbRoutes) search(e *core.RequestEvent) error {
 
 		posterPath := ""
 		if result.PosterPath != "" {
-			posterPath = tmdb.GetImageURL(result.PosterPath, posterSize)
+			posterPath = tmdb.GetImageURL(result.PosterPath, sizePreview)
 		}
 
 		items = append(items, TmdbSearchItem{
@@ -212,8 +215,21 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 	}
 	cacheKey := fmt.Sprintf("%s:%s:%s", mediaType, idStr, lang)
 
+	// Try cache — stored as raw TMDb response (poster paths unresolved).
 	if cached, ok := r.getCached(cacheKey); ok {
-		return e.JSON(http.StatusOK, cached)
+		switch mediaType {
+		case "movie":
+			var movie tmdb.MovieDetails
+			if err := json.Unmarshal(cached, &movie); err == nil {
+				return e.JSON(http.StatusOK, r.buildMovieResponse(&movie))
+			}
+		case "tv":
+			var tv tmdb.TVDetails
+			if err := json.Unmarshal(cached, &tv); err == nil {
+				return e.JSON(http.StatusOK, r.buildTvResponse(&tv))
+			}
+		}
+		// Corrupt cache entry — fall through to fresh fetch.
 	}
 
 	if mediaType == "movie" {
@@ -221,14 +237,9 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 		if err != nil {
 			return e.JSON(http.StatusBadGateway, map[string]string{"error": err.Error()})
 		}
-
-		if movie.PosterPath != "" {
-			movie.PosterPath = tmdb.GetImageURL(movie.PosterPath, posterSize)
-		}
-
-		result := &MovieDetailResponse{MediaType: "movie", MovieDetails: movie}
-		r.setCached(cacheKey, "movie", "", result)
-		return e.JSON(http.StatusOK, result)
+		// Cache the raw TMDb struct (poster paths NOT yet resolved).
+		r.setCached(cacheKey, "movie", "", movie)
+		return e.JSON(http.StatusOK, r.buildMovieResponse(movie))
 	}
 
 	// TV
@@ -236,17 +247,33 @@ func (r *TmdbRoutes) detail(e *core.RequestEvent) error {
 	if err != nil {
 		return e.JSON(http.StatusBadGateway, map[string]string{"error": err.Error()})
 	}
+	r.setCached(cacheKey, "tv", tv.Status, tv)
+	return e.JSON(http.StatusOK, r.buildTvResponse(tv))
+}
 
+// buildMovieResponse resolves poster paths on a raw TMDb movie struct and
+// returns the enriched response with both preview (w500) and original URLs.
+func (r *TmdbRoutes) buildMovieResponse(movie *tmdb.MovieDetails) *MovieDetailResponse {
+	posterOriginalURL := ""
+	if movie.PosterPath != "" {
+		posterOriginalURL = tmdb.GetImageURL(movie.PosterPath, sizeOriginal)
+		movie.PosterPath = tmdb.GetImageURL(movie.PosterPath, sizePreview)
+	}
+	return &MovieDetailResponse{MediaType: "movie", PosterOriginal: posterOriginalURL, MovieDetails: movie}
+}
+
+// buildTvResponse resolves poster paths on a raw TMDb TV struct and returns
+// the enriched response with both preview (w500) and original URLs.
+func (r *TmdbRoutes) buildTvResponse(tv *tmdb.TVDetails) *TvDetailResponse {
+	posterOriginalURL := ""
 	if tv.PosterPath != "" {
-		tv.PosterPath = tmdb.GetImageURL(tv.PosterPath, posterSize)
+		posterOriginalURL = tmdb.GetImageURL(tv.PosterPath, sizeOriginal)
+		tv.PosterPath = tmdb.GetImageURL(tv.PosterPath, sizePreview)
 	}
 	for i := range tv.Seasons {
 		if tv.Seasons[i].PosterPath != "" {
-			tv.Seasons[i].PosterPath = tmdb.GetImageURL(tv.Seasons[i].PosterPath, posterSize)
+			tv.Seasons[i].PosterPath = tmdb.GetImageURL(tv.Seasons[i].PosterPath, sizePreview)
 		}
 	}
-
-	result := &TvDetailResponse{MediaType: "tv", TVDetails: tv}
-	r.setCached(cacheKey, "tv", tv.Status, result)
-	return e.JSON(http.StatusOK, result)
+	return &TvDetailResponse{MediaType: "tv", PosterOriginal: posterOriginalURL, TVDetails: tv}
 }

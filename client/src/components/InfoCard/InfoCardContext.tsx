@@ -7,6 +7,8 @@ export interface InfoCardContextValue {
   tags: TagRecord[]
   loading: boolean
   posterUrl: string | null
+  /** Original-size poster URL for fullscreen view */
+  posterUrlFull: string | null
   hasTmdbId: boolean
   onClose: () => void
   onEdit: () => void

@@ -37,6 +37,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
   const { data: tmdbDetail } = useTmdbDetail(tmdbType, tmdbId)
 
   const posterUrl = tmdbDetail?.poster_path ?? null
+  const posterUrlFull = tmdbDetail?.posterOriginal ?? null
 
   const tags = useMemo(() => {
     if (!anime?.tags) return []
@@ -60,14 +61,14 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
   }
 
   function handlePosterClick() {
-    if (!posterUrl) return
+    if (!posterUrlFull) return
     modals.open({
       size: 'auto',
       padding: 0,
       withCloseButton: false,
       children: (
         <Image
-          src={posterUrl}
+          src={posterUrlFull}
           alt={title}
           fit="contain"
           mah="90vh"
@@ -92,6 +93,7 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
       tags={tags}
       loading={loading}
       posterUrl={posterUrl}
+      posterUrlFull={posterUrlFull}
       hasTmdbId={Boolean(tmdbId)}
       onClose={onClose}
       onEdit={handleEdit}

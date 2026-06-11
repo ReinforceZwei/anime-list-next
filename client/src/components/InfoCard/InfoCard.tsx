@@ -33,6 +33,7 @@ function InfoCard({
   tags = [],
   loading,
   posterUrl,
+  posterUrlFull = null,
   hasTmdbId,
   onClose,
   onEdit,
@@ -45,7 +46,7 @@ function InfoCard({
 }: InfoCardProps) {
   return (
     <InfoCardContext.Provider
-      value={{ anime, tags, loading, posterUrl, hasTmdbId, onClose, onEdit, onPosterClick, onJumpTo, actionButtons, tagMap, showBuiltInActions }}
+      value={{ anime, tags, loading, posterUrl, posterUrlFull, hasTmdbId, onClose, onEdit, onPosterClick, onJumpTo, actionButtons, tagMap, showBuiltInActions }}
     >
       <Paper radius="md" shadow="xl" className={styles.card} withBorder>
         {children}

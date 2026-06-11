@@ -222,16 +222,16 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
               radius="sm"
               style={{
                 flexShrink: 0,
-                cursor: detail.poster_path ? 'pointer' : undefined,
+                cursor: detail.posterOriginal ? 'pointer' : undefined,
               }}
-              onClick={detail.poster_path ? () => {
+              onClick={detail.posterOriginal ? () => {
                 const posterModalId = mantineModals.open({
                   size: 'auto',
                   padding: 0,
                   withCloseButton: false,
                   children: (
                     <Image
-                      src={detail.poster_path!}
+                      src={detail.posterOriginal}
                       alt={detail.mediaType === 'tv' ? detail.name : detail.title}
                       fit="contain"
                       mah="90vh"
