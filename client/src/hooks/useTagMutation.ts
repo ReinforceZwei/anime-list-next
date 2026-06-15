@@ -25,7 +25,7 @@ export function useTagMutation() {
     onSuccess: (data) => {
       queryClient.setQueryData<TagRecord[]>(
         [Collections.Tags, userId],
-        (old) => [...(old ?? []), data],
+        (old) => (old ?? []).some(item => item.id === data.id) ? (old ?? []) : [...(old ?? []), data],
       )
     },
     onError: showErrorNotification,

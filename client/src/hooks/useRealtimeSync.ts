@@ -18,7 +18,9 @@ function useCollectionRealtimeSync<T extends RecordModel>(
       console.debug(`useCollectionRealtimeSync(${collection}): Realtime event received:`, data)
       switch (data.action) {
         case 'create':
-          queryClient.setQueryData(queryKey, (old: T[]) => [...old, data.record]);
+          queryClient.setQueryData(queryKey, (old: T[]) =>
+            old.some(item => item.id === data.record.id) ? old : [...old, data.record],
+          );
           break;
         case 'update':
           queryClient.setQueryData(queryKey, (old: T[]) => old.map(item => item.id === data.record.id ? data.record : item));

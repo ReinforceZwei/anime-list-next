@@ -34,7 +34,7 @@ export function useAnimeMutation() {
     onSuccess: (data) => {
       queryClient.setQueryData<AnimeRecord[]>(
         [Collections.Animes, userId],
-        (old) => [...(old ?? []), data],
+        (old) => (old ?? []).some(item => item.id === data.id) ? (old ?? []) : [...(old ?? []), data],
       )
     },
     onError: showErrorNotification,
