@@ -20,6 +20,11 @@ func (m *SentryMiddleware) Register(se *core.ServeEvent) {
 }
 
 func (m *SentryMiddleware) handler(e *core.RequestEvent) error {
+	// Skip Sentry tracing for high-frequency realtime polling requests.
+	if e.Request.URL.Path == "/api/realtime" {
+		return e.Next()
+	}
+
 	ctx := e.Request.Context()
 	hub := sentry.GetHubFromContext(ctx)
 	if hub == nil {
