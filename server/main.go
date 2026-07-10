@@ -105,6 +105,9 @@ func main() {
 	lastUpdatesHooks := hooks.NewLastUpdatesHooks()
 	lastUpdatesHooks.Register(app)
 
+	sseHook := hooks.NewSseHook()
+	sseHook.Register(app)
+
 	tmdbRoutes, err := routes.NewTmdbRoutes(app, cfg.TmdbApiKey)
 	if err != nil {
 		log.Fatal("Failed to initialize TMDb client: ", err)
