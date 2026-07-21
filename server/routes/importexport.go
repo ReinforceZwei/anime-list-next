@@ -138,7 +138,10 @@ func (r *ImportExportRoutes) exportHandler(e *core.RequestEvent) error {
 // to remap anime record relations correctly.
 //
 // Anime record upsert:
-//   - Records with a tmdbId are matched by (tmdbMediaType, tmdbId, tmdbSeasonNumber).
+//   - Records with both tmdbId and customName are matched by
+//     (tmdbMediaType, tmdbId, tmdbSeasonNumber, customName) — supports
+//     duplicate TMDb coords with different custom labels (e.g. "第2期").
+//   - Records with tmdbId only are matched by (tmdbMediaType, tmdbId, tmdbSeasonNumber).
 //   - Records without a tmdbId are matched by customName.
 //   - Matched records are fully overwritten; unmatched records are created.
 func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
@@ -208,7 +211,20 @@ func (r *ImportExportRoutes) importHandler(e *core.RequestEvent) error {
 
 			// Locate an existing record to update, or prepare a new one.
 			var record *core.Record
-			if anime.TmdbID != 0 {
+			if anime.TmdbID != 0 && anime.CustomName != "" {
+				// Custom season record: match by TMDb coords + customName
+				record, _ = txApp.FindFirstRecordByFilter(
+					"animes",
+					"userId={:u} && tmdbMediaType={:mt} && tmdbId={:id} && tmdbSeasonNumber={:sn} && customName={:cn}",
+					dbx.Params{
+						"u":  userId,
+						"mt": anime.TmdbMediaType,
+						"id": anime.TmdbID,
+						"sn": anime.TmdbSeasonNumber,
+						"cn": anime.CustomName,
+					},
+				)
+			} else if anime.TmdbID != 0 {
 				record, _ = txApp.FindFirstRecordByFilter(
 					"animes",
 					"userId={:u} && tmdbMediaType={:mt} && tmdbId={:id} && tmdbSeasonNumber={:sn}",
