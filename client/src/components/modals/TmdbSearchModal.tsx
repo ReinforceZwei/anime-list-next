@@ -22,7 +22,7 @@ import {
 } from '@mantine/core'
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks'
 import { modals as mantineModals } from '@/lib/modalStack'
-import { IconArrowLeft, IconCheck, IconLink, IconPlus, IconSearch, IconX } from '@tabler/icons-react'
+import { IconArrowLeft, IconCheck, IconHelp, IconLink, IconPlus, IconSearch, IconX } from '@tabler/icons-react'
 import type { ContextModalProps } from '@/lib/modalStack'
 import { useTmdbSearch, useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeExistsMap } from '@/hooks/useAnimeExistsMap'
@@ -113,6 +113,20 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
       { ...targetAnime, tmdbId, tmdbMediaType, tmdbSeasonNumber },
       { onSuccess: () => context.closeAll() },
     )
+  }
+
+  // ── "Not my season" custom season creation ─────────────────────────────
+
+  function openCustomSeasonModal() {
+    if (!detail || detail.mediaType !== 'tv') return
+    mantineModals.openContextModal({
+      modal: 'customSeason',
+      title: '建立自訂季度',
+      innerProps: {
+        detail: { id: detail.id, name: detail.name, seasons: detail.seasons },
+        onSaved,
+      },
+    })
   }
 
   // ── Shared panels ────────────────────────────────────────────────────────
@@ -370,6 +384,22 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
                   </Group>
                 ))}
               </Stack>
+
+              {mode === 'create' && (
+                <>
+                  <Divider my="xs" />
+                  <Button
+                    variant="subtle"
+                    size="xs"
+                    color="dimmed"
+                    leftSection={<IconHelp size="1em" />}
+                    onClick={openCustomSeasonModal}
+                    fullWidth
+                  >
+                    沒有我要的季度
+                  </Button>
+                </>
+              )}
             </>
           )}
         </ScrollArea>

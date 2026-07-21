@@ -242,7 +242,10 @@ export function ModalStackProvider({
 
         if (entry.kind === 'context') {
           const Component = registry[entry.modal]
-          if (!Component) return null
+          if (!Component) {
+            console.warn(`[modalStack] context modal '${entry.modal}' is opened without a registry`)
+            return null
+          }
           const modalProps = {
             ...entry.sharedProps,
             ...commonModalProps,
