@@ -147,7 +147,7 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
         leftSection={<IconSearch size="1em" />}
         rightSection={
           isFetching ? <Loader size="xs" /> : query ? (
-            <ActionIcon variant="subtle" color="gray" size="sm" onClick={() => setQuery('')}>
+            <ActionIcon variant="subtle" color="gray" size="sm" onClick={() => { setQuery(''); inputRef.current?.focus(); }}>
               <IconX size="1em" />
             </ActionIcon>
           ) : null
