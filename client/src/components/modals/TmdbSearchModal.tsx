@@ -22,7 +22,7 @@ import {
 } from '@mantine/core'
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks'
 import { modals as mantineModals } from '@/lib/modalStack'
-import { IconArrowLeft, IconCheck, IconHelp, IconLink, IconPlus, IconSearch, IconX } from '@tabler/icons-react'
+import { IconArrowLeft, IconCheck, IconExternalLink, IconHelp, IconLink, IconPlus, IconSearch, IconX } from '@tabler/icons-react'
 import type { ContextModalProps } from '@/lib/modalStack'
 import { useTmdbSearch, useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeExistsMap } from '@/hooks/useAnimeExistsMap'
@@ -281,6 +281,26 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
                   <Text size="sm" c="dimmed">{detail.overview}</Text>
                 </Spoiler>
               )}
+              <Button
+                variant="subtle"
+                size="xs"
+                color="dimmed"
+                leftSection={<IconExternalLink size="1em" />}
+                w="fit-content"
+                onClick={() => {
+                  mantineModals.openContextModal({
+                    modal: 'tmdbMetadata',
+                    title: 'TMDb 詳細資料',
+                    innerProps: {
+                      tmdbId: detail.id,
+                      tmdbMediaType: detail.mediaType,
+                      title: detail.mediaType === 'tv' ? detail.name : detail.title,
+                    },
+                  })
+                }}
+              >
+                TMDb 詳細資料
+              </Button>
               {detail.mediaType === 'movie' && (
                 mode === 'link'
                   ? (
