@@ -21,12 +21,12 @@ import AnimePaper from "@/components/AnimePaper/AnimePaper";
 import AppMenu from "@/components/AppMenu/AppMenu";
 import AnimeCard from "@/components/InfoCard/AnimeCard";
 import ElevatorWidget from "@/components/ElevatorWidget/ElevatorWidget";
-import { LocalSearch } from "@/components/LocalSearch/LocalSearch";
+import { LocalSearch, type LocalSearchHandle } from "@/components/LocalSearch/LocalSearch";
 import { FilterPopover } from "@/components/FilterPopover/FilterPopover";
 import { evaluateFilter } from "@/lib/filterEngine";
 import type { FilterExpression } from "@/types/filter";
 import { useMemo, useRef, useState } from "react";
-import { useDocumentTitle } from "@mantine/hooks";
+import { useDocumentTitle, useHotkeys } from "@mantine/hooks";
 
 export const Route = createFileRoute("/_auth/")({
   component: Index,
@@ -46,6 +46,7 @@ function Index() {
   const [globalFilter, setGlobalFilter] = useState<FilterExpression | null>(null);
   const pageTitle = prefs?.uiConfig?.pageTitle || "動漫清單";
   const markerRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const localSearchRef = useRef<LocalSearchHandle>(null);
   const { getRef, jumpTo } = useScrollToRecord();
 
   // Apply global filter on top of sections
@@ -58,6 +59,20 @@ function Index() {
   }, [sections, globalFilter]);
 
   useDocumentTitle(pageTitle);
+
+  useHotkeys([
+    ['mod+F', () => {
+      setSelectedAnimeId(null);
+      localSearchRef.current?.open();
+    }],
+    ['mod+E', () => {
+      modals.openContextModal({
+        modal: "tmdbSearch",
+        title: "搜尋 TMDb",
+        innerProps: { onSaved: jumpTo },
+      });
+    }],
+  ]);
 
   function openTmdbModal() {
     modals.openContextModal({
@@ -143,7 +158,7 @@ function Index() {
         ))}
       </AnimePaper>
       <Affix position={{ top: 10, right: 10 }} style={{ display: 'flex', gap: 8 }}>
-        <LocalSearch jumpTo={jumpTo} />
+        <LocalSearch ref={localSearchRef} jumpTo={jumpTo} />
         <FilterPopover value={globalFilter} onChange={setGlobalFilter} />
       </Affix>
       <Affix position={{ top: 10, right: 10 }}>

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { forwardRef, useImperativeHandle, useState, useRef, useEffect, useMemo } from 'react'
 import {
   ActionIcon,
   Collapse,
@@ -22,8 +22,18 @@ interface LocalSearchProps {
   jumpTo: (id: string) => void
 }
 
-export function LocalSearch({ jumpTo }: LocalSearchProps) {
+export interface LocalSearchHandle {
+  open: () => void
+}
+
+export const LocalSearch = forwardRef<LocalSearchHandle, LocalSearchProps>(
+  function LocalSearch({ jumpTo }, ref) {
   const [opened, setOpened] = useState(false)
+
+  useImperativeHandle(ref, () => ({
+    open: () => setOpened(true),
+  }))
+
   const [query, setQuery] = useState('')
   const [tagFilterOpen, setTagFilterOpen] = useState(false)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -147,4 +157,4 @@ export function LocalSearch({ jumpTo }: LocalSearchProps) {
       )}
     </div>
   )
-}
+})
