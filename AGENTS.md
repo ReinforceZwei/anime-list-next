@@ -2,14 +2,13 @@
 
 ## Project Snapshot
 
-Simple monorepo: Go/PocketBase backend (`server/`) + Vite/React frontend (`client/`). No workspace orchestrator — each package is built and run independently. The app is a personal anime watchlist with TMDb integration, real-time sync via PocketBase subscriptions, and import/export support. `old_client/` is legacy — do not touch it.
+Simple monorepo: Go/PocketBase backend (`server/`) + Vite/React frontend (`client/`). No workspace orchestrator — each package is built and run independently. The app is a personal anime watchlist with TMDb integration, real-time sync via PocketBase subscriptions, and import/export support.
 
 ## Root Structure
 
 ```
 server/   ← Go + PocketBase backend   → see server/AGENTS.md
 client/   ← Vite + React 19 frontend  → see client/AGENTS.md
-old_client/ ← LEGACY, ignore
 ```
 
 ## Setup Commands

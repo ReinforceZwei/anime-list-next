@@ -2,7 +2,7 @@
 
 ## Package Identity
 
-PocketBase-based backend written in Go. Extends PocketBase with custom API routes (TMDb proxy, import/export) and record lifecycle hooks (auto-populate cached TMDb titles, auto-set status timestamps). The compiled binary (`server.exe`) is the self-contained server.
+PocketBase-based backend written in Go. Extends PocketBase with custom API routes (TMDb proxy, import/export) and record lifecycle hooks (auto-populate cached TMDb titles, auto-set status timestamps).
 
 ## Setup & Run
 
@@ -14,9 +14,6 @@ cp .env.example .env  # or create manually
 
 # Run in development (auto-migrate enabled when launched via go run)
 go run . serve
-
-# Build binary
-go build -o server.exe .
 
 # Run tests (none yet)
 go test ./...
