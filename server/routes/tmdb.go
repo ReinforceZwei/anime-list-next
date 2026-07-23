@@ -3,7 +3,6 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -90,7 +89,7 @@ func (r *TmdbRoutes) getCached(cacheKey string) (json.RawMessage, bool) {
 func (r *TmdbRoutes) setCached(cacheKey string, mediaType string, tvStatus string, result any) {
 	data, err := json.Marshal(result)
 	if err != nil {
-		log.Printf("[tmdb cache] failed to marshal response for key %q: %v", cacheKey, err)
+		r.app.Logger().Error("failed to marshal response for cache key", "cacheKey", cacheKey, "error", err)
 		return
 	}
 	expiry := computeExpiry(mediaType, tvStatus).UTC().Format("2006-01-02 15:04:05.000Z")
@@ -104,7 +103,7 @@ func (r *TmdbRoutes) setCached(cacheKey string, mediaType string, tvStatus strin
 		// No existing record — create new
 		col, err := r.app.FindCollectionByNameOrId("tmdbCache")
 		if err != nil {
-			log.Printf("[tmdb cache] failed to find tmdbCache collection: %v", err)
+			r.app.Logger().Error("failed to find tmdbCache collection", "error", err)
 			return
 		}
 		rec := core.NewRecord(col)
@@ -114,7 +113,7 @@ func (r *TmdbRoutes) setCached(cacheKey string, mediaType string, tvStatus strin
 		rec.Set("tvStatus", tvStatus)
 		rec.Set("expiresAt", expiry)
 		if err := r.app.Save(rec); err != nil {
-			log.Printf("[tmdb cache] failed to save cache record for key %q: %v", cacheKey, err)
+			r.app.Logger().Error("failed to save cache record", "cacheKey", cacheKey, "error", err)
 		}
 		return
 	}
@@ -123,7 +122,7 @@ func (r *TmdbRoutes) setCached(cacheKey string, mediaType string, tvStatus strin
 	existing.Set("tvStatus", tvStatus)
 	existing.Set("expiresAt", expiry)
 	if err := r.app.Save(existing); err != nil {
-		log.Printf("[tmdb cache] failed to update cache record for key %q: %v", cacheKey, err)
+		r.app.Logger().Error("failed to update cache record", "cacheKey", cacheKey, "error", err)
 	}
 }
 
