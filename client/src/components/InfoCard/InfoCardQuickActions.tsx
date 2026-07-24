@@ -18,7 +18,7 @@ import {
 import { useInfoCard } from './InfoCardContext'
 import { evaluateFilter } from '@/lib/filterEngine'
 import { applyActions, describeActions } from '@/lib/actionExecutor'
-import { getIconComponent } from '@/components/ActionButtonEditor/iconCatalog'
+import { getIconComponent } from '@/components/IconPicker/iconCatalog'
 import type { ActionButton } from '@/types/filter'
 import type { AnimeRecord } from '../../types/anime'
 import styles from './InfoCard.module.css'
