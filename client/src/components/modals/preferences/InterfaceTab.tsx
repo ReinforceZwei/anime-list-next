@@ -14,6 +14,7 @@ import { IconMinus, IconPlus, IconUpload } from '@tabler/icons-react'
 import type { UseFormReturnType } from '@mantine/form'
 import type { UIConfig, SectionDef } from '@/types/anime'
 import type { ActionButton } from '@/types/filter'
+import { BackgroundPositionInput } from '@/components/BackgroundPositionInput/BackgroundPositionInput'
 import { useUiScale } from '@/components/modals/preferences/useUiScale'
 import type { useWallpaperUpload } from '@/components/modals/preferences/useWallpaperUpload'
 
@@ -114,45 +115,36 @@ export function InterfaceTab({ form, wallpaper }: InterfaceTabProps) {
             )}
           </div>
 
-          <Select
-            label="background-position"
-            placeholder="center"
-            data={[
-              { label: 'center', value: 'center' },
-              { label: 'top', value: 'top' },
-              { label: 'bottom', value: 'bottom' },
-              { label: 'left', value: 'left' },
-              { label: 'right', value: 'right' },
-              { label: 'top left', value: 'top left' },
-              { label: 'top right', value: 'top right' },
-              { label: 'bottom left', value: 'bottom left' },
-              { label: 'bottom right', value: 'bottom right' },
-            ]}
-            clearable
-            {...form.getInputProps('uiConfig.wallpaper.position')}
-          />
+          <div>
+            <Text size="sm" fw={500} mb={4}>
+              圖片位置
+            </Text>
+            <BackgroundPositionInput
+              {...form.getInputProps('uiConfig.wallpaper.position')}
+            />
+          </div>
 
           <Select
-            label="background-repeat"
-            placeholder="no-repeat"
+            label="圖片重複"
+            placeholder="選擇圖片重複"
             data={[
-              { label: 'no-repeat', value: 'no-repeat' },
-              { label: 'repeat', value: 'repeat' },
-              { label: 'repeat-x', value: 'repeat-x' },
-              { label: 'repeat-y', value: 'repeat-y' },
+              { label: '不重複', value: 'no-repeat' },
+              { label: '重複', value: 'repeat' },
+              { label: '橫向重複', value: 'repeat-x' },
+              { label: '垂直重複', value: 'repeat-y' },
             ]}
             clearable
             {...form.getInputProps('uiConfig.wallpaper.repeat')}
           />
 
           <Select
-            label="background-size"
-            placeholder="cover"
+            label="圖片大小"
+            placeholder="選擇圖片大小"
             data={[
-              { label: 'cover', value: 'cover' },
-              { label: 'contain', value: 'contain' },
-              { label: 'auto', value: 'auto' },
-              { label: '100% auto', value: '100% auto' },
+              { label: '填滿 (Cover)', value: 'cover' },
+              { label: '完整顯示 (Contain)', value: 'contain' },
+              { label: '原始大小 (Auto)', value: 'auto' },
+              { label: '符合寬度 (100% Auto)', value: '100% auto' },
             ]}
             clearable
             {...form.getInputProps('uiConfig.wallpaper.size')}

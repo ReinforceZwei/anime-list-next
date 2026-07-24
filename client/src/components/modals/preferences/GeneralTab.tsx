@@ -1,14 +1,19 @@
+import { useMemo } from 'react'
 import { Anchor, Group, Stack, Switch, TextInput } from '@mantine/core'
 import { IconExternalLink } from '@tabler/icons-react'
 import type { UseFormReturnType } from '@mantine/form'
 import type { UIConfig } from '@/types/anime'
+import { pb } from '@/lib/pb'
 
 interface GeneralTabProps {
   form: UseFormReturnType<{ uiConfig: UIConfig }>
-  pbAdminUrl: string
 }
 
-export function GeneralTab({ form, pbAdminUrl }: GeneralTabProps) {
+export function GeneralTab({ form }: GeneralTabProps) {
+  const pbAdminUrl = useMemo(() => {
+    const base = pb.baseURL?.replace(/\/$/, '') || window.location.origin
+    return `${base}/_/`
+  }, [])
   return (
     <Stack>
       <TextInput

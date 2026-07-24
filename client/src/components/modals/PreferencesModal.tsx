@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
   Button,
   Center,
@@ -14,8 +14,6 @@ import { IconAdjustments, IconClick, IconDownload, IconSettings, IconSection } f
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { useUserPreferencesMutation } from '@/hooks/useUserPreferencesMutation'
 import { useWallpaperUpload } from '@/components/modals/preferences/useWallpaperUpload'
-import { showErrorNotification } from '@/lib/notifications'
-import { pb } from '@/lib/pb'
 import { SectionEditor } from '@/components/modals/preferences/SectionEditor'
 import { ActionButtonEditor } from '@/components/modals/preferences/ActionButtonEditor'
 import type { ActionButton } from '@/types/filter'
@@ -28,11 +26,6 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
   const { data: prefs, isLoading } = useUserPreferences()
   const { saveMutation } = useUserPreferencesMutation()
   const wallpaper = useWallpaperUpload()
-
-  const pbAdminUrl = useMemo(() => {
-    const base = pb.baseURL?.replace(/\/$/, '') || window.location.origin
-    return `${base}/_/`
-  }, [])
 
   const [activeTab, setActiveTab] = useState<string | null>('general')
 
@@ -55,14 +48,15 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
   function handleSubmit(values: typeof form.values) {
     if (wallpaper.file && prefs?.id) {
       const fd = new FormData()
+      fd.append('id', prefs.id)
       wallpaper.appendToFormData(fd, values)
-      pb.collection('userPreferences').update(prefs.id, fd)
-        .then(() => {
+      saveMutation.mutate(fd, {
+        onSuccess: () => {
           form.resetDirty()
           wallpaper.reset()
           context.closeModal(id)
-        })
-        .catch(showErrorNotification)
+        },
+      })
       return
     }
     saveMutation.mutate(
@@ -117,7 +111,7 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
               </Tabs.List>
 
               <Tabs.Panel value="general">
-                <GeneralTab form={form} pbAdminUrl={pbAdminUrl} />
+                <GeneralTab form={form} />
               </Tabs.Panel>
 
               <Tabs.Panel value="sections">

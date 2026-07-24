@@ -16,7 +16,20 @@ export function useUserPreferencesMutation() {
   }
 
   const saveMutation = useMutation({
-    mutationFn: (input: UserPreferencesInput) => {
+    mutationFn: (input: UserPreferencesInput | FormData) => {
+      if (input instanceof FormData) {
+        const id = input.get('id') as string | null
+        if (id) {
+          return pb
+            .collection<UserPreferencesRecord>(Collections.UserPreferences)
+            .update(id, input)
+        }
+        input.append('userId', userId!)
+        return pb
+          .collection<UserPreferencesRecord>(Collections.UserPreferences)
+          .create(input)
+      }
+
       if (input.id) {
         return pb
           .collection<UserPreferencesRecord>(Collections.UserPreferences)

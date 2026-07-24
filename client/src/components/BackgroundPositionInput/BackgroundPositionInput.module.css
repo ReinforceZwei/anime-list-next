@@ -1,0 +1,67 @@
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: fit-content;
+  padding: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-md);
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+}
+
+.indicator {
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+  border-radius: var(--mantine-radius-md);
+  box-shadow: var(--mantine-shadow-sm);
+  border: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));
+}
+
+.row {
+  display: flex;
+  gap: 4px;
+}
+
+.control {
+  width: 42px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--mantine-radius-md);
+  border: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+  position: relative;
+  cursor: pointer;
+  /* background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7)); */
+
+  @mixin hover {
+    background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6));
+  }
+}
+
+.dot {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 20px;
+  height: 14px;
+  border-radius: var(--mantine-radius-sm);
+  border: 1.5px solid light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-3));
+  background-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  transition: background-color 100ms ease, border-color 100ms ease;
+
+  [data-active] & {
+    border-color: light-dark(var(--mantine-primary-color-5), var(--mantine-primary-color-4));
+    background-color: light-dark(var(--mantine-primary-color-3), var(--mantine-primary-color-7));
+  }
+}
+
+/* Position the dot within the control to reflect background-position */
+.dot[data-pos='top left']      { align-self: flex-start; margin-right: auto; }
+.dot[data-pos='top']           { align-self: flex-start; }
+.dot[data-pos='top right']     { align-self: flex-start; margin-left: auto; }
+.dot[data-pos='left']          { margin-right: auto; }
+.dot[data-pos='center']        { }
+.dot[data-pos='right']         { margin-left: auto; }
+.dot[data-pos='bottom left']   { align-self: flex-end; margin-right: auto; }
+.dot[data-pos='bottom']        { align-self: flex-end; }
+.dot[data-pos='bottom right']  { align-self: flex-end; margin-left: auto; }
