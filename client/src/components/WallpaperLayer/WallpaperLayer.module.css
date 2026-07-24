@@ -1,0 +1,12 @@
+.wallpaper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  z-index: -10;
+}
+
+[data-mantine-color-scheme='dark'] .wallpaper {
+  filter: brightness(0.55);
+}

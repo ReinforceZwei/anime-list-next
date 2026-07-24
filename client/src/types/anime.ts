@@ -28,15 +28,24 @@ export interface AnimeSection {
   items: AnimeRecord[]
 }
 
+export type WallpaperConfig =
+  | { type: 'default' }
+  | { type: 'color'; color: string }
+  | { type: 'image'; position?: string; repeat?: string; size?: string }
+
+export const DEFAULT_WALLPAPER_CONFIG: WallpaperConfig = { type: 'default' }
+
 export interface UIConfig {
   pageTitle?: string
   /** Show built-in quick-action buttons (status transitions) on the InfoCard. Default: true */
   showBuiltInActions?: boolean
+  wallpaper?: WallpaperConfig
 }
 
 export const DEFAULT_UI_CONFIG: UIConfig = {
   pageTitle: '',
   showBuiltInActions: true,
+  wallpaper: DEFAULT_WALLPAPER_CONFIG,
 }
 
 /** Convert built-in quick actions into ActionButton format so users can import them into the custom button editor. */
@@ -110,6 +119,7 @@ export interface UserPreferencesRecord extends RecordModel {
   sections?: SectionDef[] | null   // null/empty = use built-in defaults
   actionButtons?: ActionButton[] | null    // user-defined action buttons
   uiConfig?: UIConfig
+  wallpaper?: string   // PocketBase file field
 }
 
 export interface AnimeRecord extends RecordModel {

@@ -11,6 +11,7 @@ import { ModalStackProvider } from '@/lib/modalStack'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { theme } from '@/theme'
 import { DatesProvider } from '@mantine/dates'
+import { WallpaperLayer } from '@/components/WallpaperLayer/WallpaperLayer'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-tw'
 
@@ -29,6 +30,7 @@ function RootLayout() {
         <DatesProvider settings={{ locale: 'zh-TW', firstDayOfWeek: 0 }}>
           <ModalStackProvider modals={modals}>
             <Notifications position='top-left' />
+            <WallpaperLayer />
             <div>
               <Outlet />
             </div>

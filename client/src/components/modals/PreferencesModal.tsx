@@ -4,12 +4,16 @@ import {
   Anchor,
   Button,
   Center,
+  ColorInput,
   Divider,
   FileButton,
   Group,
+  Image,
   Loader,
   Modal,
   Scroller,
+  SegmentedControl,
+  Select,
   Stack,
   Switch,
   Tabs,
@@ -44,6 +48,9 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
   }, [])
 
   const [activeTab, setActiveTab] = useState<string | null>('general')
+  const [wallpaperFile, setWallpaperFile] = useState<File | null>(null)
+  const [wallpaperPreviewUrl, setWallpaperPreviewUrl] = useState<string | null>(null)
+  const wallpaperFileResetRef = useRef<() => void>(null)
   const [uiScale, setUiScale] = useState<number>(() => {
     const stored = localStorage.getItem('ui-scale')
     return stored ? parseInt(stored, 10) : 100
@@ -57,7 +64,7 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
 
   const form = useForm({
     initialValues: {
-      uiConfig: prefs?.uiConfig ?? DEFAULT_UI_CONFIG,
+      uiConfig: { ...DEFAULT_UI_CONFIG, ...prefs?.uiConfig },
       sections: prefs?.sections ?? [],
       actionButtons: prefs?.actionButtons ?? [],
     },
@@ -72,11 +79,30 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
   }
 
   function handleSubmit(values: typeof form.values) {
+    if (wallpaperFile && prefs?.id) {
+      // Use FormData so PocketBase receives the file
+      const fd = new FormData()
+      fd.append('wallpaper', wallpaperFile)
+      fd.append('uiConfig', JSON.stringify(values.uiConfig))
+      fd.append('sections', JSON.stringify(values.sections ?? []))
+      fd.append('actionButtons', JSON.stringify(values.actionButtons ?? []))
+      pb.collection('userPreferences').update(prefs.id, fd)
+        .then(() => {
+          form.resetDirty()
+          setWallpaperFile(null)
+          setWallpaperPreviewUrl(null)
+          context.closeModal(id)
+        })
+        .catch(showErrorNotification)
+      return
+    }
     saveMutation.mutate(
       { id: prefs?.id, ...values },
       {
         onSuccess: () => {
           form.resetDirty()
+          setWallpaperFile(null)
+          setWallpaperPreviewUrl(null)
           context.closeModal(id)
         },
       },
@@ -215,6 +241,113 @@ export function PreferencesModal({ context, id, title, modalProps }: ContextModa
                       </Button>
                     </Button.Group>
                   </div>
+
+                  <Divider label="背景桌布" labelPosition="left" />
+
+                  <SegmentedControl
+                    data={[
+                      { label: '預設', value: 'default' },
+                      { label: '純色', value: 'color' },
+                      { label: '自訂圖片', value: 'image' },
+                    ]}
+                    {...form.getInputProps('uiConfig.wallpaper.type')}
+                  />
+
+                  {form.values.uiConfig.wallpaper?.type === 'color' && (
+                    <ColorInput
+                      label="背景顏色"
+                      placeholder="#1a1b2e"
+                      {...form.getInputProps('uiConfig.wallpaper.color')}
+                    />
+                  )}
+
+                  {form.values.uiConfig.wallpaper?.type === 'image' && (
+                    <>
+                      <div>
+                        <Text size="sm" fw={500} mb={4}>
+                          上傳圖片
+                        </Text>
+                        <Text size="xs" c="dimmed" mb="xs">
+                          支援 PNG、JPEG、WebP、TIFF、BMP（上限 5MB）
+                        </Text>
+                        <Group>
+                          <FileButton
+                            resetRef={wallpaperFileResetRef}
+                            onChange={(file) => {
+                              setWallpaperFile(file)
+                              if (file) {
+                                setWallpaperPreviewUrl(URL.createObjectURL(file))
+                              } else {
+                                setWallpaperPreviewUrl(null)
+                              }
+                            }}
+                            accept="image/png,image/jpeg,image/webp,image/tiff,image/bmp"
+                          >
+                            {(props) => (
+                              <Button {...props} leftSection={<IconUpload size="1em" />} variant="default">
+                                選擇圖片
+                              </Button>
+                            )}
+                          </FileButton>
+                        </Group>
+                        {wallpaperPreviewUrl && (
+                          <Image
+                            src={wallpaperPreviewUrl}
+                            alt="桌布預覽"
+                            mt="sm"
+                            radius="md"
+                            fit="cover"
+                            h={120}
+                            style={{ border: '1px solid var(--mantine-color-default-border)' }}
+                          />
+                        )}
+                      </div>
+
+                      <Select
+                        label="background-position"
+                        placeholder="center"
+                        data={[
+                          { label: 'center', value: 'center' },
+                          { label: 'top', value: 'top' },
+                          { label: 'bottom', value: 'bottom' },
+                          { label: 'left', value: 'left' },
+                          { label: 'right', value: 'right' },
+                          { label: 'top left', value: 'top left' },
+                          { label: 'top right', value: 'top right' },
+                          { label: 'bottom left', value: 'bottom left' },
+                          { label: 'bottom right', value: 'bottom right' },
+                        ]}
+                        clearable
+                        {...form.getInputProps('uiConfig.wallpaper.position')}
+                      />
+
+                      <Select
+                        label="background-repeat"
+                        placeholder="no-repeat"
+                        data={[
+                          { label: 'no-repeat', value: 'no-repeat' },
+                          { label: 'repeat', value: 'repeat' },
+                          { label: 'repeat-x', value: 'repeat-x' },
+                          { label: 'repeat-y', value: 'repeat-y' },
+                        ]}
+                        clearable
+                        {...form.getInputProps('uiConfig.wallpaper.repeat')}
+                      />
+
+                      <Select
+                        label="background-size"
+                        placeholder="cover"
+                        data={[
+                          { label: 'cover', value: 'cover' },
+                          { label: 'contain', value: 'contain' },
+                          { label: 'auto', value: 'auto' },
+                          { label: '100% auto', value: '100% auto' },
+                        ]}
+                        clearable
+                        {...form.getInputProps('uiConfig.wallpaper.size')}
+                      />
+                    </>
+                  )}
                 </Stack>
               </Tabs.Panel>
 
