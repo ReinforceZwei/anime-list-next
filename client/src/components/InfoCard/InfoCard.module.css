@@ -1,7 +1,7 @@
 .card {
   position: relative;
-  width: 22rem;
-  max-height: 98vh;
+  width: min(22rem, calc(100vw - 20px));
+  max-height: 98dvh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
