@@ -33,8 +33,8 @@ function writeCache(cache: WallpaperCache): void {
 }
 
 function getFileUrl(record: { id: string; collectionId: string }, filename: string): string {
-  // pb.files.getUrl is stable for the same record + filename
-  return pb.files.getUrl(record, filename)
+  // pb.files.getURL is stable for the same record + filename
+  return pb.files.getURL(record, filename)
 }
 
 function deriveStyle(
