@@ -20,17 +20,30 @@ export type FilterableField =
 
 export type FilterOperator =
   // Universal
-  | 'eq' | 'neq' | 'isEmpty' | 'isNotEmpty'
+  | 'eq'
+  | 'neq'
+  | 'isEmpty'
+  | 'isNotEmpty'
   // Text
-  | 'contains' | 'notContains'
+  | 'contains'
+  | 'notContains'
   // Number / Date
-  | 'gt' | 'gte' | 'lt' | 'lte' | 'between'
+  | 'gt'
+  | 'gte'
+  | 'lt'
+  | 'lte'
+  | 'between'
   // Date only
-  | 'before' | 'after'
+  | 'before'
+  | 'after'
   // Select
-  | 'in' | 'notIn'
+  | 'in'
+  | 'notIn'
   // Tags (multi-select relation)
-  | 'containsAll' | 'containsAny' | 'notContainsAll' | 'notContainsAny'
+  | 'containsAll'
+  | 'containsAny'
+  | 'notContainsAll'
+  | 'notContainsAny'
 
 // ---- Value types ----
 
@@ -59,11 +72,7 @@ export type FilterExpression = FilterGroup
 // ---- Actionable fields (subset of filterable fields, excludes tags) ----
 
 export type ActionableField =
-  | 'status'
-  | 'downloadStatus'
-  | 'rating'
-  | 'comment'
-  | 'remark'
+  'status' | 'downloadStatus' | 'rating' | 'comment' | 'remark'
 
 // ---- Action types ----
 
@@ -89,13 +98,13 @@ export type ActionDef = SetFieldAction | AddTagAction | RemoveTagAction
 
 export interface ActionButton {
   id: string
-  label: string                          // button text (or tooltip text when showAsIcon)
-  icon?: string                          // icon name from ICON_OPTIONS; undefined = no icon
-  color?: string                         // optional color for the button (Mantine color)
-  condition: FilterExpression            // when this filter matches the record, show the button
-  actions: ActionDef[]                   // chain of actions executed in order
-  askConfirmation?: boolean              // show confirm dialog before executing (default false)
-  showAsIcon?: boolean                   // render as icon-only with tooltip (default false)
+  label: string // button text (or tooltip text when showAsIcon)
+  icon?: string // icon name from ICON_OPTIONS; undefined = no icon
+  color?: string // optional color for the button (Mantine color)
+  condition: FilterExpression // when this filter matches the record, show the button
+  actions: ActionDef[] // chain of actions executed in order
+  askConfirmation?: boolean // show confirm dialog before executing (default false)
+  showAsIcon?: boolean // render as icon-only with tooltip (default false)
 }
 
 // ---- Helper ----

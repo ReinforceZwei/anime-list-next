@@ -82,7 +82,11 @@ function RouteComponent() {
                 </Text>
               )}
               <Group gap={4}>
-                <Badge size="xs" variant="light" color={item.mediaType === 'tv' ? 'blue' : 'grape'}>
+                <Badge
+                  size="xs"
+                  variant="light"
+                  color={item.mediaType === 'tv' ? 'blue' : 'grape'}
+                >
                   {item.mediaType === 'tv' ? 'TV' : 'Movie'}
                 </Badge>
                 {item.year && (

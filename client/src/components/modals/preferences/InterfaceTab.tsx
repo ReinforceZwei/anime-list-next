@@ -44,21 +44,18 @@ export function InterfaceTab({ form, wallpaper }: InterfaceTabProps) {
           僅限此裝置
         </Text>
         <Button.Group>
-          <Button
-            variant="default"
-            disabled={scale <= min}
-            onClick={decrement}
-          >
+          <Button variant="default" disabled={scale <= min} onClick={decrement}>
             <IconMinus size="1em" />
           </Button>
-          <Button.GroupSection variant="default" bg="var(--mantine-color-body)" miw={60} ta="center">
+          <Button.GroupSection
+            variant="default"
+            bg="var(--mantine-color-body)"
+            miw={60}
+            ta="center"
+          >
             {scale}%
           </Button.GroupSection>
-          <Button
-            variant="default"
-            disabled={scale >= max}
-            onClick={increment}
-          >
+          <Button variant="default" disabled={scale >= max} onClick={increment}>
             <IconPlus size="1em" />
           </Button>
         </Button.Group>
@@ -99,7 +96,11 @@ export function InterfaceTab({ form, wallpaper }: InterfaceTabProps) {
                 accept={wallpaper.accept}
               >
                 {(props) => (
-                  <Button {...props} leftSection={<IconUpload size="1em" />} variant="default">
+                  <Button
+                    {...props}
+                    leftSection={<IconUpload size="1em" />}
+                    variant="default"
+                  >
                     選擇圖片
                   </Button>
                 )}
@@ -113,7 +114,9 @@ export function InterfaceTab({ form, wallpaper }: InterfaceTabProps) {
                   mt="sm"
                   radius="md"
                   fit="cover"
-                  style={{ border: '1px solid var(--mantine-color-default-border)' }}
+                  style={{
+                    border: '1px solid var(--mantine-color-default-border)',
+                  }}
                 />
               </AspectRatio>
             )}

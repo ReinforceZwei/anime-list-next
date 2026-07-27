@@ -8,7 +8,11 @@ import {
   Divider,
 } from '@mantine/core'
 import { IconTrash, IconPlus } from '@tabler/icons-react'
-import type { FilterGroup, FilterCondition, FilterableField } from '@/types/filter'
+import type {
+  FilterGroup,
+  FilterCondition,
+  FilterableField,
+} from '@/types/filter'
 import { createEmptyCondition, createEmptyGroup } from '@/types/filter'
 import { FilterConditionRow } from './FilterConditionRow'
 

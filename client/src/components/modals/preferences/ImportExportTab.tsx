@@ -1,4 +1,12 @@
-import { Alert, Button, Divider, FileButton, Group, Stack, Text } from '@mantine/core'
+import {
+  Alert,
+  Button,
+  Divider,
+  FileButton,
+  Group,
+  Stack,
+  Text,
+} from '@mantine/core'
 import { IconDownload, IconInfoCircle, IconUpload } from '@tabler/icons-react'
 import { useImportExport } from '@/components/modals/preferences/useImportExport'
 
@@ -42,7 +50,11 @@ export function ImportExportTab() {
           從先前匯出的 JSON 檔還原。相同 ID 的既有紀錄將被更新。
         </Text>
         <Group>
-          <FileButton resetRef={resetFileRef} onChange={handleImport} accept="application/json">
+          <FileButton
+            resetRef={resetFileRef}
+            onChange={handleImport}
+            accept="application/json"
+          >
             {(props) => (
               <Button
                 {...props}
@@ -57,13 +69,24 @@ export function ImportExportTab() {
         </Group>
 
         {importResult && (
-          <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="green" variant="light">
-            已匯入 {importResult.importedRecords} 筆動畫紀錄與 {importResult.importedTags} 個標籤。
+          <Alert
+            mt="sm"
+            icon={<IconInfoCircle size="1em" />}
+            color="green"
+            variant="light"
+          >
+            已匯入 {importResult.importedRecords} 筆動畫紀錄與{' '}
+            {importResult.importedTags} 個標籤。
           </Alert>
         )}
 
         {importError && (
-          <Alert mt="sm" icon={<IconInfoCircle size="1em" />} color="red" variant="light">
+          <Alert
+            mt="sm"
+            icon={<IconInfoCircle size="1em" />}
+            color="red"
+            variant="light"
+          >
             {importError}
           </Alert>
         )}

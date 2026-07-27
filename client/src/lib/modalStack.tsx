@@ -7,7 +7,16 @@
  *   modals.openContextModal / open / openConfirmModal / closeModal / close / closeAll
  */
 
-import { createContext, Fragment, useContext, useState, useEffect, useMemo, useCallback, type ReactNode } from 'react'
+import {
+  createContext,
+  Fragment,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  type ReactNode,
+} from 'react'
 import { Modal, Button, Group } from '@mantine/core'
 import { randomId } from '@mantine/hooks'
 
@@ -157,7 +166,8 @@ const ModalStackContext = createContext<ModalStackApi | null>(null)
 
 export function useModalStack(): ModalStackApi {
   const ctx = useContext(ModalStackContext)
-  if (!ctx) throw new Error('useModalStack must be used within ModalStackProvider')
+  if (!ctx)
+    throw new Error('useModalStack must be used within ModalStackProvider')
   return ctx
 }
 
@@ -172,25 +182,37 @@ export function ModalStackProvider({
 }) {
   const [stack, setStack] = useState<StackEntry[]>([])
 
-  const openContextModal = useCallback((props: OpenContextModalProps): string => {
-    const { modal, title, innerProps, ...sharedProps } = props
-    const id = randomId()
-    setStack((s) => [...s, { kind: 'context', id, modal, title, innerProps, sharedProps }])
-    return id
-  }, [])
+  const openContextModal = useCallback(
+    (props: OpenContextModalProps): string => {
+      const { modal, title, innerProps, ...sharedProps } = props
+      const id = randomId()
+      setStack((s) => [
+        ...s,
+        { kind: 'context', id, modal, title, innerProps, sharedProps },
+      ])
+      return id
+    },
+    [],
+  )
 
   const open = useCallback((props: OpenModalProps): string => {
     const { title, children, ...sharedProps } = props
     const id = randomId()
-    setStack((s) => [...s, { kind: 'content', id, title, children, sharedProps }])
+    setStack((s) => [
+      ...s,
+      { kind: 'content', id, title, children, sharedProps },
+    ])
     return id
   }, [])
 
-  const openConfirmModal = useCallback((props: OpenConfirmModalProps): string => {
-    const id = randomId()
-    setStack((s) => [...s, { kind: 'confirm', id, ...props }])
-    return id
-  }, [])
+  const openConfirmModal = useCallback(
+    (props: OpenConfirmModalProps): string => {
+      const id = randomId()
+      setStack((s) => [...s, { kind: 'confirm', id, ...props }])
+      return id
+    },
+    [],
+  )
 
   const closeModal = useCallback((id: string) => {
     setStack((s) => s.filter((e) => e.id !== id))
@@ -222,7 +244,10 @@ export function ModalStackProvider({
 
   // Narrow context object passed as `context` prop to context modal components.
   // Modal components only ever call context.closeModal(id) and context.closeAll().
-  const modalContext = useMemo(() => ({ closeModal, closeAll }), [closeModal, closeAll])
+  const modalContext = useMemo(
+    () => ({ closeModal, closeAll }),
+    [closeModal, closeAll],
+  )
 
   return (
     <ModalStackContext.Provider value={api}>
@@ -243,7 +268,9 @@ export function ModalStackProvider({
         if (entry.kind === 'context') {
           const Component = registry[entry.modal]
           if (!Component) {
-            console.warn(`[modalStack] context modal '${entry.modal}' is opened without a registry`)
+            console.warn(
+              `[modalStack] context modal '${entry.modal}' is opened without a registry`,
+            )
             return null
           }
           const modalProps = {
@@ -282,11 +309,7 @@ export function ModalStackProvider({
 
         if (entry.kind === 'confirm') {
           return (
-            <Modal
-              key={entry.id}
-              title={entry.title}
-              {...commonModalProps}
-            >
+            <Modal key={entry.id} title={entry.title} {...commonModalProps}>
               {entry.children}
               <Group justify="flex-end" mt="md">
                 <Button

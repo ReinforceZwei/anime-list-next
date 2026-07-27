@@ -16,9 +16,14 @@ interface BackgroundPositionInputProps {
   onBlur?: React.FocusEventHandler<HTMLButtonElement>
 }
 
-export function BackgroundPositionInput({ value, onChange }: BackgroundPositionInputProps) {
+export function BackgroundPositionInput({
+  value,
+  onChange,
+}: BackgroundPositionInputProps) {
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null)
-  const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({})
+  const [controlsRefs, setControlsRefs] = useState<
+    Record<string, HTMLButtonElement | null>
+  >({})
   const active = value || 'center'
 
   const setControlRef = (name: string) => (node: HTMLButtonElement | null) => {

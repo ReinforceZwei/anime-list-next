@@ -1,23 +1,24 @@
-import type { RecordModel } from "pocketbase";
+import type { RecordModel } from 'pocketbase'
 import type { FilterExpression, ActionButton } from './filter'
 import { generateId } from './filter'
 
 export interface TagRecord extends RecordModel {
-  userId: string;
-  name: string;
-  color?: string;
-  weight?: number;
-  hidden?: boolean;
-  created: string;
-  updated: string;
+  userId: string
+  name: string
+  color?: string
+  weight?: number
+  hidden?: boolean
+  created: string
+  updated: string
 }
 
-export type SortableField = 'completedAt' | 'startedAt' | 'updated' | 'created' | 'rating'
+export type SortableField =
+  'completedAt' | 'startedAt' | 'updated' | 'created' | 'rating'
 
 export interface SectionDef {
   key: string
   label: string
-  filter: FilterExpression | null   // null = match all records
+  filter: FilterExpression | null // null = match all records
   sortBy: SortableField
   sortOrder: 'asc' | 'desc'
 }
@@ -59,7 +60,14 @@ export function getBuiltInActionButtons(): ActionButton[] {
       condition: {
         id: generateId(),
         logic: 'and',
-        conditions: [{ id: generateId(), field: 'status', operator: 'eq', value: 'planned' }],
+        conditions: [
+          {
+            id: generateId(),
+            field: 'status',
+            operator: 'eq',
+            value: 'planned',
+          },
+        ],
       },
       actions: [{ type: 'setField', field: 'status', value: 'watching' }],
     },
@@ -71,7 +79,14 @@ export function getBuiltInActionButtons(): ActionButton[] {
       condition: {
         id: generateId(),
         logic: 'and',
-        conditions: [{ id: generateId(), field: 'status', operator: 'eq', value: 'watching' }],
+        conditions: [
+          {
+            id: generateId(),
+            field: 'status',
+            operator: 'eq',
+            value: 'watching',
+          },
+        ],
       },
       actions: [{ type: 'setField', field: 'status', value: 'completed' }],
     },
@@ -83,7 +98,14 @@ export function getBuiltInActionButtons(): ActionButton[] {
       condition: {
         id: generateId(),
         logic: 'and',
-        conditions: [{ id: generateId(), field: 'status', operator: 'isEmpty', value: null }],
+        conditions: [
+          {
+            id: generateId(),
+            field: 'status',
+            operator: 'isEmpty',
+            value: null,
+          },
+        ],
       },
       actions: [{ type: 'setField', field: 'status', value: 'planned' }],
     },
@@ -95,9 +117,18 @@ export function getBuiltInActionButtons(): ActionButton[] {
       condition: {
         id: generateId(),
         logic: 'and',
-        conditions: [{ id: generateId(), field: 'downloadStatus', operator: 'eq', value: 'pending' }],
+        conditions: [
+          {
+            id: generateId(),
+            field: 'downloadStatus',
+            operator: 'eq',
+            value: 'pending',
+          },
+        ],
       },
-      actions: [{ type: 'setField', field: 'downloadStatus', value: 'downloading' }],
+      actions: [
+        { type: 'setField', field: 'downloadStatus', value: 'downloading' },
+      ],
     },
     {
       id: generateId(),
@@ -107,42 +138,51 @@ export function getBuiltInActionButtons(): ActionButton[] {
       condition: {
         id: generateId(),
         logic: 'and',
-        conditions: [{ id: generateId(), field: 'downloadStatus', operator: 'eq', value: 'downloading' }],
+        conditions: [
+          {
+            id: generateId(),
+            field: 'downloadStatus',
+            operator: 'eq',
+            value: 'downloading',
+          },
+        ],
       },
-      actions: [{ type: 'setField', field: 'downloadStatus', value: 'downloaded' }],
+      actions: [
+        { type: 'setField', field: 'downloadStatus', value: 'downloaded' },
+      ],
     },
   ]
 }
 
 export interface UserPreferencesRecord extends RecordModel {
   userId: string
-  sections?: SectionDef[] | null   // null/empty = use built-in defaults
-  actionButtons?: ActionButton[] | null    // user-defined action buttons
+  sections?: SectionDef[] | null // null/empty = use built-in defaults
+  actionButtons?: ActionButton[] | null // user-defined action buttons
   uiConfig?: UIConfig
-  wallpaper?: string   // PocketBase file field
+  wallpaper?: string // PocketBase file field
 }
 
 export interface AnimeRecord extends RecordModel {
-  userId: string;
-  tmdbId?: number;
-  tmdbSeasonNumber?: number;
-  tmdbMediaType?: "tv" | "movie" | "";
+  userId: string
+  tmdbId?: number
+  tmdbSeasonNumber?: number
+  tmdbMediaType?: 'tv' | 'movie' | ''
   /** User input when no TMDb ID available */
-  customName?: string;
+  customName?: string
   /** Cached title from TMDb (translated title) */
-  cachedTitle?: string;
+  cachedTitle?: string
   /** Cached season name from TMDb (TV only, translated) */
-  cachedSeasonName?: string;
-  status?: "planned" | "watching" | "completed" | "dropped" | "";
-  downloadStatus?: "pending" | "downloading" | "downloaded" | "";
-  startedAt?: string;
-  completedAt?: string;
-  rating?: number;
-  comment?: string;
-  remark?: string;
-  tags?: string[];
-  created: string;
-  updated: string;
+  cachedSeasonName?: string
+  status?: 'planned' | 'watching' | 'completed' | 'dropped' | ''
+  downloadStatus?: 'pending' | 'downloading' | 'downloaded' | ''
+  startedAt?: string
+  completedAt?: string
+  rating?: number
+  comment?: string
+  remark?: string
+  tags?: string[]
+  created: string
+  updated: string
 }
 
 // ---- Default sections ----
@@ -151,18 +191,44 @@ function statusFilter(statuses: string[]): FilterExpression {
   return {
     id: generateId(),
     logic: 'and',
-    conditions: [{
-      id: generateId(),
-      field: 'status',
-      operator: 'in',
-      value: statuses,
-    }],
+    conditions: [
+      {
+        id: generateId(),
+        field: 'status',
+        operator: 'in',
+        value: statuses,
+      },
+    ],
   }
 }
 
 export const DEFAULT_SECTIONS: SectionDef[] = [
-  { key: 'watching',  label: '觀看中', filter: statusFilter(['watching']),  sortBy: 'updated',     sortOrder: 'desc' },
-  { key: 'completed', label: '已看完', filter: statusFilter(['completed']), sortBy: 'completedAt', sortOrder: 'asc'  },
-  { key: 'planned',   label: '計畫中', filter: statusFilter(['planned']),   sortBy: 'created',     sortOrder: 'asc'  },
-  { key: 'dropped',   label: '已棄番', filter: statusFilter(['dropped']),   sortBy: 'updated',     sortOrder: 'desc' },
+  {
+    key: 'watching',
+    label: '觀看中',
+    filter: statusFilter(['watching']),
+    sortBy: 'updated',
+    sortOrder: 'desc',
+  },
+  {
+    key: 'completed',
+    label: '已看完',
+    filter: statusFilter(['completed']),
+    sortBy: 'completedAt',
+    sortOrder: 'asc',
+  },
+  {
+    key: 'planned',
+    label: '計畫中',
+    filter: statusFilter(['planned']),
+    sortBy: 'created',
+    sortOrder: 'asc',
+  },
+  {
+    key: 'dropped',
+    label: '已棄番',
+    filter: statusFilter(['dropped']),
+    sortBy: 'updated',
+    sortOrder: 'desc',
+  },
 ]

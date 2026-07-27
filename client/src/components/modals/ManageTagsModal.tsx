@@ -45,9 +45,7 @@ export function ManageTagsModal({ title, modalProps }: ContextModalProps) {
     modals.openConfirmModal({
       title: '刪除標籤',
       children: (
-        <Text size="sm">
-          確定要刪除「{tag.name}」嗎？此操作無法復原。
-        </Text>
+        <Text size="sm">確定要刪除「{tag.name}」嗎？此操作無法復原。</Text>
       ),
       labels: { confirm: '刪除', cancel: '取消' },
       confirmProps: { color: 'red' },
@@ -74,7 +72,9 @@ export function ManageTagsModal({ title, modalProps }: ContextModalProps) {
           </Center>
         ) : !tags || tags.length === 0 ? (
           <Center py="xl">
-            <Text size="sm" c="dimmed">尚無標籤，請先新增一個。</Text>
+            <Text size="sm" c="dimmed">
+              尚無標籤，請先新增一個。
+            </Text>
           </Center>
         ) : (
           <ScrollArea.Autosize mah={400} offsetScrollbars>
@@ -91,20 +91,28 @@ export function ManageTagsModal({ title, modalProps }: ContextModalProps) {
                     border: '1px solid var(--mantine-color-default-border)',
                   }}
                 >
-                  <Group gap="sm" wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+                  <Group
+                    gap="sm"
+                    wrap="nowrap"
+                    style={{ flex: 1, minWidth: 0 }}
+                  >
                     <ColorSwatch
                       color={tag.color || 'var(--mantine-color-gray-5)'}
                       size={16}
                       style={{ flexShrink: 0 }}
                     />
-                    <Text size="sm" fw={500} lineClamp={1}>{tag.name}</Text>
+                    <Text size="sm" fw={500} lineClamp={1}>
+                      {tag.name}
+                    </Text>
                     {tag.weight !== undefined && (
                       <Badge size="xs" variant="outline" color="gray">
                         權重 {tag.weight}
                       </Badge>
                     )}
                     {tag.hidden && (
-                      <Badge size="xs" variant="light" color="gray">隱藏</Badge>
+                      <Badge size="xs" variant="light" color="gray">
+                        隱藏
+                      </Badge>
                     )}
                   </Group>
 
@@ -122,7 +130,10 @@ export function ManageTagsModal({ title, modalProps }: ContextModalProps) {
                       size="sm"
                       color="red"
                       aria-label="刪除標籤"
-                      loading={deleteMutation.isPending && deleteMutation.variables?.id === tag.id}
+                      loading={
+                        deleteMutation.isPending &&
+                        deleteMutation.variables?.id === tag.id
+                      }
                       onClick={() => confirmDelete(tag)}
                     >
                       <IconTrash size="1em" />

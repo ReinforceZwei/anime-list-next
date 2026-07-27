@@ -1,13 +1,13 @@
-import type { AnimeRecord } from "@/types/anime";
-import { List } from "@mantine/core";
-import { getDisplayTitle } from "@/lib/animeUtils";
-import styles from "./Item.module.css";
+import type { AnimeRecord } from '@/types/anime'
+import { List } from '@mantine/core'
+import { getDisplayTitle } from '@/lib/animeUtils'
+import styles from './Item.module.css'
 
 function getItemClass(record: AnimeRecord): string | undefined {
-  if (record.status === "dropped") return styles.dropped;
-  if (record.downloadStatus === "downloaded") return styles.downloaded;
-  if (record.status === "completed") return styles.completed;
-  return undefined;
+  if (record.status === 'dropped') return styles.dropped
+  if (record.downloadStatus === 'downloaded') return styles.downloaded
+  if (record.status === 'completed') return styles.completed
+  return undefined
 }
 
 export default function Item({
@@ -15,27 +15,30 @@ export default function Item({
   onClick,
   itemRef,
 }: {
-  record: AnimeRecord;
-  onClick?: (record: AnimeRecord) => void;
-  itemRef?: (el: HTMLElement | null) => void;
+  record: AnimeRecord
+  onClick?: (record: AnimeRecord) => void
+  itemRef?: (el: HTMLElement | null) => void
 }) {
   return (
     <List.Item
       ref={itemRef}
       className={getItemClass(record)}
-      style={{ fontSize: "1.1rem" }}
+      style={{ fontSize: '1.1rem' }}
     >
       <span
-        style={onClick ? { cursor: "pointer" } : undefined}
+        style={onClick ? { cursor: 'pointer' } : undefined}
         onClick={onClick ? () => onClick(record) : undefined}
       >
         <>
-          {getDisplayTitle(record, record.tmdbId ? String(record.tmdbId) : undefined)}
+          {getDisplayTitle(
+            record,
+            record.tmdbId ? String(record.tmdbId) : undefined,
+          )}
           {record.remark && (
             <span className={styles.remark}>（{record.remark}）</span>
           )}
         </>
       </span>
     </List.Item>
-  );
+  )
 }

@@ -2,8 +2,11 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { registerSW } from 'virtual:pwa-register'
-import * as Sentry from "@sentry/react";
-import { tanstackRouterBrowserTracingIntegration, reactErrorHandler } from "@sentry/react";
+import * as Sentry from '@sentry/react'
+import {
+  tanstackRouterBrowserTracingIntegration,
+  reactErrorHandler,
+} from '@sentry/react'
 import { routeTree } from './routeTree.gen'
 import './index.css'
 
@@ -34,7 +37,7 @@ if (import.meta.env.VITE_SENTRY_DSN) {
     // Session Replay
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
-  });
+  })
 }
 
 declare module '@tanstack/react-router' {

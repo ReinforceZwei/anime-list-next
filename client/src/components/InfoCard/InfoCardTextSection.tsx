@@ -8,7 +8,10 @@ interface InfoCardTextSectionProps {
   contentKey: keyof Pick<AnimeRecord, 'comment' | 'remark'>
 }
 
-export default function InfoCardTextSection({ label, contentKey }: InfoCardTextSectionProps) {
+export default function InfoCardTextSection({
+  label,
+  contentKey,
+}: InfoCardTextSectionProps) {
   const { anime, loading } = useInfoCard()
 
   if (loading || !anime?.[contentKey]) return null
@@ -16,7 +19,11 @@ export default function InfoCardTextSection({ label, contentKey }: InfoCardTextS
   return (
     <Box mb="xs">
       <Divider
-        label={<Text size="xs" c="dimmed">{label}</Text>}
+        label={
+          <Text size="xs" c="dimmed">
+            {label}
+          </Text>
+        }
         labelPosition="center"
         mb={6}
       />

@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { applySingleAction, applyActions, describeAction, describeActions } from '@/lib/actionExecutor'
+import {
+  applySingleAction,
+  applyActions,
+  describeAction,
+  describeActions,
+} from '@/lib/actionExecutor'
 import type { AnimeRecord, TagRecord } from '@/types/anime'
 import type { ActionableField, ActionDef } from '@/types/filter'
 
@@ -30,10 +35,13 @@ function makeTag(id: string, name: string): TagRecord {
 }
 
 function tagMap(tags: TagRecord[]): Map<string, TagRecord> {
-  return new Map(tags.map(t => [t.id, t]))
+  return new Map(tags.map((t) => [t.id, t]))
 }
 
-function setField(field: ActionableField & string, value: string | number): ActionDef {
+function setField(
+  field: ActionableField & string,
+  value: string | number,
+): ActionDef {
   return { type: 'setField', field, value } as ActionDef
 }
 
@@ -161,20 +169,14 @@ describe('applyActions', () => {
   it('chains addTag then removeTag on the same tags', () => {
     const rec = makeRecord({ tags: ['t1', 't2', 't3'] })
     // Add t4, then remove t1 and t2
-    const patch = applyActions(rec, [
-      addTag('t4'),
-      removeTag('t1', 't2'),
-    ])
+    const patch = applyActions(rec, [addTag('t4'), removeTag('t1', 't2')])
     // Final tags should be: original [t1,t2,t3] + t4 - t1 - t2 = [t3, t4]
     expect(patch).toEqual({ tags: ['t3', 't4'] })
   })
 
   it('chains removeTag then addTag', () => {
     const rec = makeRecord({ tags: ['t1', 't2'] })
-    const patch = applyActions(rec, [
-      removeTag('t1'),
-      addTag('t3'),
-    ])
+    const patch = applyActions(rec, [removeTag('t1'), addTag('t3')])
     expect(patch).toEqual({ tags: ['t2', 't3'] })
   })
 
@@ -232,13 +234,21 @@ describe('describeAction', () => {
     })
 
     it('falls back to (空白) when value is null', () => {
-      const action = { type: 'setField' as const, field: 'status' as const, value: null as unknown as string }
+      const action = {
+        type: 'setField' as const,
+        field: 'status' as const,
+        value: null as unknown as string,
+      }
       const desc = describeAction(action, map)
       expect(desc).toBe('將狀態設為「(空白)」')
     })
 
     it('falls back to (空白) when value is undefined', () => {
-      const action = { type: 'setField' as const, field: 'status' as const, value: undefined as unknown as string }
+      const action = {
+        type: 'setField' as const,
+        field: 'status' as const,
+        value: undefined as unknown as string,
+      }
       const desc = describeAction(action, map)
       expect(desc).toBe('將狀態設為「(空白)」')
     })
@@ -327,6 +337,8 @@ describe('describeActions', () => {
       [setField('status', 'completed'), addTag('t2'), removeTag('t1')],
       map,
     )
-    expect(desc).toBe('將狀態設為「已看完」，然後加入標籤「喜劇」，然後移除標籤「動作」')
+    expect(desc).toBe(
+      '將狀態設為「已看完」，然後加入標籤「喜劇」，然後移除標籤「動作」',
+    )
   })
 })

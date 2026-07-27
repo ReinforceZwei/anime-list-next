@@ -1,13 +1,15 @@
-import { pb, Collections } from "@/lib/pb";
-import type { UserPreferencesRecord } from "@/types/anime";
-import { useQuery } from "@tanstack/react-query";
+import { pb, Collections } from '@/lib/pb'
+import type { UserPreferencesRecord } from '@/types/anime'
+import { useQuery } from '@tanstack/react-query'
 
 export function useUserPreferences(options?: { enabled?: boolean }) {
   const userId = pb.authStore.record?.id
   const enabled = options?.enabled ?? true
 
   if (!userId && enabled) {
-    console.warn('useUserPreferences() hook is called without authenticated user. Query will likely fail.')
+    console.warn(
+      'useUserPreferences() hook is called without authenticated user. Query will likely fail.',
+    )
   }
 
   return useQuery({

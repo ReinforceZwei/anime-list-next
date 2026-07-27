@@ -1,4 +1,9 @@
-import type { AnimeRecord, AnimeSection, SectionDef, SortableField } from '@/types/anime'
+import type {
+  AnimeRecord,
+  AnimeSection,
+  SectionDef,
+  SortableField,
+} from '@/types/anime'
 import { evaluateFilter as evalFilter } from '@/lib/filterEngine'
 
 /**
@@ -27,7 +32,10 @@ export function sortItems(
 export function buildSections(
   records: AnimeRecord[],
   sectionDefs: SectionDef[],
-  evaluateFilter: (filter: SectionDef['filter'], record: AnimeRecord) => boolean = evalFilter,
+  evaluateFilter: (
+    filter: SectionDef['filter'],
+    record: AnimeRecord,
+  ) => boolean = evalFilter,
 ): AnimeSection[] {
   const claimed = new Set<string>()
   const result: AnimeSection[] = []

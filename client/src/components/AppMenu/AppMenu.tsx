@@ -1,10 +1,18 @@
-import { ActionIcon, Menu, useMantineColorScheme } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { modals } from '@/lib/modalStack';
-import { IconInfoCircle, IconLogout, IconMenu2, IconMoon, IconRefresh, IconSettings, IconSun, IconTag } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-
+import { ActionIcon, Menu, useMantineColorScheme } from '@mantine/core'
+import { notifications } from '@mantine/notifications'
+import { modals } from '@/lib/modalStack'
+import {
+  IconInfoCircle,
+  IconLogout,
+  IconMenu2,
+  IconMoon,
+  IconRefresh,
+  IconSettings,
+  IconSun,
+  IconTag,
+} from '@tabler/icons-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 
 export default function AppMenu() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
@@ -20,7 +28,13 @@ export default function AppMenu() {
   return (
     <Menu>
       <Menu.Target>
-        <ActionIcon variant="white" size="lg" radius="xl" style={(theme) => ({ boxShadow: theme.shadows.md })} aria-label="選單">
+        <ActionIcon
+          variant="white"
+          size="lg"
+          radius="xl"
+          style={(theme) => ({ boxShadow: theme.shadows.md })}
+          aria-label="選單"
+        >
           <IconMenu2 />
         </ActionIcon>
       </Menu.Target>
@@ -32,26 +46,46 @@ export default function AppMenu() {
           重新整理
         </Menu.Item>
         <Menu.Item
-          leftSection={isDark ? <IconSun size="1em" /> : <IconMoon size="1em" />}
+          leftSection={
+            isDark ? <IconSun size="1em" /> : <IconMoon size="1em" />
+          }
           onClick={toggleColorScheme}
         >
           {isDark ? '淺色模式' : '深色模式'}
         </Menu.Item>
         <Menu.Item
           leftSection={<IconTag size="1em" />}
-          onClick={() => modals.openContextModal({ modal: 'manageTags', title: '管理標籤', innerProps: {} })}
+          onClick={() =>
+            modals.openContextModal({
+              modal: 'manageTags',
+              title: '管理標籤',
+              innerProps: {},
+            })
+          }
         >
           標籤
         </Menu.Item>
         <Menu.Item
           leftSection={<IconSettings size="1em" />}
-          onClick={() => modals.openContextModal({ modal: 'preferences', title: '偏好設定', innerProps: {} })}
+          onClick={() =>
+            modals.openContextModal({
+              modal: 'preferences',
+              title: '偏好設定',
+              innerProps: {},
+            })
+          }
         >
           設定
         </Menu.Item>
         <Menu.Item
           leftSection={<IconInfoCircle size="1em" />}
-          onClick={() => modals.openContextModal({ modal: 'about', title: '關於', innerProps: {} })}
+          onClick={() =>
+            modals.openContextModal({
+              modal: 'about',
+              title: '關於',
+              innerProps: {},
+            })
+          }
         >
           關於
         </Menu.Item>

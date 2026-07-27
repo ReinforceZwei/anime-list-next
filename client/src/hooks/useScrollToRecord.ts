@@ -4,7 +4,9 @@ import styles from './useScrollToRecord.module.css'
 export function useScrollToRecord() {
   const refMap = useRef<Map<string, HTMLElement>>(new Map())
   // Stable callback ref functions per id — avoids React calling the ref every render
-  const refFns = useRef<Map<string, (el: HTMLElement | null) => void>>(new Map())
+  const refFns = useRef<Map<string, (el: HTMLElement | null) => void>>(
+    new Map(),
+  )
 
   const getRef = useCallback((id: string) => {
     if (!refFns.current.has(id)) {
@@ -28,7 +30,7 @@ export function useScrollToRecord() {
               setTimeout(() => el.classList.remove(styles.blink), 1000)
             }
           },
-          { threshold: 0.5 }
+          { threshold: 0.5 },
         )
         observer.observe(el)
         el.scrollIntoView({ behavior: 'smooth', block: 'center' })

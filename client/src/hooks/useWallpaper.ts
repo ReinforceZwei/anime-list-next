@@ -26,10 +26,15 @@ function readCache(): WallpaperCache | null {
 function writeCache(cache: WallpaperCache): void {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache))
-  } catch { /* quota exceeded — ignore */ }
+  } catch {
+    /* quota exceeded — ignore */
+  }
 }
 
-function getFileUrl(record: { id: string; collectionId: string }, filename: string): string {
+function getFileUrl(
+  record: { id: string; collectionId: string },
+  filename: string,
+): string {
   return pb.files.getURL(record, filename)
 }
 
@@ -62,16 +67,25 @@ function deriveStyle(
 }
 
 function resolveWallpaper(
-  prefs: { id: string; collectionId: string; wallpaper?: string; uiConfig?: UIConfig } | null | undefined,
+  prefs:
+    | {
+        id: string
+        collectionId: string
+        wallpaper?: string
+        uiConfig?: UIConfig
+      }
+    | null
+    | undefined,
   cache: WallpaperCache | null,
 ): { config: WallpaperConfig; imageUrl?: string } {
   // Server data available (may be null = user has no preferences record yet)
   if (prefs !== undefined) {
     const config = prefs?.uiConfig?.wallpaper ?? DEFAULT_WALLPAPER_CONFIG
     const wallpaperFile = prefs?.wallpaper
-    const imageUrl = (config.type === 'image' && wallpaperFile && prefs)
-      ? getFileUrl(prefs, wallpaperFile)
-      : undefined
+    const imageUrl =
+      config.type === 'image' && wallpaperFile && prefs
+        ? getFileUrl(prefs, wallpaperFile)
+        : undefined
     return { config, imageUrl }
   }
 
@@ -79,9 +93,13 @@ function resolveWallpaper(
   if (cache) {
     const config = cache.uiConfig?.wallpaper ?? DEFAULT_WALLPAPER_CONFIG
     const wallpaperFile = cache.wallpaper
-    const imageUrl = (config.type === 'image' && wallpaperFile)
-      ? getFileUrl({ id: cache.id, collectionId: cache.collectionId }, wallpaperFile)
-      : undefined
+    const imageUrl =
+      config.type === 'image' && wallpaperFile
+        ? getFileUrl(
+            { id: cache.id, collectionId: cache.collectionId },
+            wallpaperFile,
+          )
+        : undefined
     return { config, imageUrl }
   }
 
@@ -111,7 +129,9 @@ export function useWallpaper(): {
   const isAuthenticated = pb.authStore.isValid
 
   // Only call useUserPreferences when authenticated — avoids doomed query on login page
-  const { data: prefs, isLoading } = useUserPreferences({ enabled: isAuthenticated })
+  const { data: prefs, isLoading } = useUserPreferences({
+    enabled: isAuthenticated,
+  })
 
   const result = useMemo(() => {
     const cache = readCache()
@@ -133,7 +153,7 @@ export function useWallpaper(): {
     }
 
     // When loading with no cache, render empty style to avoid default-wallpaper flash
-    const style = (isLoading && !cache) ? {} : deriveStyle(config, imageUrl)
+    const style = isLoading && !cache ? {} : deriveStyle(config, imageUrl)
 
     return { style, isLoading, imageUrl, config }
   }, [prefs, isAuthenticated])

@@ -16,7 +16,11 @@ export function AboutModal({ title, modalProps }: ContextModalProps) {
         </Text>
         <Text size="sm" c="dimmed">
           作者：{' '}
-          <Anchor href="https://github.com/ReinforceZwei" target="_blank" rel="noopener noreferrer">
+          <Anchor
+            href="https://github.com/ReinforceZwei"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             ReinforceZwei
           </Anchor>
         </Text>

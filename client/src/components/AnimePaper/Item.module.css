@@ -18,19 +18,19 @@
   color: var(--mantine-color-indigo-9);
 }
 
-[data-mantine-color-scheme="dark"] .completed {
+[data-mantine-color-scheme='dark'] .completed {
   color: var(--mantine-color-red-3);
 }
 
-[data-mantine-color-scheme="dark"] .dropped {
+[data-mantine-color-scheme='dark'] .dropped {
   color: var(--mantine-color-grape-3);
   text-decoration: line-through;
 }
 
-[data-mantine-color-scheme="dark"] .downloaded {
+[data-mantine-color-scheme='dark'] .downloaded {
   color: var(--mantine-color-green-2);
 }
 
-[data-mantine-color-scheme="dark"] .remark {
+[data-mantine-color-scheme='dark'] .remark {
   color: var(--mantine-color-indigo-3);
 }

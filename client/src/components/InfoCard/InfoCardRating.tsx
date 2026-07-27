@@ -10,7 +10,9 @@ export default function InfoCardRating() {
   return (
     <Group gap="xs" align="center" mb="xs">
       <Rating value={anime.rating} fractions={10} readOnly />
-      <Text size="sm" c="dimmed">{anime.rating}</Text>
+      <Text size="sm" c="dimmed">
+        {anime.rating}
+      </Text>
     </Group>
   )
 }

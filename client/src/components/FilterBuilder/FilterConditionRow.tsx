@@ -1,7 +1,17 @@
 import { Group, Select, ActionIcon } from '@mantine/core'
 import { IconTrash } from '@tabler/icons-react'
-import type { FilterCondition, FilterableField, FilterOperator } from '@/types/filter'
-import { FIELD_REGISTRY, getOperatorsForField, getOperatorLabel, getValueShape, getDefaultValueForOperator } from '@/lib/fieldRegistry'
+import type {
+  FilterCondition,
+  FilterableField,
+  FilterOperator,
+} from '@/types/filter'
+import {
+  FIELD_REGISTRY,
+  getOperatorsForField,
+  getOperatorLabel,
+  getValueShape,
+  getDefaultValueForOperator,
+} from '@/lib/fieldRegistry'
 import { FilterValueInput } from './FilterValueInput'
 
 interface FilterConditionRowProps {
@@ -22,7 +32,9 @@ function getFieldOptions(availableFields?: FilterableField[]) {
     return ALL_FIELD_OPTIONS
   }
   const allowed = new Set(availableFields)
-  return ALL_FIELD_OPTIONS.filter((opt) => allowed.has(opt.value as FilterableField))
+  return ALL_FIELD_OPTIONS.filter((opt) =>
+    allowed.has(opt.value as FilterableField),
+  )
 }
 
 export function FilterConditionRow({
@@ -56,11 +68,14 @@ export function FilterConditionRow({
     const newOperator = op as FilterOperator
     // Preserve the old value only if the new operator expects the same value shape;
     // otherwise reset to the correct empty/default value for the new operator.
-    const sameShape = getValueShape(condition.operator) === getValueShape(newOperator)
+    const sameShape =
+      getValueShape(condition.operator) === getValueShape(newOperator)
     onChange({
       ...condition,
       operator: newOperator,
-      value: sameShape ? condition.value : getDefaultValueForOperator(newOperator),
+      value: sameShape
+        ? condition.value
+        : getDefaultValueForOperator(newOperator),
     })
   }
 

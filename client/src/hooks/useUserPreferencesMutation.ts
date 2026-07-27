@@ -1,18 +1,24 @@
-import { pb, Collections } from "@/lib/pb";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { UserPreferencesRecord } from "@/types/anime";
-import { showErrorNotification } from "@/lib/notifications";
+import { pb, Collections } from '@/lib/pb'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { UserPreferencesRecord } from '@/types/anime'
+import { showErrorNotification } from '@/lib/notifications'
 
-type PbInternals = 'collectionId' | 'collectionName' | 'created' | 'updated' | 'expand'
+type PbInternals =
+  'collectionId' | 'collectionName' | 'created' | 'updated' | 'expand'
 
-export type UserPreferencesInput = Omit<UserPreferencesRecord, PbInternals | 'userId'>
+export type UserPreferencesInput = Omit<
+  UserPreferencesRecord,
+  PbInternals | 'userId'
+>
 
 export function useUserPreferencesMutation() {
   const userId = pb.authStore.record?.id
   const queryClient = useQueryClient()
 
   if (!userId) {
-    console.warn('useUserPreferencesMutation() hook is called without authenticated user. Mutation will likely fail.')
+    console.warn(
+      'useUserPreferencesMutation() hook is called without authenticated user. Mutation will likely fail.',
+    )
   }
 
   const saveMutation = useMutation({

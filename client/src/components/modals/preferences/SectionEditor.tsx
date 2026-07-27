@@ -106,7 +106,10 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
     onChange([...DEFAULT_SECTIONS])
   }
 
-  function hasNullFilterNotAtBottom(section: SectionDef, index: number): boolean {
+  function hasNullFilterNotAtBottom(
+    section: SectionDef,
+    index: number,
+  ): boolean {
     return section.filter === null && index < sections.length - 1
   }
 
@@ -186,7 +189,9 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
                     )
                   }
                   onClick={() =>
-                    setFilterEditKey(filterEditKey === section.key ? null : section.key)
+                    setFilterEditKey(
+                      filterEditKey === section.key ? null : section.key,
+                    )
                   }
                   styles={{ root: { flex: 1, overflow: 'hidden' } }}
                 >
@@ -226,9 +231,12 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
                 color="yellow"
                 icon={<IconInfoCircle size="1em" />}
                 p="xs"
-                styles={{ message: { fontSize: 'var(--mantine-font-size-xs)' } }}
+                styles={{
+                  message: { fontSize: 'var(--mantine-font-size-xs)' },
+                }}
               >
-                此區塊沒有篩選條件 — 將符合<b>所有</b>剩餘紀錄。建議移至最下方作為「其他」用途。
+                此區塊沒有篩選條件 — 將符合<b>所有</b>
+                剩餘紀錄。建議移至最下方作為「其他」用途。
               </Alert>
             )}
 
@@ -249,7 +257,9 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
                   { value: 'asc', label: '遞增' },
                 ]}
                 value={section.sortOrder}
-                onChange={(v) => handleSortOrderChange(index, v as 'asc' | 'desc')}
+                onChange={(v) =>
+                  handleSortOrderChange(index, v as 'asc' | 'desc')
+                }
               />
             </Group>
           </Stack>
@@ -283,7 +293,16 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
         multiline
         w={280}
       >
-        <Text c="dimmed" size="xs" style={{ cursor: 'help', display: 'flex', alignItems: 'center', gap: 4 }}>
+        <Text
+          c="dimmed"
+          size="xs"
+          style={{
+            cursor: 'help',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+          }}
+        >
           <IconInfoCircle size="0.9em" />
           紀錄依區塊順序比對，符合即歸類
         </Text>

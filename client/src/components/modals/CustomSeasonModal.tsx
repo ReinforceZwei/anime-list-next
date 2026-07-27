@@ -1,23 +1,16 @@
-import { useState } from "react";
-import {
-  Autocomplete,
-  Button,
-  Modal,
-  Select,
-  Stack,
-  Text,
-} from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
-import type { ContextModalProps } from "@/lib/modalStack";
-import { useAnimeMutation } from "@/hooks/useAnimeMutation";
-import type { TmdbTvDetailResult } from "@/types/tmdb";
+import { useState } from 'react'
+import { Autocomplete, Button, Modal, Select, Stack, Text } from '@mantine/core'
+import { IconPlus } from '@tabler/icons-react'
+import type { ContextModalProps } from '@/lib/modalStack'
+import { useAnimeMutation } from '@/hooks/useAnimeMutation'
+import type { TmdbTvDetailResult } from '@/types/tmdb'
 
-const CUSTOM_SEASON_PRESETS = ["第1期", "第2期", "第3期", "第4期", "第5期"];
+const CUSTOM_SEASON_PRESETS = ['第1期', '第2期', '第3期', '第4期', '第5期']
 
 export type CustomSeasonInnerProps = {
-  detail: Pick<TmdbTvDetailResult, "id" | "name" | "seasons">;
-  onSaved?: (id: string) => void;
-};
+  detail: Pick<TmdbTvDetailResult, 'id' | 'name' | 'seasons'>
+  onSaved?: (id: string) => void
+}
 
 export function CustomSeasonModal({
   id,
@@ -26,46 +19,46 @@ export function CustomSeasonModal({
   title,
   modalProps,
 }: ContextModalProps<CustomSeasonInnerProps>) {
-  const { detail, onSaved } = innerProps;
-  const { createMutation } = useAnimeMutation();
+  const { detail, onSaved } = innerProps
+  const { createMutation } = useAnimeMutation()
 
-  const [label, setLabel] = useState("");
+  const [label, setLabel] = useState('')
 
   const baseSeasonOptions = detail.seasons.map((s) => ({
     value: String(s.season_number),
     label: `${s.name} (${s.episode_count} 集)`,
-  }));
+  }))
 
   const defaultSeason =
-    baseSeasonOptions.find((o) => o.value === "1")?.value ??
+    baseSeasonOptions.find((o) => o.value === '1')?.value ??
     baseSeasonOptions[0]?.value ??
-    null;
+    null
 
-  const [baseSeason, setBaseSeason] = useState<string | null>(defaultSeason);
+  const [baseSeason, setBaseSeason] = useState<string | null>(defaultSeason)
 
   function handleCreate() {
-    if (!baseSeason) return;
+    if (!baseSeason) return
     const season = detail.seasons.find(
       (s) => String(s.season_number) === baseSeason,
-    );
-    if (!season) return;
+    )
+    if (!season) return
 
-    if (!label) return;
+    if (!label) return
 
     createMutation.mutate(
       {
         tmdbId: detail.id,
-        tmdbMediaType: "tv",
+        tmdbMediaType: 'tv',
         tmdbSeasonNumber: season.season_number,
         customName: `${detail.name} ${label}`,
       },
       {
         onSuccess: (record) => {
-          context.closeModal(id);
-          onSaved?.(record.id);
+          context.closeModal(id)
+          onSaved?.(record.id)
         },
       },
-    );
+    )
   }
 
   return (
@@ -99,5 +92,5 @@ export function CustomSeasonModal({
         </Button>
       </Stack>
     </Modal>
-  );
+  )
 }

@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useAnimeSections } from "@/hooks/useAnimeSections";
-import { useUserPreferences } from "@/hooks/useUserPreferences";
-import { useScrollToRecord } from "@/hooks/useScrollToRecord";
-import type { AnimeRecord, SectionDef } from "@/types/anime";
-import { DEFAULT_SECTIONS } from "@/types/anime";
+import { createFileRoute } from '@tanstack/react-router'
+import { useAnimeSections } from '@/hooks/useAnimeSections'
+import { useUserPreferences } from '@/hooks/useUserPreferences'
+import { useScrollToRecord } from '@/hooks/useScrollToRecord'
+import type { AnimeRecord, SectionDef } from '@/types/anime'
+import { DEFAULT_SECTIONS } from '@/types/anime'
 import {
   Affix,
   ActionIcon,
@@ -14,76 +14,87 @@ import {
   Paper,
   ThemeIcon,
   Text,
-} from "@mantine/core";
-import { modals } from '@/lib/modalStack';
-import { IconAlertTriangle, IconPlus, IconFilterOff } from "@tabler/icons-react";
-import AnimePaper from "@/components/AnimePaper/AnimePaper";
-import AppMenu from "@/components/AppMenu/AppMenu";
-import AnimeCard from "@/components/InfoCard/AnimeCard";
-import ElevatorWidget from "@/components/ElevatorWidget/ElevatorWidget";
-import { LocalSearch, type LocalSearchHandle } from "@/components/LocalSearch/LocalSearch";
-import { FilterPopover } from "@/components/FilterPopover/FilterPopover";
-import { evaluateFilter } from "@/lib/filterEngine";
-import type { FilterExpression } from "@/types/filter";
-import { useMemo, useRef, useState } from "react";
-import { useDocumentTitle, useHotkeys } from "@mantine/hooks";
+} from '@mantine/core'
+import { modals } from '@/lib/modalStack'
+import { IconAlertTriangle, IconPlus, IconFilterOff } from '@tabler/icons-react'
+import AnimePaper from '@/components/AnimePaper/AnimePaper'
+import AppMenu from '@/components/AppMenu/AppMenu'
+import AnimeCard from '@/components/InfoCard/AnimeCard'
+import ElevatorWidget from '@/components/ElevatorWidget/ElevatorWidget'
+import {
+  LocalSearch,
+  type LocalSearchHandle,
+} from '@/components/LocalSearch/LocalSearch'
+import { FilterPopover } from '@/components/FilterPopover/FilterPopover'
+import { evaluateFilter } from '@/lib/filterEngine'
+import type { FilterExpression } from '@/types/filter'
+import { useMemo, useRef, useState } from 'react'
+import { useDocumentTitle, useHotkeys } from '@mantine/hooks'
 
-export const Route = createFileRoute("/_auth/")({
+export const Route = createFileRoute('/_auth/')({
   component: Index,
-});
+})
 
 function Index() {
-  const { data: prefs } = useUserPreferences();
+  const { data: prefs } = useUserPreferences()
   const sectionDefs = useMemo<SectionDef[]>(() => {
     if (prefs?.sections && prefs.sections.length > 0) {
       return prefs.sections
     }
     return DEFAULT_SECTIONS
-  }, [prefs]);
+  }, [prefs])
 
-  const { sections, isLoading, isError, error } = useAnimeSections(sectionDefs);
-  const [selectedAnimeId, setSelectedAnimeId] = useState<string | null>(null);
-  const [globalFilter, setGlobalFilter] = useState<FilterExpression | null>(null);
-  const pageTitle = prefs?.uiConfig?.pageTitle || "動漫清單";
-  const markerRefs = useRef<(HTMLParagraphElement | null)[]>([]);
-  const localSearchRef = useRef<LocalSearchHandle>(null);
-  const { getRef, jumpTo } = useScrollToRecord();
+  const { sections, isLoading, isError, error } = useAnimeSections(sectionDefs)
+  const [selectedAnimeId, setSelectedAnimeId] = useState<string | null>(null)
+  const [globalFilter, setGlobalFilter] = useState<FilterExpression | null>(
+    null,
+  )
+  const pageTitle = prefs?.uiConfig?.pageTitle || '動漫清單'
+  const markerRefs = useRef<(HTMLParagraphElement | null)[]>([])
+  const localSearchRef = useRef<LocalSearchHandle>(null)
+  const { getRef, jumpTo } = useScrollToRecord()
 
   // Apply global filter on top of sections
   const filteredSections = useMemo(() => {
-    if (!globalFilter) return sections;
+    if (!globalFilter) return sections
     return sections.map((section) => ({
       ...section,
       items: section.items.filter((item) => evaluateFilter(globalFilter, item)),
-    }));
-  }, [sections, globalFilter]);
+    }))
+  }, [sections, globalFilter])
 
-  useDocumentTitle(pageTitle);
+  useDocumentTitle(pageTitle)
 
   useHotkeys([
-    ['mod+F', () => {
-      setSelectedAnimeId(null);
-      localSearchRef.current?.open();
-    }],
-    ['mod+E', () => {
-      modals.openContextModal({
-        modal: "tmdbSearch",
-        title: "搜尋 TMDb",
-        innerProps: { onSaved: jumpTo },
-      });
-    }],
-  ]);
+    [
+      'mod+F',
+      () => {
+        setSelectedAnimeId(null)
+        localSearchRef.current?.open()
+      },
+    ],
+    [
+      'mod+E',
+      () => {
+        modals.openContextModal({
+          modal: 'tmdbSearch',
+          title: '搜尋 TMDb',
+          innerProps: { onSaved: jumpTo },
+        })
+      },
+    ],
+  ])
 
   function openTmdbModal() {
     modals.openContextModal({
-      modal: "tmdbSearch",
-      title: "搜尋 TMDb",
+      modal: 'tmdbSearch',
+      title: '搜尋 TMDb',
       innerProps: { onSaved: jumpTo },
-    });
+    })
   }
 
   function handleAnimeClick(anime: AnimeRecord) {
-    setSelectedAnimeId(anime.id);
+    setSelectedAnimeId(anime.id)
   }
 
   if (isLoading) {
@@ -91,7 +102,7 @@ function Index() {
       <Center h="100vh">
         <Loader size="xl" type="dots" />
       </Center>
-    );
+    )
   }
 
   if (isError) {
@@ -102,7 +113,7 @@ function Index() {
           radius="md"
           withBorder
           w={360}
-          style={{ textAlign: "center" }}
+          style={{ textAlign: 'center' }}
         >
           <Stack align="center" gap="md">
             <ThemeIcon size={48} radius="xl" color="red" variant="light">
@@ -125,7 +136,7 @@ function Index() {
           </Stack>
         </Paper>
       </Center>
-    );
+    )
   }
 
   return (
@@ -139,7 +150,7 @@ function Index() {
           <div key={section.key}>
             <AnimePaper.Subtitle
               ref={(el) => {
-                markerRefs.current[i] = el;
+                markerRefs.current[i] = el
               }}
             >
               {section.label}
@@ -157,7 +168,10 @@ function Index() {
           </div>
         ))}
       </AnimePaper>
-      <Affix position={{ top: 10, right: 10 }} style={{ display: 'flex', gap: 8 }}>
+      <Affix
+        position={{ top: 10, right: 10 }}
+        style={{ display: 'flex', gap: 8 }}
+      >
         <LocalSearch ref={localSearchRef} jumpTo={jumpTo} />
         <FilterPopover value={globalFilter} onChange={setGlobalFilter} />
       </Affix>
@@ -170,7 +184,14 @@ function Index() {
           />
         )}
       </Affix>
-      <Affix position={{ bottom: 10, right: 10 }} style={{ paddingBlockEnd: 'env(safe-area-inset-bottom)', display: 'flex', gap: 8 }}>
+      <Affix
+        position={{ bottom: 10, right: 10 }}
+        style={{
+          paddingBlockEnd: 'env(safe-area-inset-bottom)',
+          display: 'flex',
+          gap: 8,
+        }}
+      >
         {globalFilter && (
           <ActionIcon
             variant="white"
@@ -184,11 +205,18 @@ function Index() {
             <IconFilterOff size="1.2em" />
           </ActionIcon>
         )}
-        <ActionIcon variant="white" size="lg" radius="xl" style={(theme) => ({ boxShadow: theme.shadows.md })} aria-label="搜尋 TMDb" onClick={openTmdbModal}>
+        <ActionIcon
+          variant="white"
+          size="lg"
+          radius="xl"
+          style={(theme) => ({ boxShadow: theme.shadows.md })}
+          aria-label="搜尋 TMDb"
+          onClick={openTmdbModal}
+        >
           <IconPlus size="1.5em" />
         </ActionIcon>
       </Affix>
       <ElevatorWidget markerRefs={markerRefs.current} />
     </div>
-  );
+  )
 }

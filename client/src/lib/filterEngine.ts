@@ -63,11 +63,23 @@ function evaluateCondition(
 
   switch (def.type) {
     case 'select':
-      return evaluateSelect(rawValue as string, operator, value as string | string[])
+      return evaluateSelect(
+        rawValue as string,
+        operator,
+        value as string | string[],
+      )
     case 'number':
-      return evaluateNumber(rawValue as number, operator, value as number | [string, string])
+      return evaluateNumber(
+        rawValue as number,
+        operator,
+        value as number | [string, string],
+      )
     case 'date':
-      return evaluateDate(rawValue as string, operator, value as string | [string, string])
+      return evaluateDate(
+        rawValue as string,
+        operator,
+        value as string | [string, string],
+      )
     case 'text':
       return evaluateText(rawValue as string, operator, value as string)
     case 'tags':

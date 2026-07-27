@@ -40,20 +40,45 @@ function getDefaultActions(
   const actions: QuickAction[] = []
 
   if (status === 'planned') {
-    actions.push({ label: '開始觀看', icon: <IconPlayerPlay size="1em" />, color: 'blue', patch: { status: 'watching' } })
+    actions.push({
+      label: '開始觀看',
+      icon: <IconPlayerPlay size="1em" />,
+      color: 'blue',
+      patch: { status: 'watching' },
+    })
   }
   if (status === 'watching') {
-    actions.push({ label: '標記為已看完', icon: <IconCheck size="1em" />, color: 'teal', patch: { status: 'completed' } })
+    actions.push({
+      label: '標記為已看完',
+      icon: <IconCheck size="1em" />,
+      color: 'teal',
+      patch: { status: 'completed' },
+    })
   }
   if (!status) {
-    actions.push({ label: '列入待看', icon: <IconCalendar size="1em" />, color: 'gray', patch: { status: 'planned' } })
+    actions.push({
+      label: '列入待看',
+      icon: <IconCalendar size="1em" />,
+      color: 'gray',
+      patch: { status: 'planned' },
+    })
   }
 
   if (downloadStatus === 'pending') {
-    actions.push({ label: '開始下載', icon: <IconDownload size="1em" />, color: 'orange', patch: { downloadStatus: 'downloading' } })
+    actions.push({
+      label: '開始下載',
+      icon: <IconDownload size="1em" />,
+      color: 'orange',
+      patch: { downloadStatus: 'downloading' },
+    })
   }
   if (downloadStatus === 'downloading') {
-    actions.push({ label: '標記為已下載', icon: <IconCheck size="1em" />, color: 'green', patch: { downloadStatus: 'downloaded' } })
+    actions.push({
+      label: '標記為已下載',
+      icon: <IconCheck size="1em" />,
+      color: 'green',
+      patch: { downloadStatus: 'downloaded' },
+    })
   }
 
   return actions
@@ -63,9 +88,14 @@ interface InfoCardQuickActionsProps {
   onMutate?: (patch: Partial<AnimeRecord>) => void
 }
 
-export default function InfoCardQuickActions({ onMutate }: InfoCardQuickActionsProps) {
-  const { anime, loading, actionButtons, tagMap, showBuiltInActions } = useInfoCard()
-  const [confirmingButton, setConfirmingButton] = useState<ActionButton | null>(null)
+export default function InfoCardQuickActions({
+  onMutate,
+}: InfoCardQuickActionsProps) {
+  const { anime, loading, actionButtons, tagMap, showBuiltInActions } =
+    useInfoCard()
+  const [confirmingButton, setConfirmingButton] = useState<ActionButton | null>(
+    null,
+  )
 
   if (loading) {
     return (
@@ -79,7 +109,7 @@ export default function InfoCardQuickActions({ onMutate }: InfoCardQuickActionsP
 
   // --- Custom user buttons ---
   const matchedButtons = anime
-    ? actionButtons.filter(b => evaluateFilter(b.condition, anime))
+    ? actionButtons.filter((b) => evaluateFilter(b.condition, anime))
     : []
 
   function handleButtonClick(button: ActionButton) {
@@ -106,21 +136,22 @@ export default function InfoCardQuickActions({ onMutate }: InfoCardQuickActionsP
     <div className={styles.quickActionsBar}>
       <Group gap="xs">
         {/* Built-in defaults (controlled by UIConfig.showBuiltInActions) */}
-        {showBuiltInActions && defaultActions.map(action => (
-          <Button
-            key={action.label}
-            size="xs"
-            variant="filled"
-            color={action.color}
-            leftSection={action.icon}
-            onClick={() => onMutate?.(action.patch)}
-          >
-            {action.label}
-          </Button>
-        ))}
+        {showBuiltInActions &&
+          defaultActions.map((action) => (
+            <Button
+              key={action.label}
+              size="xs"
+              variant="filled"
+              color={action.color}
+              leftSection={action.icon}
+              onClick={() => onMutate?.(action.patch)}
+            >
+              {action.label}
+            </Button>
+          ))}
 
         {/* Custom user buttons */}
-        {matchedButtons.map(button => {
+        {matchedButtons.map((button) => {
           const IconComp = getIconComponent(button.icon)
           if (button.showAsIcon) {
             return (
@@ -131,7 +162,11 @@ export default function InfoCardQuickActions({ onMutate }: InfoCardQuickActionsP
                   size="md"
                   onClick={() => handleButtonClick(button)}
                 >
-                  {IconComp ? <IconComp size="1em" /> : button.label.slice(0, 1)}
+                  {IconComp ? (
+                    <IconComp size="1em" />
+                  ) : (
+                    button.label.slice(0, 1)
+                  )}
                 </ActionIcon>
               </Tooltip>
             )
@@ -167,7 +202,9 @@ export default function InfoCardQuickActions({ onMutate }: InfoCardQuickActionsP
           )}
         </Stack>
         <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={() => setConfirmingButton(null)}>取消</Button>
+          <Button variant="default" onClick={() => setConfirmingButton(null)}>
+            取消
+          </Button>
           <Button onClick={handleConfirm}>確認</Button>
         </Group>
       </Modal>

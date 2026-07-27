@@ -40,7 +40,9 @@ export default function InfoCardDateTime() {
         <Text size="xs" c="teal.5">
           完成於 {formatDate(completedAt)}
           {startedAt && (
-            <Text span c="dimmed">（{daysBetween(startedAt, completedAt)} 天）</Text>
+            <Text span c="dimmed">
+              （{daysBetween(startedAt, completedAt)} 天）
+            </Text>
           )}
         </Text>
       )}

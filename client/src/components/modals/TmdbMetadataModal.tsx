@@ -33,7 +33,11 @@ function formatRuntime(minutes: number) {
 
 function formatMoney(amount: number) {
   if (!amount) return '—'
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount)
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(amount)
 }
 
 function TvContent({ data }: { data: TmdbTvDetailResult }) {
@@ -52,7 +56,11 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
         <DataList.Item>
           <DataList.ItemLabel>製作中</DataList.ItemLabel>
           <DataList.ItemValue>
-            <Badge size="sm" color={data.in_production ? 'teal' : 'gray'} variant="light">
+            <Badge
+              size="sm"
+              color={data.in_production ? 'teal' : 'gray'}
+              variant="light"
+            >
               {data.in_production ? '是' : '否'}
             </Badge>
           </DataList.ItemValue>
@@ -74,26 +82,43 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
         <DataList.Item>
           <DataList.ItemLabel>集均時長</DataList.ItemLabel>
           <DataList.ItemValue>
-            {data.episode_run_time?.length ? data.episode_run_time.map(formatRuntime).join(', ') : '—'}
+            {data.episode_run_time?.length
+              ? data.episode_run_time.map(formatRuntime).join(', ')
+              : '—'}
           </DataList.ItemValue>
         </DataList.Item>
         <DataList.Item>
           <DataList.ItemLabel>原始語言</DataList.ItemLabel>
-          <DataList.ItemValue>{data.original_language?.toUpperCase() || '—'}</DataList.ItemValue>
+          <DataList.ItemValue>
+            {data.original_language?.toUpperCase() || '—'}
+          </DataList.ItemValue>
         </DataList.Item>
         <DataList.Item>
           <DataList.ItemLabel>原產國</DataList.ItemLabel>
           <DataList.ItemValue>
             {data.origin_country?.length ? (
-              <Group gap={4}>{data.origin_country.map((c) => <Badge key={c} size="sm" variant="default">{c}</Badge>)}</Group>
-            ) : '—'}
+              <Group gap={4}>
+                {data.origin_country.map((c) => (
+                  <Badge key={c} size="sm" variant="default">
+                    {c}
+                  </Badge>
+                ))}
+              </Group>
+            ) : (
+              '—'
+            )}
           </DataList.ItemValue>
         </DataList.Item>
         {data.homepage && (
           <DataList.Item>
             <DataList.ItemLabel>官方網站</DataList.ItemLabel>
             <DataList.ItemValue>
-              <Anchor href={data.homepage} target="_blank" rel="noopener noreferrer" size="sm">
+              <Anchor
+                href={data.homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="sm"
+              >
                 {data.homepage}
               </Anchor>
             </DataList.ItemValue>
@@ -107,7 +132,9 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
           <Divider label="製作人" labelPosition="left" />
           <Group gap="xs">
             {data.created_by.map((p) => (
-              <Badge key={p.id} size="sm" variant="outline">{p.name}</Badge>
+              <Badge key={p.id} size="sm" variant="outline">
+                {p.name}
+              </Badge>
             ))}
           </Group>
         </>
@@ -119,7 +146,10 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
           <Divider label="播出平台" labelPosition="left" />
           <Group gap="xs">
             {data.networks.map((n) => (
-              <Badge key={n.id} size="sm" variant="light">{n.name}{n.origin_country ? ` (${n.origin_country})` : ''}</Badge>
+              <Badge key={n.id} size="sm" variant="light">
+                {n.name}
+                {n.origin_country ? ` (${n.origin_country})` : ''}
+              </Badge>
             ))}
           </Group>
         </>
@@ -135,10 +165,16 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
                 <DataList.ItemLabel>{s.name}</DataList.ItemLabel>
                 <DataList.ItemValue>
                   <Group gap="xs">
-                    <Text size="sm" c="dimmed">{s.air_date || '—'}</Text>
-                    <Text size="sm" c="dimmed">· {s.episode_count} 集</Text>
+                    <Text size="sm" c="dimmed">
+                      {s.air_date || '—'}
+                    </Text>
+                    <Text size="sm" c="dimmed">
+                      · {s.episode_count} 集
+                    </Text>
                     {s.vote_average > 0 && (
-                      <Text size="sm" c="dimmed">· ★ {s.vote_average.toFixed(1)}</Text>
+                      <Text size="sm" c="dimmed">
+                        · ★ {s.vote_average.toFixed(1)}
+                      </Text>
                     )}
                   </Group>
                 </DataList.ItemValue>
@@ -155,21 +191,33 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
           <DataList orientation="horizontal" size="sm" gap={6} labelWidth={120}>
             <DataList.Item>
               <DataList.ItemLabel>集名</DataList.ItemLabel>
-              <DataList.ItemValue>{data.last_episode_to_air.name || '—'}</DataList.ItemValue>
+              <DataList.ItemValue>
+                {data.last_episode_to_air.name || '—'}
+              </DataList.ItemValue>
             </DataList.Item>
             <DataList.Item>
               <DataList.ItemLabel>播出日期</DataList.ItemLabel>
-              <DataList.ItemValue>{data.last_episode_to_air.air_date || '—'}</DataList.ItemValue>
+              <DataList.ItemValue>
+                {data.last_episode_to_air.air_date || '—'}
+              </DataList.ItemValue>
             </DataList.Item>
             <DataList.Item>
               <DataList.ItemLabel>第 / 集</DataList.ItemLabel>
-              <DataList.ItemValue>第 {data.last_episode_to_air.season_number} 季 第 {data.last_episode_to_air.episode_number} 集</DataList.ItemValue>
+              <DataList.ItemValue>
+                第 {data.last_episode_to_air.season_number} 季 第{' '}
+                {data.last_episode_to_air.episode_number} 集
+              </DataList.ItemValue>
             </DataList.Item>
             {data.last_episode_to_air.overview && (
               <DataList.Item>
                 <DataList.ItemLabel>簡介</DataList.ItemLabel>
                 <DataList.ItemValue>
-                  <Spoiler maxHeight={60} showLabel="更多" hideLabel="收起" style={{ flex: 1 }}>
+                  <Spoiler
+                    maxHeight={60}
+                    showLabel="更多"
+                    hideLabel="收起"
+                    style={{ flex: 1 }}
+                  >
                     {data.last_episode_to_air.overview}
                   </Spoiler>
                 </DataList.ItemValue>
@@ -186,22 +234,30 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
           <DataList orientation="horizontal" size="sm" gap={6} labelWidth={120}>
             <DataList.Item>
               <DataList.ItemLabel>集名</DataList.ItemLabel>
-              <DataList.ItemValue>{data.next_episode_to_air.name || '—'}</DataList.ItemValue>
+              <DataList.ItemValue>
+                {data.next_episode_to_air.name || '—'}
+              </DataList.ItemValue>
             </DataList.Item>
             <DataList.Item>
               <DataList.ItemLabel>播出日期</DataList.ItemLabel>
-              <DataList.ItemValue>{data.next_episode_to_air.air_date || '—'}</DataList.ItemValue>
+              <DataList.ItemValue>
+                {data.next_episode_to_air.air_date || '—'}
+              </DataList.ItemValue>
             </DataList.Item>
             <DataList.Item>
               <DataList.ItemLabel>第 / 集</DataList.ItemLabel>
-              <DataList.ItemValue>第 {data.next_episode_to_air.season_number} 季 第 {data.next_episode_to_air.episode_number} 集</DataList.ItemValue>
+              <DataList.ItemValue>
+                第 {data.next_episode_to_air.season_number} 季 第{' '}
+                {data.next_episode_to_air.episode_number} 集
+              </DataList.ItemValue>
             </DataList.Item>
           </DataList>
         </>
       )}
 
       {/* Production */}
-      {(data.production_companies?.length > 0 || data.production_countries?.length > 0) && (
+      {(data.production_companies?.length > 0 ||
+        data.production_countries?.length > 0) && (
         <>
           <Divider label="製作" labelPosition="left" />
           <DataList orientation="horizontal" size="sm" gap={6} labelWidth={120}>
@@ -211,7 +267,9 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
                 <DataList.ItemValue>
                   <Group gap={4}>
                     {data.production_companies.map((c) => (
-                      <Badge key={c.id} size="sm" variant="default">{c.name}</Badge>
+                      <Badge key={c.id} size="sm" variant="default">
+                        {c.name}
+                      </Badge>
                     ))}
                   </Group>
                 </DataList.ItemValue>
@@ -223,7 +281,9 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
                 <DataList.ItemValue>
                   <Group gap={4}>
                     {data.production_countries.map((c) => (
-                      <Badge key={c.iso_3166_1} size="sm" variant="default">{c.name}</Badge>
+                      <Badge key={c.iso_3166_1} size="sm" variant="default">
+                        {c.name}
+                      </Badge>
                     ))}
                   </Group>
                 </DataList.ItemValue>
@@ -238,11 +298,16 @@ function TvContent({ data }: { data: TmdbTvDetailResult }) {
       <DataList orientation="horizontal" size="sm" gap={6} labelWidth={120}>
         <DataList.Item>
           <DataList.ItemLabel>TMDb 評分</DataList.ItemLabel>
-          <DataList.ItemValue>★ {data.vote_average?.toFixed(1) ?? '—'} ({data.vote_count?.toLocaleString() ?? 0} 票)</DataList.ItemValue>
+          <DataList.ItemValue>
+            ★ {data.vote_average?.toFixed(1) ?? '—'} (
+            {data.vote_count?.toLocaleString() ?? 0} 票)
+          </DataList.ItemValue>
         </DataList.Item>
         <DataList.Item>
           <DataList.ItemLabel>熱門度</DataList.ItemLabel>
-          <DataList.ItemValue>{data.popularity?.toFixed(1) ?? '—'}</DataList.ItemValue>
+          <DataList.ItemValue>
+            {data.popularity?.toFixed(1) ?? '—'}
+          </DataList.ItemValue>
         </DataList.Item>
       </DataList>
     </Stack>
@@ -268,21 +333,36 @@ function MovieContent({ data }: { data: TmdbMovieDetailResult }) {
         </DataList.Item>
         <DataList.Item>
           <DataList.ItemLabel>原始語言</DataList.ItemLabel>
-          <DataList.ItemValue>{data.original_language?.toUpperCase() || '—'}</DataList.ItemValue>
+          <DataList.ItemValue>
+            {data.original_language?.toUpperCase() || '—'}
+          </DataList.ItemValue>
         </DataList.Item>
         <DataList.Item>
           <DataList.ItemLabel>原產國</DataList.ItemLabel>
           <DataList.ItemValue>
             {data.origin_country?.length ? (
-              <Group gap={4}>{data.origin_country.map((c) => <Badge key={c} size="sm" variant="default">{c}</Badge>)}</Group>
-            ) : '—'}
+              <Group gap={4}>
+                {data.origin_country.map((c) => (
+                  <Badge key={c} size="sm" variant="default">
+                    {c}
+                  </Badge>
+                ))}
+              </Group>
+            ) : (
+              '—'
+            )}
           </DataList.ItemValue>
         </DataList.Item>
         {data.imdb_id && (
           <DataList.Item>
             <DataList.ItemLabel>IMDb</DataList.ItemLabel>
             <DataList.ItemValue>
-              <Anchor href={`https://www.imdb.com/title/${data.imdb_id}`} target="_blank" rel="noopener noreferrer" size="sm">
+              <Anchor
+                href={`https://www.imdb.com/title/${data.imdb_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="sm"
+              >
                 {data.imdb_id}
               </Anchor>
             </DataList.ItemValue>
@@ -292,7 +372,12 @@ function MovieContent({ data }: { data: TmdbMovieDetailResult }) {
           <DataList.Item>
             <DataList.ItemLabel>官方網站</DataList.ItemLabel>
             <DataList.ItemValue>
-              <Anchor href={data.homepage} target="_blank" rel="noopener noreferrer" size="sm">
+              <Anchor
+                href={data.homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="sm"
+              >
                 {data.homepage}
               </Anchor>
             </DataList.ItemValue>
@@ -315,18 +400,23 @@ function MovieContent({ data }: { data: TmdbMovieDetailResult }) {
           <DataList orientation="horizontal" size="sm" gap={6} labelWidth={120}>
             <DataList.Item>
               <DataList.ItemLabel>預算</DataList.ItemLabel>
-              <DataList.ItemValue>{formatMoney(data.budget)}</DataList.ItemValue>
+              <DataList.ItemValue>
+                {formatMoney(data.budget)}
+              </DataList.ItemValue>
             </DataList.Item>
             <DataList.Item>
               <DataList.ItemLabel>票房收入</DataList.ItemLabel>
-              <DataList.ItemValue>{formatMoney(data.revenue)}</DataList.ItemValue>
+              <DataList.ItemValue>
+                {formatMoney(data.revenue)}
+              </DataList.ItemValue>
             </DataList.Item>
           </DataList>
         </>
       )}
 
       {/* Production */}
-      {(data.production_companies?.length > 0 || data.production_countries?.length > 0) && (
+      {(data.production_companies?.length > 0 ||
+        data.production_countries?.length > 0) && (
         <>
           <Divider label="製作" labelPosition="left" />
           <DataList orientation="horizontal" size="sm" gap={6} labelWidth={120}>
@@ -336,7 +426,9 @@ function MovieContent({ data }: { data: TmdbMovieDetailResult }) {
                 <DataList.ItemValue>
                   <Group gap={4}>
                     {data.production_companies.map((c) => (
-                      <Badge key={c.id} size="sm" variant="default">{c.name}</Badge>
+                      <Badge key={c.id} size="sm" variant="default">
+                        {c.name}
+                      </Badge>
                     ))}
                   </Group>
                 </DataList.ItemValue>
@@ -348,7 +440,9 @@ function MovieContent({ data }: { data: TmdbMovieDetailResult }) {
                 <DataList.ItemValue>
                   <Group gap={4}>
                     {data.production_countries.map((c) => (
-                      <Badge key={c.iso_3166_1} size="sm" variant="default">{c.name}</Badge>
+                      <Badge key={c.iso_3166_1} size="sm" variant="default">
+                        {c.name}
+                      </Badge>
                     ))}
                   </Group>
                 </DataList.ItemValue>
@@ -364,7 +458,9 @@ function MovieContent({ data }: { data: TmdbMovieDetailResult }) {
           <Divider label="語言" labelPosition="left" />
           <Group gap={4}>
             {data.spoken_languages.map((l) => (
-              <Badge key={l.iso_639_1} size="sm" variant="default">{l.name}</Badge>
+              <Badge key={l.iso_639_1} size="sm" variant="default">
+                {l.name}
+              </Badge>
             ))}
           </Group>
         </>
@@ -375,18 +471,27 @@ function MovieContent({ data }: { data: TmdbMovieDetailResult }) {
       <DataList orientation="horizontal" size="sm" gap={6} labelWidth={120}>
         <DataList.Item>
           <DataList.ItemLabel>TMDb 評分</DataList.ItemLabel>
-          <DataList.ItemValue>★ {data.vote_average?.toFixed(1) ?? '—'} ({data.vote_count?.toLocaleString() ?? 0} 票)</DataList.ItemValue>
+          <DataList.ItemValue>
+            ★ {data.vote_average?.toFixed(1) ?? '—'} (
+            {data.vote_count?.toLocaleString() ?? 0} 票)
+          </DataList.ItemValue>
         </DataList.Item>
         <DataList.Item>
           <DataList.ItemLabel>熱門度</DataList.ItemLabel>
-          <DataList.ItemValue>{data.popularity?.toFixed(1) ?? '—'}</DataList.ItemValue>
+          <DataList.ItemValue>
+            {data.popularity?.toFixed(1) ?? '—'}
+          </DataList.ItemValue>
         </DataList.Item>
       </DataList>
     </Stack>
   )
 }
 
-export function TmdbMetadataModal({ innerProps, title, modalProps }: ContextModalProps<TmdbMetadataInnerProps>) {
+export function TmdbMetadataModal({
+  innerProps,
+  title,
+  modalProps,
+}: ContextModalProps<TmdbMetadataInnerProps>) {
   const { tmdbId, tmdbMediaType } = innerProps
 
   const { data, isFetching } = useTmdbDetail(tmdbMediaType, tmdbId)
@@ -409,7 +514,8 @@ export function TmdbMetadataModal({ innerProps, title, modalProps }: ContextModa
 
   const posterSrc = data.poster_path || null
   const displayTitle = data.mediaType === 'tv' ? data.name : data.title
-  const displayOriginalTitle = data.mediaType === 'tv' ? data.original_name : data.original_title
+  const displayOriginalTitle =
+    data.mediaType === 'tv' ? data.original_name : data.original_title
 
   return (
     <Modal title={title} size="xl" {...modalProps}>
@@ -427,17 +533,26 @@ export function TmdbMetadataModal({ innerProps, title, modalProps }: ContextModa
               />
             )}
             <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
-              <Text fw={700} size="lg" style={{ lineHeight: 1.2 }}>{displayTitle}</Text>
-              {displayOriginalTitle && displayOriginalTitle !== displayTitle && (
-                <Text size="sm" c="dimmed">{displayOriginalTitle}</Text>
-              )}
+              <Text fw={700} size="lg" style={{ lineHeight: 1.2 }}>
+                {displayTitle}
+              </Text>
+              {displayOriginalTitle &&
+                displayOriginalTitle !== displayTitle && (
+                  <Text size="sm" c="dimmed">
+                    {displayOriginalTitle}
+                  </Text>
+                )}
               {data.tagline && (
-                <Text size="sm" fs="italic" c="dimmed">{data.tagline}</Text>
+                <Text size="sm" fs="italic" c="dimmed">
+                  {data.tagline}
+                </Text>
               )}
               {data.genres?.length > 0 && (
                 <Group gap={4} mt={4}>
                   {data.genres.map((g) => (
-                    <Badge key={g.id} size="sm" variant="light">{g.name}</Badge>
+                    <Badge key={g.id} size="sm" variant="light">
+                      {g.name}
+                    </Badge>
                   ))}
                 </Group>
               )}

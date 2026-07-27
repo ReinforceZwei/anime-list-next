@@ -27,7 +27,11 @@ export default function InfoCardTitle() {
         {title}
       </Text>
       {title && (
-        <Tooltip label={copied ? '已複製！' : '複製標題'} withArrow position="top">
+        <Tooltip
+          label={copied ? '已複製！' : '複製標題'}
+          withArrow
+          position="top"
+        >
           <ActionIcon
             size="sm"
             variant="subtle"

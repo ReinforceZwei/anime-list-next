@@ -6,9 +6,5 @@ interface InfoCardContentProps {
 }
 
 export default function InfoCardContent({ children }: InfoCardContentProps) {
-  return (
-    <div className={styles.content}>
-      {children}
-    </div>
-  )
+  return <div className={styles.content}>{children}</div>
 }

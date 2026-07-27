@@ -1,7 +1,15 @@
 import { Select, MultiSelect, NumberInput, TextInput } from '@mantine/core'
 import { DatePickerInput, type DateValue } from '@mantine/dates'
-import type { FilterableField, FilterOperator, FilterValue } from '@/types/filter'
-import { getFieldDef, operatorNeedsRange, operatorNeedsNoValue } from '@/lib/fieldRegistry'
+import type {
+  FilterableField,
+  FilterOperator,
+  FilterValue,
+} from '@/types/filter'
+import {
+  getFieldDef,
+  operatorNeedsRange,
+  operatorNeedsNoValue,
+} from '@/lib/fieldRegistry'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
 import dayjs from 'dayjs'
@@ -38,7 +46,7 @@ export function FilterValueInput({
             size="xs"
             w={160}
             data={options}
-            value={Array.isArray(value) ? value as string[] : []}
+            value={Array.isArray(value) ? (value as string[]) : []}
             onChange={(v) => onChange(v)}
             placeholder="選擇值…"
             clearable
@@ -72,7 +80,9 @@ export function FilterValueInput({
       )
     case 'number':
       if (needsRange) {
-        const arr = Array.isArray(value) ? value as [string, string] : ['', '']
+        const arr = Array.isArray(value)
+          ? (value as [string, string])
+          : ['', '']
         return (
           <>
             <NumberInput
@@ -109,7 +119,9 @@ export function FilterValueInput({
       )
     case 'date':
       if (needsRange) {
-        const arr = Array.isArray(value) ? value as [DateValue, DateValue] : ['', ''] as [DateValue, DateValue]
+        const arr = Array.isArray(value)
+          ? (value as [DateValue, DateValue])
+          : (['', ''] as [DateValue, DateValue])
         return (
           <DatePickerInput
             type="range"
@@ -117,7 +129,7 @@ export function FilterValueInput({
             w={180}
             valueFormat="YYYY/MM/DD"
             value={arr}
-            onChange={(d) => onChange(d ? d.map(x => x ?? '') : ['', ''])}
+            onChange={(d) => onChange(d ? d.map((x) => x ?? '') : ['', ''])}
             placeholder="選擇日期"
             clearable
           />
@@ -128,7 +140,9 @@ export function FilterValueInput({
           size="xs"
           w={150}
           valueFormat="YYYY/MM/DD"
-          value={typeof value === 'string' && value ? dayjs(value).toDate() : null}
+          value={
+            typeof value === 'string' && value ? dayjs(value).toDate() : null
+          }
           onChange={(d) => onChange(d ?? '')}
           placeholder="選擇日期"
           clearable
@@ -153,7 +167,7 @@ function TagValueInput({
   return (
     <TagMultiSelect
       data={tagList}
-      value={Array.isArray(value) ? value as string[] : []}
+      value={Array.isArray(value) ? (value as string[]) : []}
       onChange={(ids) => onChange(ids)}
       placeholder="選擇標籤…"
     />

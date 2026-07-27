@@ -4,10 +4,5 @@ import classes from './WallpaperLayer.module.css'
 export function WallpaperLayer() {
   const { style } = useWallpaper()
 
-  return (
-    <div
-      className={classes.wallpaper}
-      style={style}
-    />
-  )
+  return <div className={classes.wallpaper} style={style} />
 }

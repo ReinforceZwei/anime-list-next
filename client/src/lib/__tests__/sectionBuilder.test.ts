@@ -29,7 +29,10 @@ function makeSectionDef(overrides: Partial<SectionDef> = {}): SectionDef {
 }
 
 // A simple pass-through filter evaluator (null = match all)
-function passThroughEval(filter: SectionDef['filter'], _record: AnimeRecord): boolean {
+function passThroughEval(
+  filter: SectionDef['filter'],
+  _record: AnimeRecord,
+): boolean {
   if (!filter) return true
   // For these tests we use a controlled evaluator, see filter tests below
   return true
@@ -90,7 +93,7 @@ describe('buildSections - first-match-wins', () => {
   it('each record appears in only one section', () => {
     const rec = makeRecord({ id: 'shared' })
     const defs: SectionDef[] = [
-      makeSectionDef({ key: 'first', filter: null }),  // null = match all
+      makeSectionDef({ key: 'first', filter: null }), // null = match all
       makeSectionDef({ key: 'second', filter: null }),
     ]
     const sections = buildSections([rec], defs, passThroughEval)
@@ -120,7 +123,10 @@ describe('buildSections - __other__ catch-all', () => {
     // filter that matches nothing
     const neverMatch = () => false
     const defs: SectionDef[] = [
-      makeSectionDef({ key: 'empty', filter: { id: 'f1', logic: 'and', conditions: [] } }),
+      makeSectionDef({
+        key: 'empty',
+        filter: { id: 'f1', logic: 'and', conditions: [] },
+      }),
     ]
     const rec = makeRecord({ id: 'r1' })
     const sections = buildSections([rec], defs, neverMatch)
@@ -154,7 +160,13 @@ describe('buildSections - sorting', () => {
       makeRecord({ id: 'c', rating: 1 }),
     ]
     const defs: SectionDef[] = [
-      makeSectionDef({ key: 'rated', label: 'Rated', sortBy: 'rating', sortOrder: 'asc', filter: null }),
+      makeSectionDef({
+        key: 'rated',
+        label: 'Rated',
+        sortBy: 'rating',
+        sortOrder: 'asc',
+        filter: null,
+      }),
     ]
     const sections = buildSections(records, defs, passThroughEval)
 
@@ -168,7 +180,13 @@ describe('buildSections - sorting', () => {
       makeRecord({ id: 'c', rating: 1 }),
     ]
     const defs: SectionDef[] = [
-      makeSectionDef({ key: 'rated', label: 'Rated', sortBy: 'rating', sortOrder: 'desc', filter: null }),
+      makeSectionDef({
+        key: 'rated',
+        label: 'Rated',
+        sortBy: 'rating',
+        sortOrder: 'desc',
+        filter: null,
+      }),
     ]
     const sections = buildSections(records, defs, passThroughEval)
 
@@ -193,12 +211,21 @@ describe('buildSections - sorting', () => {
       makeRecord({ id: 'noRating', rating: undefined }),
     ]
     const defs: SectionDef[] = [
-      makeSectionDef({ key: 'r', label: 'R', sortBy: 'rating', sortOrder: 'asc', filter: null }),
+      makeSectionDef({
+        key: 'r',
+        label: 'R',
+        sortBy: 'rating',
+        sortOrder: 'asc',
+        filter: null,
+      }),
     ]
     const sections = buildSections(records, defs, passThroughEval)
 
     // undefined coerces to '' which sorts before numbers as strings
-    expect(sections[0].items.map((i) => i.id)).toEqual(['noRating', 'hasRating'])
+    expect(sections[0].items.map((i) => i.id)).toEqual([
+      'noRating',
+      'hasRating',
+    ])
   })
 })
 
@@ -209,14 +236,42 @@ describe('buildSections - sorting', () => {
 describe('buildSections - with real evaluateFilter', () => {
   it('routes records to correct sections based on status filter', () => {
     const records = [
-      makeRecord({ id: 'w1', status: 'watching', cachedTitle: 'Attack on Titan' }),
+      makeRecord({
+        id: 'w1',
+        status: 'watching',
+        cachedTitle: 'Attack on Titan',
+      }),
       makeRecord({ id: 'c1', status: 'completed', cachedTitle: 'Steins;Gate' }),
       makeRecord({ id: 'p1', status: 'planned', cachedTitle: 'Frieren' }),
     ]
 
     const defs: SectionDef[] = [
-      { key: 'watching', label: '觀看中', filter: { id: 'f1', logic: 'and', conditions: [{ id: 'c1', field: 'status', operator: 'eq', value: 'watching' }] }, sortBy: 'updated', sortOrder: 'desc' },
-      { key: 'completed', label: '已看完', filter: { id: 'f2', logic: 'and', conditions: [{ id: 'c2', field: 'status', operator: 'eq', value: 'completed' }] }, sortBy: 'completedAt', sortOrder: 'asc' },
+      {
+        key: 'watching',
+        label: '觀看中',
+        filter: {
+          id: 'f1',
+          logic: 'and',
+          conditions: [
+            { id: 'c1', field: 'status', operator: 'eq', value: 'watching' },
+          ],
+        },
+        sortBy: 'updated',
+        sortOrder: 'desc',
+      },
+      {
+        key: 'completed',
+        label: '已看完',
+        filter: {
+          id: 'f2',
+          logic: 'and',
+          conditions: [
+            { id: 'c2', field: 'status', operator: 'eq', value: 'completed' },
+          ],
+        },
+        sortBy: 'completedAt',
+        sortOrder: 'asc',
+      },
     ]
 
     const sections = buildSections(records, defs, evaluateFilter)

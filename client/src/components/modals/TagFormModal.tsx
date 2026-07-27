@@ -1,4 +1,12 @@
-import { Button, ColorInput, Modal, NumberInput, Stack, Switch, TextInput } from '@mantine/core'
+import {
+  Button,
+  ColorInput,
+  Modal,
+  NumberInput,
+  Stack,
+  Switch,
+  TextInput,
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import type { ContextModalProps } from '@/lib/modalStack'
 import { useTagMutation } from '@/hooks/useTagMutation'
@@ -8,7 +16,13 @@ type TagFormInnerProps = {
   tag?: TagRecord
 }
 
-export function TagFormModal({ context, id, innerProps, title, modalProps }: ContextModalProps<TagFormInnerProps>) {
+export function TagFormModal({
+  context,
+  id,
+  innerProps,
+  title,
+  modalProps,
+}: ContextModalProps<TagFormInnerProps>) {
   const { tag } = innerProps
   const isEdit = !!tag
   const { createMutation, updateMutation } = useTagMutation()
@@ -21,7 +35,7 @@ export function TagFormModal({ context, id, innerProps, title, modalProps }: Con
       hidden: tag?.hidden ?? false,
     },
     validate: {
-      name: (v) => v.trim().length === 0 ? '請輸入名稱' : null,
+      name: (v) => (v.trim().length === 0 ? '請輸入名稱' : null),
     },
   })
 
@@ -32,10 +46,7 @@ export function TagFormModal({ context, id, innerProps, title, modalProps }: Con
         { onSuccess: () => context.closeModal(id) },
       )
     } else {
-      createMutation.mutate(
-        values,
-        { onSuccess: () => context.closeModal(id) },
-      )
+      createMutation.mutate(values, { onSuccess: () => context.closeModal(id) })
     }
   }
 
@@ -54,9 +65,18 @@ export function TagFormModal({ context, id, innerProps, title, modalProps }: Con
             label="顏色"
             placeholder="選擇顏色"
             swatches={[
-              '#fa5252', '#e64980', '#be4bdb', '#7950f2',
-              '#4c6ef5', '#228be6', '#15aabf', '#12b886',
-              '#40c057', '#82c91e', '#fab005', '#fd7e14',
+              '#fa5252',
+              '#e64980',
+              '#be4bdb',
+              '#7950f2',
+              '#4c6ef5',
+              '#228be6',
+              '#15aabf',
+              '#12b886',
+              '#40c057',
+              '#82c91e',
+              '#fab005',
+              '#fd7e14',
             ]}
             {...form.getInputProps('color')}
           />

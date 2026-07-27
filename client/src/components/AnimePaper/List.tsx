@@ -1,4 +1,4 @@
-import { List as MantineList } from "@mantine/core"
+import { List as MantineList } from '@mantine/core'
 import styles from './List.module.css'
 
 export default function List({ children }: { children: React.ReactNode }) {

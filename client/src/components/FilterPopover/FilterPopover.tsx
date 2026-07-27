@@ -23,7 +23,9 @@ interface FilterPopoverProps {
 export function FilterPopover({ value, onChange }: FilterPopoverProps) {
   const [opened, setOpened] = useState(false)
   // Local copy for editing; sync on open
-  const [draft, setDraft] = useState<FilterExpression>(() => value ?? createEmptyFilter())
+  const [draft, setDraft] = useState<FilterExpression>(
+    () => value ?? createEmptyFilter(),
+  )
 
   // Sync draft when opening or when external value changes while open
   useEffect(() => {
@@ -90,10 +92,7 @@ export function FilterPopover({ value, onChange }: FilterPopoverProps) {
               </ActionIcon>
             </Group>
 
-            <FilterBuilder
-              value={draft}
-              onChange={setDraft}
-            />
+            <FilterBuilder value={draft} onChange={setDraft} />
 
             <Group justify="space-between" wrap="nowrap">
               <Button

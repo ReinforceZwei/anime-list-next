@@ -91,7 +91,11 @@ export function TagMultiSelect({
                 styles={{
                   root: {
                     backgroundColor: tag.color ?? undefined,
-                    color: tag.color ? (isLightColor(tag.color) ? '#000' : '#fff') : undefined,
+                    color: tag.color
+                      ? isLightColor(tag.color)
+                        ? '#000'
+                        : '#fff'
+                      : undefined,
                   },
                 }}
               >
@@ -109,7 +113,11 @@ export function TagMultiSelect({
                   combobox.updateSelectedOptionIndex()
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === 'Backspace' && search.length === 0 && selectedTags.length > 0) {
+                  if (
+                    e.key === 'Backspace' &&
+                    search.length === 0 &&
+                    selectedTags.length > 0
+                  ) {
                     const last = selectedTags[selectedTags.length - 1]
                     toggleTag(last.id)
                   }
@@ -123,7 +131,11 @@ export function TagMultiSelect({
 
       <Combobox.Dropdown>
         <Combobox.Options mah={200} style={{ overflowY: 'auto' }}>
-          {options.length > 0 ? options : <Combobox.Empty>No tags found</Combobox.Empty>}
+          {options.length > 0 ? (
+            options
+          ) : (
+            <Combobox.Empty>No tags found</Combobox.Empty>
+          )}
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>

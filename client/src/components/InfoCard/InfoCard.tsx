@@ -19,8 +19,7 @@ import InfoCardTmdbButton from './InfoCardTmdbButton'
 import styles from './InfoCard.module.css'
 import type { ActionButton } from '@/types/filter'
 
-interface InfoCardProps
-  extends Omit<InfoCardContextValue, 'tags'> {
+interface InfoCardProps extends Omit<InfoCardContextValue, 'tags'> {
   tags?: TagRecord[]
   children: ReactNode
 }
@@ -46,7 +45,21 @@ function InfoCard({
 }: InfoCardProps) {
   return (
     <InfoCardContext.Provider
-      value={{ anime, tags, loading, posterUrl, posterUrlFull, hasTmdbId, onClose, onEdit, onPosterClick, onJumpTo, actionButtons, tagMap, showBuiltInActions }}
+      value={{
+        anime,
+        tags,
+        loading,
+        posterUrl,
+        posterUrlFull,
+        hasTmdbId,
+        onClose,
+        onEdit,
+        onPosterClick,
+        onJumpTo,
+        actionButtons,
+        tagMap,
+        showBuiltInActions,
+      }}
     >
       <Paper radius="md" shadow="xl" className={styles.card} withBorder>
         {children}

@@ -19,25 +19,24 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
         <Popover width={320} position="bottom-start">
           <Popover.Target>
             {value ? (
-              <ActionIcon
-                variant="filled"
-                color="blue"
-                size="lg"
-              >
+              <ActionIcon variant="filled" color="blue" size="lg">
                 {IconComp && <IconComp size="1em" />}
               </ActionIcon>
             ) : (
-              <Button
-                variant="outline"
-                size="sm"
-              >
+              <Button variant="outline" size="sm">
                 選擇圖示
               </Button>
             )}
           </Popover.Target>
           <Popover.Dropdown>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 4 }}>
-              {ICON_OPTIONS.map(opt => {
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(6, 1fr)',
+                gap: 4,
+              }}
+            >
+              {ICON_OPTIONS.map((opt) => {
                 const OptIcon = opt.component
                 return (
                   <ActionIcon

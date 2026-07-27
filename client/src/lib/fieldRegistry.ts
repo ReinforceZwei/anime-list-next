@@ -30,45 +30,133 @@ export const SELECT_MEDIA_OPTIONS = [
 ]
 
 const TEXT_OPERATORS: FilterOperator[] = [
-  'contains', 'notContains', 'eq', 'neq', 'isEmpty', 'isNotEmpty',
+  'contains',
+  'notContains',
+  'eq',
+  'neq',
+  'isEmpty',
+  'isNotEmpty',
 ]
 
 const NUMBER_OPERATORS: FilterOperator[] = [
-  'eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'isEmpty', 'isNotEmpty',
+  'eq',
+  'neq',
+  'gt',
+  'gte',
+  'lt',
+  'lte',
+  'between',
+  'isEmpty',
+  'isNotEmpty',
 ]
 
 const DATE_OPERATORS: FilterOperator[] = [
-  'before', 'after', 'between', 'isEmpty', 'isNotEmpty',
+  'before',
+  'after',
+  'between',
+  'isEmpty',
+  'isNotEmpty',
 ]
 
 const SELECT_OPERATORS: FilterOperator[] = [
-  'eq', 'neq', 'in', 'notIn', 'isEmpty', 'isNotEmpty'
+  'eq',
+  'neq',
+  'in',
+  'notIn',
+  'isEmpty',
+  'isNotEmpty',
 ]
 
 const MEDIA_TYPE_OPERATORS: FilterOperator[] = [
-  'eq', 'neq', 'isEmpty', 'isNotEmpty'
+  'eq',
+  'neq',
+  'isEmpty',
+  'isNotEmpty',
 ]
 
 const TAGS_OPERATORS: FilterOperator[] = [
-  'containsAll', 'notContainsAll', 'containsAny', 'notContainsAny', 'isEmpty', 'isNotEmpty',
+  'containsAll',
+  'notContainsAll',
+  'containsAny',
+  'notContainsAny',
+  'isEmpty',
+  'isNotEmpty',
 ]
 
 export const FIELD_REGISTRY: FieldDef[] = [
   // Select fields
-  { field: 'status', label: '狀態', type: 'select', operators: SELECT_OPERATORS, options: SELECT_STATUS_OPTIONS },
-  { field: 'downloadStatus', label: '下載狀態', type: 'select', operators: SELECT_OPERATORS, options: SELECT_DOWNLOAD_OPTIONS },
-  { field: 'tmdbMediaType', label: '媒體類型', type: 'select', operators: MEDIA_TYPE_OPERATORS, options: SELECT_MEDIA_OPTIONS },
+  {
+    field: 'status',
+    label: '狀態',
+    type: 'select',
+    operators: SELECT_OPERATORS,
+    options: SELECT_STATUS_OPTIONS,
+  },
+  {
+    field: 'downloadStatus',
+    label: '下載狀態',
+    type: 'select',
+    operators: SELECT_OPERATORS,
+    options: SELECT_DOWNLOAD_OPTIONS,
+  },
+  {
+    field: 'tmdbMediaType',
+    label: '媒體類型',
+    type: 'select',
+    operators: MEDIA_TYPE_OPERATORS,
+    options: SELECT_MEDIA_OPTIONS,
+  },
   // Number field
-  { field: 'rating', label: '評分', type: 'number', operators: NUMBER_OPERATORS },
+  {
+    field: 'rating',
+    label: '評分',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+  },
   // Date fields
-  { field: 'startedAt', label: '開始日期', type: 'date', operators: DATE_OPERATORS },
-  { field: 'completedAt', label: '完成日期', type: 'date', operators: DATE_OPERATORS },
-  { field: 'created', label: '建立日期', type: 'date', operators: DATE_OPERATORS },
-  { field: 'updated', label: '更新日期', type: 'date', operators: DATE_OPERATORS },
+  {
+    field: 'startedAt',
+    label: '開始日期',
+    type: 'date',
+    operators: DATE_OPERATORS,
+  },
+  {
+    field: 'completedAt',
+    label: '完成日期',
+    type: 'date',
+    operators: DATE_OPERATORS,
+  },
+  {
+    field: 'created',
+    label: '建立日期',
+    type: 'date',
+    operators: DATE_OPERATORS,
+  },
+  {
+    field: 'updated',
+    label: '更新日期',
+    type: 'date',
+    operators: DATE_OPERATORS,
+  },
   // Text fields
-  { field: 'cachedTitle', label: '標題', type: 'text', operators: TEXT_OPERATORS },
-  { field: 'cachedSeasonName', label: '季名', type: 'text', operators: TEXT_OPERATORS },
-  { field: 'customName', label: '自訂名稱', type: 'text', operators: TEXT_OPERATORS },
+  {
+    field: 'cachedTitle',
+    label: '標題',
+    type: 'text',
+    operators: TEXT_OPERATORS,
+  },
+  {
+    field: 'cachedSeasonName',
+    label: '季名',
+    type: 'text',
+    operators: TEXT_OPERATORS,
+  },
+  {
+    field: 'customName',
+    label: '自訂名稱',
+    type: 'text',
+    operators: TEXT_OPERATORS,
+  },
   { field: 'comment', label: '心得', type: 'text', operators: TEXT_OPERATORS },
   { field: 'remark', label: '備註', type: 'text', operators: TEXT_OPERATORS },
   // Tags
@@ -162,11 +250,17 @@ export function getValueShape(op: FilterOperator): ValueShape {
  * Use this when switching operators to avoid leaking a stale value
  * whose shape is incompatible with the new operator.
  */
-export function getDefaultValueForOperator(op: FilterOperator): import('@/types/filter').FilterValue {
+export function getDefaultValueForOperator(
+  op: FilterOperator,
+): import('@/types/filter').FilterValue {
   switch (getValueShape(op)) {
-    case 'none':  return null
-    case 'tuple': return ['', '']
-    case 'array': return []
-    case 'scalar': return ''
+    case 'none':
+      return null
+    case 'tuple':
+      return ['', '']
+    case 'array':
+      return []
+    case 'scalar':
+      return ''
   }
 }

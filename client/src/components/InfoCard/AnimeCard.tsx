@@ -19,7 +19,11 @@ interface AnimeCardProps {
   onJumpTo?: (id: string) => void
 }
 
-export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps) {
+export default function AnimeCard({
+  animeId,
+  onClose,
+  onJumpTo,
+}: AnimeCardProps) {
   const { data: animeList, isLoading: listLoading } = useAnimeList()
   const tagMap = useTagMap()
   const { data: prefs } = useUserPreferences()
@@ -42,7 +46,9 @@ export default function AnimeCard({ animeId, onClose, onJumpTo }: AnimeCardProps
   const tags = useMemo(() => {
     if (!anime?.tags) return []
     return sortTags(
-      anime.tags.map((id) => tagMap.get(id)).filter((t): t is NonNullable<typeof t> => !!t),
+      anime.tags
+        .map((id) => tagMap.get(id))
+        .filter((t): t is NonNullable<typeof t> => !!t),
     )
   }, [anime?.tags, tagMap])
 

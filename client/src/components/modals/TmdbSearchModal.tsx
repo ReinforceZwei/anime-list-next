@@ -22,7 +22,16 @@ import {
 } from '@mantine/core'
 import { useDebouncedValue, useMediaQuery } from '@mantine/hooks'
 import { modals as mantineModals } from '@/lib/modalStack'
-import { IconArrowLeft, IconCheck, IconExternalLink, IconHelp, IconLink, IconPlus, IconSearch, IconX } from '@tabler/icons-react'
+import {
+  IconArrowLeft,
+  IconCheck,
+  IconExternalLink,
+  IconHelp,
+  IconLink,
+  IconPlus,
+  IconSearch,
+  IconX,
+} from '@tabler/icons-react'
 import type { ContextModalProps } from '@/lib/modalStack'
 import { useTmdbSearch, useTmdbDetail } from '@/hooks/useTmdb'
 import { useAnimeExistsMap } from '@/hooks/useAnimeExistsMap'
@@ -34,7 +43,12 @@ const PANEL_H = 520
 
 type TmdbSearchInnerProps =
   | { mode?: 'create'; onSaved?: (id: string) => void }
-  | { mode: 'link'; animeId: string; initialQuery?: string; onSaved?: (id: string) => void }
+  | {
+      mode: 'link'
+      animeId: string
+      initialQuery?: string
+      onSaved?: (id: string) => void
+    }
 
 function ExistsBadge() {
   return (
@@ -42,14 +56,24 @@ function ExistsBadge() {
       <ThemeIcon size="xs" radius="xl" color="teal" variant="light">
         <IconCheck size="1em" />
       </ThemeIcon>
-      <Text size="xs" c="teal" fw={500}>已加入</Text>
+      <Text size="xs" c="teal" fw={500}>
+        已加入
+      </Text>
     </Group>
   )
 }
 
-export function TmdbSearchModal({ context, innerProps, title, modalProps }: ContextModalProps<TmdbSearchInnerProps>) {
+export function TmdbSearchModal({
+  context,
+  innerProps,
+  title,
+  modalProps,
+}: ContextModalProps<TmdbSearchInnerProps>) {
   const mode = innerProps.mode ?? 'create'
-  const linkProps = mode === 'link' ? (innerProps as { mode: 'link'; animeId: string; initialQuery?: string }) : null
+  const linkProps =
+    mode === 'link'
+      ? (innerProps as { mode: 'link'; animeId: string; initialQuery?: string })
+      : null
   const animeId = linkProps?.animeId ?? null
   const onSaved = innerProps.onSaved
 
@@ -61,17 +85,21 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
 
   const isMobile = useMediaQuery('(max-width: 780px)')
   const theme = useMantineTheme()
-  const colors = useMemo(() => theme.variantColorResolver({
-    color: theme.primaryColor,
-    theme,
-    variant: 'light',
-  }), [theme])
+  const colors = useMemo(
+    () =>
+      theme.variantColorResolver({
+        color: theme.primaryColor,
+        theme,
+        variant: 'light',
+      }),
+    [theme],
+  )
 
   const exists = useAnimeExistsMap()
   const { createMutation, updateMutation } = useAnimeMutation()
   const { data: animeList } = useAnimeList()
   const targetAnime = useMemo(
-    () => animeId ? animeList?.find((a) => a.id === animeId) : undefined,
+    () => (animeId ? animeList?.find((a) => a.id === animeId) : undefined),
     [animeList, animeId],
   )
 
@@ -82,16 +110,25 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
   )
 
   const movieExists = useMemo(
-    () => detail?.mediaType === 'movie' ? exists('movie', detail.id) : false,
+    () => (detail?.mediaType === 'movie' ? exists('movie', detail.id) : false),
     [detail, exists],
   )
 
   const seasonExistsMap = useMemo(() => {
-    if (detail?.mediaType !== 'tv' || !detail.seasons) return new Map<number, boolean>()
-    return new Map(detail.seasons.map((s) => [s.season_number, exists('tv', detail.id, s.season_number)]))
+    if (detail?.mediaType !== 'tv' || !detail.seasons)
+      return new Map<number, boolean>()
+    return new Map(
+      detail.seasons.map((s) => [
+        s.season_number,
+        exists('tv', detail.id, s.season_number),
+      ]),
+    )
   }, [detail, exists])
 
-  useEffect(() => { setSelected(null); setMobileView('search') }, [debounced])
+  useEffect(() => {
+    setSelected(null)
+    setMobileView('search')
+  }, [debounced])
   useEffect(() => {
     if (results && results.length > 0 && !selected) setSelected(results[0])
   }, [results])
@@ -107,7 +144,11 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
     }, 100)
   }, [])
 
-  function handleLink(tmdbId: number, tmdbMediaType: 'tv' | 'movie', tmdbSeasonNumber?: number) {
+  function handleLink(
+    tmdbId: number,
+    tmdbMediaType: 'tv' | 'movie',
+    tmdbSeasonNumber?: number,
+  ) {
     if (!targetAnime) return
     updateMutation.mutate(
       { ...targetAnime, tmdbId, tmdbMediaType, tmdbSeasonNumber },
@@ -137,17 +178,31 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
       gap="xs"
       w={isMobile ? '100%' : 280}
       pr={isMobile ? 0 : 'md'}
-      style={isMobile ? {} : {
-        flexShrink: 0,
-        borderRight: '1px solid var(--mantine-color-default-border)',
-      }}
+      style={
+        isMobile
+          ? {}
+          : {
+              flexShrink: 0,
+              borderRight: '1px solid var(--mantine-color-default-border)',
+            }
+      }
     >
       <TextInput
         placeholder="搜尋電影與電視劇…"
         leftSection={<IconSearch size="1em" />}
         rightSection={
-          isFetching ? <Loader size="xs" /> : query ? (
-            <ActionIcon variant="subtle" color="gray" size="sm" onClick={() => { setQuery(''); inputRef.current?.focus(); }}>
+          isFetching ? (
+            <Loader size="xs" />
+          ) : query ? (
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              size="sm"
+              onClick={() => {
+                setQuery('')
+                inputRef.current?.focus()
+              }}
+            >
               <IconX size="1em" />
             </ActionIcon>
           ) : null
@@ -161,7 +216,9 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
       <ScrollArea flex={1} offsetScrollbars>
         {results?.length === 0 && (
           <Center py="lg">
-            <Text size="sm" c="dimmed">沒有結果</Text>
+            <Text size="sm" c="dimmed">
+              沒有結果
+            </Text>
           </Center>
         )}
         <Stack gap={2}>
@@ -176,18 +233,35 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
                   selected?.id === item.id ? colors.background : 'transparent',
               })}
             >
-              <Group justify="space-between" align="flex-start" wrap="nowrap" gap="xs">
+              <Group
+                justify="space-between"
+                align="flex-start"
+                wrap="nowrap"
+                gap="xs"
+              >
                 <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-                  <Text size="sm" fw={500} lineClamp={1}>{item.title}</Text>
+                  <Text size="sm" fw={500} lineClamp={1}>
+                    {item.title}
+                  </Text>
                   {item.originalTitle && item.originalTitle !== item.title && (
-                    <Text size="xs" c="dimmed" lineClamp={1}>{item.originalTitle}</Text>
+                    <Text size="xs" c="dimmed" lineClamp={1}>
+                      {item.originalTitle}
+                    </Text>
                   )}
                 </Stack>
                 <Stack gap={4} align="flex-end" style={{ flexShrink: 0 }}>
-                  <Badge size="xs" variant="light" color={item.mediaType === 'tv' ? 'blue' : 'grape'}>
+                  <Badge
+                    size="xs"
+                    variant="light"
+                    color={item.mediaType === 'tv' ? 'blue' : 'grape'}
+                  >
                     {item.mediaType === 'tv' ? '電視劇' : '電影'}
                   </Badge>
-                  {item.year && <Text size="xs" c="dimmed">{item.year}</Text>}
+                  {item.year && (
+                    <Text size="xs" c="dimmed">
+                      {item.year}
+                    </Text>
+                  )}
                 </Stack>
               </Group>
             </UnstyledButton>
@@ -200,11 +274,13 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
           variant="subtle"
           size="xs"
           color="dimmed"
-          onClick={() => mantineModals.openContextModal({
-            modal: 'addAnime',
-            title: '手動新增',
-            innerProps: { onSaved },
-          })}
+          onClick={() =>
+            mantineModals.openContextModal({
+              modal: 'addAnime',
+              title: '手動新增',
+              innerProps: { onSaved },
+            })
+          }
         >
           手動新增
         </Button>
@@ -216,14 +292,22 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
     <Box flex={1} h="100%" pl={isMobile ? 0 : 'md'} style={{ minWidth: 0 }}>
       {!selected ? (
         <Center h="100%">
-          <Text size="sm" c="dimmed">搜尋並選擇作品</Text>
+          <Text size="sm" c="dimmed">
+            搜尋並選擇作品
+          </Text>
         </Center>
       ) : detailFetching ? (
-        <Center h="100%"><Loader /></Center>
+        <Center h="100%">
+          <Loader />
+        </Center>
       ) : detail ? (
         <ScrollArea h={PANEL_H} offsetScrollbars>
           {isMobile && (
-            <ActionIcon variant="subtle" mb="xs" onClick={() => setMobileView('search')}>
+            <ActionIcon
+              variant="subtle"
+              mb="xs"
+              onClick={() => setMobileView('search')}
+            >
               <IconArrowLeft size="1em" />
             </ActionIcon>
           )}
@@ -238,47 +322,77 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
                 flexShrink: 0,
                 cursor: detail.posterOriginal ? 'pointer' : undefined,
               }}
-              onClick={detail.posterOriginal ? () => {
-                const posterModalId = mantineModals.open({
-                  size: 'auto',
-                  padding: 0,
-                  withCloseButton: false,
-                  children: (
-                    <Image
-                      src={detail.posterOriginal}
-                      alt={detail.mediaType === 'tv' ? detail.name : detail.title}
-                      fit="contain"
-                      mah="90vh"
-                      style={{ display: 'block' }}
-                      onClick={() => mantineModals.close(posterModalId)}
-                    />
-                  ),
-                })
-              } : undefined}
+              onClick={
+                detail.posterOriginal
+                  ? () => {
+                      const posterModalId = mantineModals.open({
+                        size: 'auto',
+                        padding: 0,
+                        withCloseButton: false,
+                        children: (
+                          <Image
+                            src={detail.posterOriginal}
+                            alt={
+                              detail.mediaType === 'tv'
+                                ? detail.name
+                                : detail.title
+                            }
+                            fit="contain"
+                            mah="90vh"
+                            style={{ display: 'block' }}
+                            onClick={() => mantineModals.close(posterModalId)}
+                          />
+                        ),
+                      })
+                    }
+                  : undefined
+              }
             />
             <Stack gap="xs" style={{ flex: 1, minWidth: 0 }}>
               <Text fw={700} size="lg" lh={1.2}>
                 {detail.mediaType === 'tv' ? detail.name : detail.title}
               </Text>
               {(() => {
-                const origTitle = detail.mediaType === 'tv' ? detail.original_name : detail.original_title
-                const dispTitle = detail.mediaType === 'tv' ? detail.name : detail.title
-                return origTitle && origTitle !== dispTitle
-                  ? <Text size="sm" c="dimmed">{origTitle}</Text>
-                  : null
+                const origTitle =
+                  detail.mediaType === 'tv'
+                    ? detail.original_name
+                    : detail.original_title
+                const dispTitle =
+                  detail.mediaType === 'tv' ? detail.name : detail.title
+                return origTitle && origTitle !== dispTitle ? (
+                  <Text size="sm" c="dimmed">
+                    {origTitle}
+                  </Text>
+                ) : null
               })()}
               <Group gap="xs">
-                <Badge variant="light" color={detail.mediaType === 'tv' ? 'blue' : 'grape'}>
+                <Badge
+                  variant="light"
+                  color={detail.mediaType === 'tv' ? 'blue' : 'grape'}
+                >
                   {detail.mediaType === 'tv' ? '電視劇' : '電影'}
                 </Badge>
                 {(() => {
-                  const date = detail.mediaType === 'tv' ? detail.first_air_date : detail.release_date
-                  return date ? <Text size="sm" c="dimmed">{dayjs(date).format('YYYY')}</Text> : null
+                  const date =
+                    detail.mediaType === 'tv'
+                      ? detail.first_air_date
+                      : detail.release_date
+                  return date ? (
+                    <Text size="sm" c="dimmed">
+                      {dayjs(date).format('YYYY')}
+                    </Text>
+                  ) : null
                 })()}
               </Group>
               {detail.overview && (
-                <Spoiler maxHeight={60} showLabel="顯示更多" hideLabel="顯示較少">
-                  <Text size="sm" c="dimmed">{detail.overview}</Text>
+                <Spoiler
+                  maxHeight={60}
+                  showLabel="顯示更多"
+                  hideLabel="顯示較少"
+                >
+                  <Text size="sm" c="dimmed">
+                    {detail.overview}
+                  </Text>
                 </Spoiler>
               )}
               <Button
@@ -294,48 +408,48 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
                     innerProps: {
                       tmdbId: detail.id,
                       tmdbMediaType: detail.mediaType,
-                      title: detail.mediaType === 'tv' ? detail.name : detail.title,
+                      title:
+                        detail.mediaType === 'tv' ? detail.name : detail.title,
                     },
                   })
                 }}
               >
                 TMDb 詳細資料
               </Button>
-              {detail.mediaType === 'movie' && (
-                mode === 'link'
-                  ? (
-                    <Button
-                      size="xs"
-                      variant="light"
-                      leftSection={<IconLink size="1em" />}
-                      mt={4}
-                      w="fit-content"
-                      loading={updateMutation.isPending}
-                      disabled={!targetAnime}
-                      onClick={() => handleLink(detail.id, 'movie')}
-                    >
-                      連結
-                    </Button>
-                  )
-                  : movieExists
-                    ? <ExistsBadge />
-                    : (
-                      <Button
-                        size="xs"
-                        variant="light"
-                        leftSection={<IconPlus size="1em" />}
-                        mt={4}
-                        w="fit-content"
-                        loading={createMutation.isPending}
-                        onClick={() => createMutation.mutate(
-                          { tmdbId: detail.id, tmdbMediaType: 'movie' },
-                          { onSuccess: (record) => onSaved?.(record.id) },
-                        )}
-                      >
-                        建立紀錄
-                      </Button>
-                    )
-              )}
+              {detail.mediaType === 'movie' &&
+                (mode === 'link' ? (
+                  <Button
+                    size="xs"
+                    variant="light"
+                    leftSection={<IconLink size="1em" />}
+                    mt={4}
+                    w="fit-content"
+                    loading={updateMutation.isPending}
+                    disabled={!targetAnime}
+                    onClick={() => handleLink(detail.id, 'movie')}
+                  >
+                    連結
+                  </Button>
+                ) : movieExists ? (
+                  <ExistsBadge />
+                ) : (
+                  <Button
+                    size="xs"
+                    variant="light"
+                    leftSection={<IconPlus size="1em" />}
+                    mt={4}
+                    w="fit-content"
+                    loading={createMutation.isPending}
+                    onClick={() =>
+                      createMutation.mutate(
+                        { tmdbId: detail.id, tmdbMediaType: 'movie' },
+                        { onSuccess: (record) => onSaved?.(record.id) },
+                      )
+                    }
+                  >
+                    建立紀錄
+                  </Button>
+                ))}
             </Stack>
           </Group>
 
@@ -359,47 +473,58 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
                       {season.name}
                     </Text>
                     <Group gap="xs" style={{ flexShrink: 0 }}>
-                      <Badge size="xs" variant="outline">{season.episode_count} 集</Badge>
+                      <Badge size="xs" variant="outline">
+                        {season.episode_count} 集
+                      </Badge>
                       {season.air_date && (
-                        <Text size="xs" c="dimmed">{season.air_date.slice(0, 4)}</Text>
+                        <Text size="xs" c="dimmed">
+                          {season.air_date.slice(0, 4)}
+                        </Text>
                       )}
-                      {mode === 'link'
-                        ? (
-                          <Button
-                            size="xs"
-                            variant="light"
-                            leftSection={<IconLink size="1em" />}
-                            loading={
-                              updateMutation.isPending &&
-                              updateMutation.variables?.tmdbSeasonNumber === season.season_number
-                            }
-                            disabled={updateMutation.isPending || !targetAnime}
-                            onClick={() => handleLink(detail.id, 'tv', season.season_number)}
-                          >
-                            連結
-                          </Button>
-                        )
-                        : seasonExistsMap.get(season.season_number)
-                          ? <ExistsBadge />
-                          : (
-                            <Button
-                              size="xs"
-                              variant="light"
-                              leftSection={<IconPlus size="1em" />}
-                              loading={
-                                createMutation.isPending &&
-                                createMutation.variables?.tmdbSeasonNumber === season.season_number
-                              }
-                              disabled={createMutation.isPending}
-                              onClick={() => createMutation.mutate(
-                                { tmdbId: detail.id, tmdbMediaType: 'tv', tmdbSeasonNumber: season.season_number },
-                                { onSuccess: (record) => onSaved?.(record.id) },
-                              )}
-                            >
-                              加入
-                            </Button>
-                          )
-                      }
+                      {mode === 'link' ? (
+                        <Button
+                          size="xs"
+                          variant="light"
+                          leftSection={<IconLink size="1em" />}
+                          loading={
+                            updateMutation.isPending &&
+                            updateMutation.variables?.tmdbSeasonNumber ===
+                              season.season_number
+                          }
+                          disabled={updateMutation.isPending || !targetAnime}
+                          onClick={() =>
+                            handleLink(detail.id, 'tv', season.season_number)
+                          }
+                        >
+                          連結
+                        </Button>
+                      ) : seasonExistsMap.get(season.season_number) ? (
+                        <ExistsBadge />
+                      ) : (
+                        <Button
+                          size="xs"
+                          variant="light"
+                          leftSection={<IconPlus size="1em" />}
+                          loading={
+                            createMutation.isPending &&
+                            createMutation.variables?.tmdbSeasonNumber ===
+                              season.season_number
+                          }
+                          disabled={createMutation.isPending}
+                          onClick={() =>
+                            createMutation.mutate(
+                              {
+                                tmdbId: detail.id,
+                                tmdbMediaType: 'tv',
+                                tmdbSeasonNumber: season.season_number,
+                              },
+                              { onSuccess: (record) => onSaved?.(record.id) },
+                            )
+                          }
+                        >
+                          加入
+                        </Button>
+                      )}
                     </Group>
                   </Group>
                 ))}
@@ -430,9 +555,7 @@ export function TmdbSearchModal({ context, innerProps, title, modalProps }: Cont
   // ── Layout: stack on mobile, side-by-side on desktop ─────────────────────
 
   const content = isMobile ? (
-    <Box h={PANEL_H}>
-      {mobileView === 'search' ? searchPanel : detailPanel}
-    </Box>
+    <Box h={PANEL_H}>{mobileView === 'search' ? searchPanel : detailPanel}</Box>
   ) : (
     <Group align="stretch" gap={0} h={PANEL_H} wrap="nowrap">
       {searchPanel}

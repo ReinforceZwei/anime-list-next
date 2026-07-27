@@ -24,8 +24,21 @@ export function useUiScale() {
     applyScale(clamped)
   }, [])
 
-  const decrement = useCallback(() => changeScale(scale - STEP), [scale, changeScale])
-  const increment = useCallback(() => changeScale(scale + STEP), [scale, changeScale])
+  const decrement = useCallback(
+    () => changeScale(scale - STEP),
+    [scale, changeScale],
+  )
+  const increment = useCallback(
+    () => changeScale(scale + STEP),
+    [scale, changeScale],
+  )
 
-  return { scale, changeScale, decrement, increment, min: MIN_SCALE, max: MAX_SCALE }
+  return {
+    scale,
+    changeScale,
+    decrement,
+    increment,
+    min: MIN_SCALE,
+    max: MAX_SCALE,
+  }
 }

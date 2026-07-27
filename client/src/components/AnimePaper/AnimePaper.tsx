@@ -1,9 +1,9 @@
-import { Paper } from "@mantine/core"
-import Title from "./Title"
+import { Paper } from '@mantine/core'
+import Title from './Title'
 import styles from './AnimePaper.module.css'
-import Subtitle from "./Subtitle"
-import List from "./List"
-import Item from "./Item"
+import Subtitle from './Subtitle'
+import List from './List'
+import Item from './Item'
 
 interface AnimePaperProps {
   children: React.ReactNode
@@ -19,7 +19,7 @@ export default function AnimePaper(props: AnimePaperProps) {
   )
 }
 
-AnimePaper.Title = Title;
-AnimePaper.Subtitle = Subtitle;
-AnimePaper.List = List;
-AnimePaper.Item = Item;
+AnimePaper.Title = Title
+AnimePaper.Subtitle = Subtitle
+AnimePaper.List = List
+AnimePaper.Item = Item

@@ -18,16 +18,16 @@ import { useForm } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
 import { modals } from '@/lib/modalStack'
 import type { ContextModalProps } from '@/lib/modalStack'
-import {
-  IconChevronDown,
-  IconChevronUp,
-  IconTags,
-} from '@tabler/icons-react'
+import { IconChevronDown, IconChevronUp, IconTags } from '@tabler/icons-react'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
 import { RatingInput } from '@/components/RatingInput/RatingInput'
-import { SELECT_STATUS_OPTIONS, SELECT_DOWNLOAD_OPTIONS, SELECT_MEDIA_OPTIONS } from '@/lib/fieldRegistry'
+import {
+  SELECT_STATUS_OPTIONS,
+  SELECT_DOWNLOAD_OPTIONS,
+  SELECT_MEDIA_OPTIONS,
+} from '@/lib/fieldRegistry'
 import dayjs from 'dayjs'
 import { useEffect, useRef } from 'react'
 
@@ -41,7 +41,12 @@ function parseLocalDateString(val: string | Date | null): Date | null {
   return dayjs(val).toDate()
 }
 
-export function AddAnimeModal({ context, innerProps, title, modalProps }: ContextModalProps<AddAnimeInnerProps>) {
+export function AddAnimeModal({
+  context,
+  innerProps,
+  title,
+  modalProps,
+}: ContextModalProps<AddAnimeInnerProps>) {
   const { onSaved } = innerProps
   const { createMutation } = useAnimeMutation()
   const { data: tagList } = useTagList()
@@ -88,8 +93,12 @@ export function AddAnimeModal({ context, innerProps, title, modalProps }: Contex
         remark: values.remark || null,
         tags: values.tags,
         startedAt: values.startedAt ? values.startedAt.toISOString() : null,
-        completedAt: values.completedAt ? values.completedAt.toISOString() : null,
-        createdOverride: values.createdOverride ? values.createdOverride.toISOString() : undefined,
+        completedAt: values.completedAt
+          ? values.completedAt.toISOString()
+          : null,
+        createdOverride: values.createdOverride
+          ? values.createdOverride.toISOString()
+          : undefined,
         tmdbId: values.tmdbId ?? 0,
         tmdbMediaType: values.tmdbMediaType as AnimeCreateMediaType,
         tmdbSeasonNumber: values.tmdbSeasonNumber ?? 0,
@@ -126,7 +135,13 @@ export function AddAnimeModal({ context, innerProps, title, modalProps }: Contex
           <Button
             variant="subtle"
             size="compact-sm"
-            rightSection={advancedOpen ? <IconChevronUp size="1em" /> : <IconChevronDown size="1em" />}
+            rightSection={
+              advancedOpen ? (
+                <IconChevronUp size="1em" />
+              ) : (
+                <IconChevronDown size="1em" />
+              )
+            }
             onClick={toggleAdvanced}
             justify="space-between"
             fullWidth
@@ -138,19 +153,13 @@ export function AddAnimeModal({ context, innerProps, title, modalProps }: Contex
             <Stack>
               <Select
                 label="觀看狀態"
-                data={[
-                  { value: '', label: '無' },
-                  ...SELECT_STATUS_OPTIONS,
-                ]}
+                data={[{ value: '', label: '無' }, ...SELECT_STATUS_OPTIONS]}
                 {...form.getInputProps('status')}
               />
 
               <Select
                 label="下載狀態"
-                data={[
-                  { value: '', label: '無' },
-                  ...SELECT_DOWNLOAD_OPTIONS,
-                ]}
+                data={[{ value: '', label: '無' }, ...SELECT_DOWNLOAD_OPTIONS]}
                 {...form.getInputProps('downloadStatus')}
               />
 
@@ -197,7 +206,12 @@ export function AddAnimeModal({ context, innerProps, title, modalProps }: Contex
                 placeholder="選擇日期與時間"
                 clearable
                 value={form.values.startedAt}
-                onChange={(val) => form.setFieldValue('startedAt', parseLocalDateString(val as string | null))}
+                onChange={(val) =>
+                  form.setFieldValue(
+                    'startedAt',
+                    parseLocalDateString(val as string | null),
+                  )
+                }
               />
 
               <DateTimePicker
@@ -205,7 +219,12 @@ export function AddAnimeModal({ context, innerProps, title, modalProps }: Contex
                 placeholder="選擇日期與時間"
                 clearable
                 value={form.values.completedAt}
-                onChange={(val) => form.setFieldValue('completedAt', parseLocalDateString(val as string | null))}
+                onChange={(val) =>
+                  form.setFieldValue(
+                    'completedAt',
+                    parseLocalDateString(val as string | null),
+                  )
+                }
               />
 
               <DateTimePicker
@@ -213,7 +232,12 @@ export function AddAnimeModal({ context, innerProps, title, modalProps }: Contex
                 placeholder="選擇日期與時間"
                 clearable
                 value={form.values.createdOverride}
-                onChange={(val) => form.setFieldValue('createdOverride', parseLocalDateString(val as string | null))}
+                onChange={(val) =>
+                  form.setFieldValue(
+                    'createdOverride',
+                    parseLocalDateString(val as string | null),
+                  )
+                }
               />
 
               <Divider label="TMDb 資料" labelPosition="left" />
@@ -228,15 +252,14 @@ export function AddAnimeModal({ context, innerProps, title, modalProps }: Contex
                 min={1}
                 allowDecimal={false}
                 value={form.values.tmdbId ?? ''}
-                onChange={(val) => form.setFieldValue('tmdbId', val === '' ? null : Number(val))}
+                onChange={(val) =>
+                  form.setFieldValue('tmdbId', val === '' ? null : Number(val))
+                }
               />
 
               <Select
                 label="TMDb 媒體類型"
-                data={[
-                  { value: '', label: '無' },
-                  ...SELECT_MEDIA_OPTIONS,
-                ]}
+                data={[{ value: '', label: '無' }, ...SELECT_MEDIA_OPTIONS]}
                 {...form.getInputProps('tmdbMediaType')}
               />
 
@@ -247,7 +270,12 @@ export function AddAnimeModal({ context, innerProps, title, modalProps }: Contex
                   min={0}
                   allowDecimal={false}
                   value={form.values.tmdbSeasonNumber ?? ''}
-                  onChange={(val) => form.setFieldValue('tmdbSeasonNumber', val === '' ? null : Number(val))}
+                  onChange={(val) =>
+                    form.setFieldValue(
+                      'tmdbSeasonNumber',
+                      val === '' ? null : Number(val),
+                    )
+                  }
                 />
               )}
             </Stack>

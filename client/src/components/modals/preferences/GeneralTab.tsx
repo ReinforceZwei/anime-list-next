@@ -26,7 +26,9 @@ export function GeneralTab({ form }: GeneralTabProps) {
         label="顯示內建快捷按鈕"
         description="在動畫資訊卡中顯示內建的狀態轉換按鈕（如「開始觀看」、「標記為已看完」等）"
         labelPosition="left"
-        {...form.getInputProps('uiConfig.showBuiltInActions', { type: 'checkbox' })}
+        {...form.getInputProps('uiConfig.showBuiltInActions', {
+          type: 'checkbox',
+        })}
       />
       <Anchor
         href={pbAdminUrl}

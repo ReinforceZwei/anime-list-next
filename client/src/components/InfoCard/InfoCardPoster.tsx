@@ -20,7 +20,11 @@ export default function InfoCardPoster() {
               modals.openContextModal({
                 modal: 'tmdbSearch',
                 title: '連結至 TMDb',
-                innerProps: { mode: 'link', animeId: anime.id, initialQuery: anime.customName ?? '' },
+                innerProps: {
+                  mode: 'link',
+                  animeId: anime.id,
+                  initialQuery: anime.customName ?? '',
+                },
               })
             }}
           >
@@ -39,7 +43,9 @@ export default function InfoCardPoster() {
       role={posterUrl ? 'button' : undefined}
       aria-label={posterUrl ? '全螢幕檢視海報' : undefined}
       tabIndex={posterUrl ? 0 : undefined}
-      onKeyDown={posterUrl ? (e) => e.key === 'Enter' && onPosterClick() : undefined}
+      onKeyDown={
+        posterUrl ? (e) => e.key === 'Enter' && onPosterClick() : undefined
+      }
     />
   )
 }

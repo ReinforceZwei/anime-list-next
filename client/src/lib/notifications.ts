@@ -7,7 +7,7 @@ export function showErrorNotification(err: unknown) {
   if (err instanceof ClientResponseError) {
     console.debug('[showErrorNotification] ClientResponseError', err.toJSON())
   }
-    
+
   notifications.show({
     color: 'red',
     title: '操作失敗',

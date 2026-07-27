@@ -19,5 +19,3 @@ export const modals = {
   tagForm: TagFormModal,
   preferences: PreferencesModal,
 }
-
-

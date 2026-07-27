@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
 import { useAnimeList } from './useAnimeList'
 
-function toKey(mediaType: 'tv' | 'movie', tmdbId: number, seasonNumber?: number) {
+function toKey(
+  mediaType: 'tv' | 'movie',
+  tmdbId: number,
+  seasonNumber?: number,
+) {
   return mediaType === 'tv' ? `tv-${tmdbId}-${seasonNumber}` : `movie-${tmdbId}`
 }
 
@@ -16,7 +20,9 @@ export function useAnimeExistsMap() {
     const set = new Set<string>()
     for (const record of list ?? []) {
       if (!record.tmdbId || !record.tmdbMediaType) continue
-      set.add(toKey(record.tmdbMediaType, record.tmdbId, record.tmdbSeasonNumber))
+      set.add(
+        toKey(record.tmdbMediaType, record.tmdbId, record.tmdbSeasonNumber),
+      )
     }
     return set
   }, [list])

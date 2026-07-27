@@ -1,7 +1,11 @@
 import { bench, describe } from 'vitest'
 import { evaluateFilter } from '@/lib/filterEngine'
 import type { AnimeRecord } from '@/types/anime'
-import type { FilterExpression, FilterCondition, FilterGroup } from '@/types/filter'
+import type {
+  FilterExpression,
+  FilterCondition,
+  FilterGroup,
+} from '@/types/filter'
 
 // ---- Realistic record factory ----
 
@@ -21,22 +25,42 @@ function generateRecords(count: number): AnimeRecord[] {
   const statuses = ['planned', 'watching', 'completed', 'dropped', undefined]
   const dlStatuses = ['pending', 'downloading', 'downloaded', undefined]
   const titles = [
-    'Sword Art Online', 'Attack on Titan', 'One Piece',
-    'Demon Slayer', 'Jujutsu Kaisen', 'Chainsaw Man',
-    'Spy x Family', 'Frieren', 'Vinland Saga', 'Mushoku Tensei',
+    'Sword Art Online',
+    'Attack on Titan',
+    'One Piece',
+    'Demon Slayer',
+    'Jujutsu Kaisen',
+    'Chainsaw Man',
+    'Spy x Family',
+    'Frieren',
+    'Vinland Saga',
+    'Mushoku Tensei',
   ]
-  const tagsPool = ['action', 'fantasy', 'comedy', 'romance', 'sci-fi', 'horror', 'slice-of-life']
+  const tagsPool = [
+    'action',
+    'fantasy',
+    'comedy',
+    'romance',
+    'sci-fi',
+    'horror',
+    'slice-of-life',
+  ]
 
   return Array.from({ length: count }, (_, i) =>
     makeRecord({
       id: `rec-${i}`,
       status: statuses[i % statuses.length] as AnimeRecord['status'],
-      downloadStatus: dlStatuses[i % dlStatuses.length] as AnimeRecord['downloadStatus'],
-      rating: (i % 11), // 0-10
+      downloadStatus: dlStatuses[
+        i % dlStatuses.length
+      ] as AnimeRecord['downloadStatus'],
+      rating: i % 11, // 0-10
       cachedTitle: titles[i % titles.length],
       tags: tagsPool.filter(() => Math.random() > 0.5),
-      startedAt: `202${(i % 5)}-0${(i % 9) + 1}-15T00:00:00.000Z`,
-      completedAt: i % 3 === 0 ? `202${(i % 5)}-0${(i % 9) + 1}-20T00:00:00.000Z` : undefined,
+      startedAt: `202${i % 5}-0${(i % 9) + 1}-15T00:00:00.000Z`,
+      completedAt:
+        i % 3 === 0
+          ? `202${i % 5}-0${(i % 9) + 1}-20T00:00:00.000Z`
+          : undefined,
     }),
   )
 }
@@ -67,7 +91,9 @@ function group(
 // ======================================================================
 
 describe('single condition — select', () => {
-  const filter: FilterExpression = group('and', [cond('status', 'eq', 'watching')])
+  const filter: FilterExpression = group('and', [
+    cond('status', 'eq', 'watching'),
+  ])
   const recMatch = makeRecord({ status: 'watching' })
   const recMiss = makeRecord({ status: 'completed' })
 
@@ -90,7 +116,9 @@ describe('single condition — number', () => {
 })
 
 describe('single condition — text', () => {
-  const filter: FilterExpression = group('and', [cond('cachedTitle', 'contains', 'sword')])
+  const filter: FilterExpression = group('and', [
+    cond('cachedTitle', 'contains', 'sword'),
+  ])
   const rec = makeRecord({ cachedTitle: 'Sword Art Online' })
 
   bench('contains (match)', () => {
@@ -125,7 +153,11 @@ describe('single condition — tags', () => {
 // ======================================================================
 
 describe('group nesting depth', () => {
-  const rec = makeRecord({ status: 'watching', rating: 8, cachedTitle: 'Sword Art Online' })
+  const rec = makeRecord({
+    status: 'watching',
+    rating: 8,
+    cachedTitle: 'Sword Art Online',
+  })
 
   bench('depth 1 (flat AND of 3)', () => {
     evaluateFilter(

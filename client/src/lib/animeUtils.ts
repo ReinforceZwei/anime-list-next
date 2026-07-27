@@ -17,7 +17,11 @@ export function sortTags(tags: TagRecord[]) {
  * 4. fallback (defaults to empty string)
  */
 export function getDisplayTitle(
-  record: { customName?: string; cachedTitle?: string; cachedSeasonName?: string },
+  record: {
+    customName?: string
+    cachedTitle?: string
+    cachedSeasonName?: string
+  },
   fallback = '',
 ): string {
   if (record.customName) return record.customName

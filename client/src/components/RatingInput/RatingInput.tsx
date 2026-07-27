@@ -1,8 +1,18 @@
-import { ActionIcon, NumberInput, Rating, Stack, type NumberInputHandlers, type NumberInputProps } from '@mantine/core'
+import {
+  ActionIcon,
+  NumberInput,
+  Rating,
+  Stack,
+  type NumberInputHandlers,
+  type NumberInputProps,
+} from '@mantine/core'
 import { IconMinus, IconPlus } from '@tabler/icons-react'
 import { useRef } from 'react'
 
-type RatingInputProps = Omit<NumberInputProps, 'leftSection' | 'rightSection' | 'hideControls' | 'handlersRef'>
+type RatingInputProps = Omit<
+  NumberInputProps,
+  'leftSection' | 'rightSection' | 'hideControls' | 'handlersRef'
+>
 
 export function RatingInput({
   label = '評分（0-5）',

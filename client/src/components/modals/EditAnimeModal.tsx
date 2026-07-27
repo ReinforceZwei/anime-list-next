@@ -18,12 +18,21 @@ import { DateTimePicker } from '@mantine/dates'
 import { useForm } from '@mantine/form'
 import { modals } from '@/lib/modalStack'
 import type { ContextModalProps } from '@/lib/modalStack'
-import { IconAlertTriangle, IconLink, IconTags, IconTrash } from '@tabler/icons-react'
+import {
+  IconAlertTriangle,
+  IconLink,
+  IconTags,
+  IconTrash,
+} from '@tabler/icons-react'
 import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useTagList } from '@/hooks/useTagList'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
 import { RatingInput } from '@/components/RatingInput/RatingInput'
-import { SELECT_STATUS_OPTIONS, SELECT_DOWNLOAD_OPTIONS, SELECT_MEDIA_OPTIONS } from '@/lib/fieldRegistry'
+import {
+  SELECT_STATUS_OPTIONS,
+  SELECT_DOWNLOAD_OPTIONS,
+  SELECT_MEDIA_OPTIONS,
+} from '@/lib/fieldRegistry'
 import type { AnimeRecord } from '@/types/anime'
 import dayjs from 'dayjs'
 
@@ -33,14 +42,19 @@ type EditAnimeInnerProps = {
   onDeleted?: () => void
 }
 
-
 function parseLocalDateString(val: string | Date | null): Date | null {
   if (!val) return null
   if (val instanceof Date) return val
   return dayjs(val).toDate()
 }
 
-export function EditAnimeModal({ context, id, innerProps, title, modalProps }: ContextModalProps<EditAnimeInnerProps>) {
+export function EditAnimeModal({
+  context,
+  id,
+  innerProps,
+  title,
+  modalProps,
+}: ContextModalProps<EditAnimeInnerProps>) {
   const { anime, onSaved, onDeleted } = innerProps
   const { updateMutation, deleteMutation } = useAnimeMutation()
   const { data: tagList } = useTagList()
@@ -77,7 +91,9 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
         remark: values.remark || null,
         tags: values.tags,
         startedAt: values.startedAt ? values.startedAt.toISOString() : null,
-        completedAt: values.completedAt ? values.completedAt.toISOString() : null,
+        completedAt: values.completedAt
+          ? values.completedAt.toISOString()
+          : null,
         tmdbId: values.tmdbId ?? 0,
         tmdbMediaType: values.tmdbMediaType,
         tmdbSeasonNumber: values.tmdbSeasonNumber ?? 0,
@@ -94,20 +110,20 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
   function handleDelete() {
     modals.openConfirmModal({
       title: '刪除動畫',
-      children: (
-        <Text size="sm">
-          確定要刪除此動畫嗎？此操作無法復原。
-        </Text>
-      ),
+      children: <Text size="sm">確定要刪除此動畫嗎？此操作無法復原。</Text>,
       labels: { confirm: '刪除', cancel: '取消' },
       confirmProps: { color: 'red' },
       onConfirm: () => {
         // mutate() callbacks are observer-bound and silently dropped when called
         // from a nested modal context. mutateAsync() returns a plain Promise so
         // .then() always fires regardless of observer lifecycle.
-        deleteMutation.mutateAsync({ id: anime.id })
-          .then(() => { modals.closeAll(); onDeleted?.() })
-          .catch(() => { })
+        deleteMutation
+          .mutateAsync({ id: anime.id })
+          .then(() => {
+            modals.closeAll()
+            onDeleted?.()
+          })
+          .catch(() => {})
       },
     })
   }
@@ -121,7 +137,11 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
   }
 
   return (
-    <Modal.Root closeOnClickOutside={false} closeOnEscape={false} {...modalProps}>
+    <Modal.Root
+      closeOnClickOutside={false}
+      closeOnEscape={false}
+      {...modalProps}
+    >
       <Modal.Overlay />
       <Modal.Content
         styles={{
@@ -129,7 +149,7 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
             overflowY: 'unset',
             display: 'flex',
             flexDirection: 'column',
-          }
+          },
         }}
       >
         <Modal.Header>
@@ -138,23 +158,24 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
         </Modal.Header>
         <Modal.Body styles={{ body: { overflowY: 'auto' } }}>
           <form id="edit-anime-form" onSubmit={form.onSubmit(handleSubmit)}>
-            {Boolean(anime.tmdbId) && (anime.cachedTitle || anime.cachedSeasonName) && (
-              <>
-                <Stack gap={2} mb="xs">
-                  {anime.cachedTitle && (
-                    <Text fw={600} size="md" lineClamp={2}>
-                      {anime.cachedTitle}
-                    </Text>
-                  )}
-                  {anime.cachedSeasonName && (
-                    <Text size="sm" c="dimmed">
-                      {anime.cachedSeasonName}
-                    </Text>
-                  )}
-                </Stack>
-                <Divider mb="md" />
-              </>
-            )}
+            {Boolean(anime.tmdbId) &&
+              (anime.cachedTitle || anime.cachedSeasonName) && (
+                <>
+                  <Stack gap={2} mb="xs">
+                    {anime.cachedTitle && (
+                      <Text fw={600} size="md" lineClamp={2}>
+                        {anime.cachedTitle}
+                      </Text>
+                    )}
+                    {anime.cachedSeasonName && (
+                      <Text size="sm" c="dimmed">
+                        {anime.cachedSeasonName}
+                      </Text>
+                    )}
+                  </Stack>
+                  <Divider mb="md" />
+                </>
+              )}
 
             <Tabs defaultValue="general">
               <Tabs.List>
@@ -235,14 +256,24 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
                     placeholder="選擇日期與時間"
                     clearable
                     value={form.values.startedAt}
-                    onChange={(val) => form.setFieldValue('startedAt', parseLocalDateString(val as string | null))}
+                    onChange={(val) =>
+                      form.setFieldValue(
+                        'startedAt',
+                        parseLocalDateString(val as string | null),
+                      )
+                    }
                   />
                   <DateTimePicker
                     label="完成時間"
                     placeholder="選擇日期與時間"
                     clearable
                     value={form.values.completedAt}
-                    onChange={(val) => form.setFieldValue('completedAt', parseLocalDateString(val as string | null))}
+                    onChange={(val) =>
+                      form.setFieldValue(
+                        'completedAt',
+                        parseLocalDateString(val as string | null),
+                      )
+                    }
                   />
 
                   <Divider label="TMDb 資料" labelPosition="left" />
@@ -254,7 +285,12 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
                       modals.openContextModal({
                         modal: 'tmdbSearch',
                         title: '重新連結至 TMDb',
-                        innerProps: { mode: 'link', animeId: anime.id, initialQuery: anime.customName || anime.cachedTitle || '' },
+                        innerProps: {
+                          mode: 'link',
+                          animeId: anime.id,
+                          initialQuery:
+                            anime.customName || anime.cachedTitle || '',
+                        },
                       })
                     }}
                   >
@@ -275,15 +311,17 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
                     min={1}
                     allowDecimal={false}
                     value={form.values.tmdbId ?? ''}
-                    onChange={(val) => form.setFieldValue('tmdbId', val === '' ? null : Number(val))}
+                    onChange={(val) =>
+                      form.setFieldValue(
+                        'tmdbId',
+                        val === '' ? null : Number(val),
+                      )
+                    }
                   />
 
                   <Select
                     label="TMDb 媒體類型"
-                    data={[
-                      { value: '', label: '無' },
-                      ...SELECT_MEDIA_OPTIONS,
-                    ]}
+                    data={[{ value: '', label: '無' }, ...SELECT_MEDIA_OPTIONS]}
                     {...form.getInputProps('tmdbMediaType')}
                   />
 
@@ -294,13 +332,17 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
                       min={0}
                       allowDecimal={false}
                       value={form.values.tmdbSeasonNumber ?? ''}
-                      onChange={(val) => form.setFieldValue('tmdbSeasonNumber', val === '' ? null : Number(val))}
+                      onChange={(val) =>
+                        form.setFieldValue(
+                          'tmdbSeasonNumber',
+                          val === '' ? null : Number(val),
+                        )
+                      }
                     />
                   )}
                 </Stack>
               </Tabs.Panel>
             </Tabs>
-
           </form>
         </Modal.Body>
         <Group
@@ -325,7 +367,11 @@ export function EditAnimeModal({ context, id, innerProps, title, modalProps }: C
           <Button variant="default" onClick={() => context.closeModal(id)}>
             取消
           </Button>
-          <Button type="submit" form="edit-anime-form" loading={updateMutation.isPending}>
+          <Button
+            type="submit"
+            form="edit-anime-form"
+            loading={updateMutation.isPending}
+          >
             儲存
           </Button>
         </Group>
