@@ -79,6 +79,10 @@ function deriveStyle(
 export function useWallpaper(): {
   style: React.CSSProperties
   isLoading: boolean
+  /** Resolved image URL (only set when config.type is 'image' and file exists) */
+  imageUrl?: string
+  /** Current wallpaper config */
+  config: WallpaperConfig
 } {
   const isAuthenticated = pb.authStore.isValid
 
@@ -94,34 +98,41 @@ export function useWallpaper(): {
     // Unauthenticated: use cache or default, not loading
     if (!isAuthenticated) {
       if (cache) {
+        const config: WallpaperConfig =
+          cache.type === 'default' ? { type: 'default' }
+          : cache.type === 'color' ? { type: 'color', color: cache.color! }
+          : { type: 'image', position: cache.position, repeat: cache.repeat, size: cache.size }
         return {
-          style: deriveStyle(
-            cache.type === 'default' ? { type: 'default' }
-            : cache.type === 'color' ? { type: 'color', color: cache.color! }
-            : { type: 'image', position: cache.position, repeat: cache.repeat, size: cache.size },
-            cache.imageUrl,
-          ),
+          style: deriveStyle(config, cache.imageUrl),
           isLoading: false,
+          imageUrl: cache.imageUrl,
+          config,
         }
       }
-      return { style: deriveStyle(DEFAULT_WALLPAPER_CONFIG), isLoading: false }
+      return {
+        style: deriveStyle(DEFAULT_WALLPAPER_CONFIG),
+        isLoading: false,
+        imageUrl: undefined,
+        config: DEFAULT_WALLPAPER_CONFIG,
+      }
     }
 
     // Authenticated: waiting for server data
     if (prefs === undefined) {
       // Show cached style while loading to avoid flicker
       if (cache) {
+        const config: WallpaperConfig =
+          cache.type === 'default' ? { type: 'default' }
+          : cache.type === 'color' ? { type: 'color', color: cache.color! }
+          : { type: 'image', position: cache.position, repeat: cache.repeat, size: cache.size }
         return {
-          style: deriveStyle(
-            cache.type === 'default' ? { type: 'default' }
-            : cache.type === 'color' ? { type: 'color', color: cache.color! }
-            : { type: 'image', position: cache.position, repeat: cache.repeat, size: cache.size },
-            cache.imageUrl,
-          ),
+          style: deriveStyle(config, cache.imageUrl),
           isLoading: true,
+          imageUrl: cache.imageUrl,
+          config,
         }
       }
-      return { style: {}, isLoading: true }
+      return { style: {}, isLoading: true, imageUrl: undefined, config: DEFAULT_WALLPAPER_CONFIG }
     }
 
     // Authenticated with server data (prefs may be null = no record yet)
@@ -155,6 +166,8 @@ export function useWallpaper(): {
     return {
       style: deriveStyle(serverConfig, imageUrl),
       isLoading: false,
+      imageUrl,
+      config: serverConfig,
     }
   }, [prefs, serverConfig, serverWallpaperFile, isAuthenticated])
 

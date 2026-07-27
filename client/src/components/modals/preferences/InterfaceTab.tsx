@@ -1,4 +1,5 @@
 import {
+  AspectRatio,
   Button,
   ColorInput,
   Divider,
@@ -17,6 +18,7 @@ import type { ActionButton } from '@/types/filter'
 import { BackgroundPositionInput } from '@/components/BackgroundPositionInput/BackgroundPositionInput'
 import { useUiScale } from '@/components/modals/preferences/useUiScale'
 import type { useWallpaperUpload } from '@/components/modals/preferences/useWallpaperUpload'
+import { useWallpaper } from '@/hooks/useWallpaper'
 
 interface InterfaceTabProps {
   form: UseFormReturnType<{
@@ -29,6 +31,7 @@ interface InterfaceTabProps {
 
 export function InterfaceTab({ form, wallpaper }: InterfaceTabProps) {
   const { scale, decrement, increment, min, max } = useUiScale()
+  const { imageUrl } = useWallpaper()
 
   return (
     <Stack>
@@ -102,16 +105,17 @@ export function InterfaceTab({ form, wallpaper }: InterfaceTabProps) {
                 )}
               </FileButton>
             </Group>
-            {wallpaper.previewUrl && (
-              <Image
-                src={wallpaper.previewUrl}
-                alt="桌布預覽"
-                mt="sm"
-                radius="md"
-                fit="cover"
-                h={120}
-                style={{ border: '1px solid var(--mantine-color-default-border)' }}
-              />
+            {(wallpaper.previewUrl || imageUrl) && (
+              <AspectRatio ratio={16 / 9} mx="auto">
+                <Image
+                  src={wallpaper.previewUrl || imageUrl}
+                  alt="桌布預覽"
+                  mt="sm"
+                  radius="md"
+                  fit="cover"
+                  style={{ border: '1px solid var(--mantine-color-default-border)' }}
+                />
+              </AspectRatio>
             )}
           </div>
 
