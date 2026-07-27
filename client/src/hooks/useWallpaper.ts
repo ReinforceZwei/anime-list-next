@@ -2,16 +2,13 @@ import { useMemo } from 'react'
 import { pb } from '@/lib/pb'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { DEFAULT_WALLPAPER_CONFIG } from '@/types/anime'
-import type { WallpaperConfig } from '@/types/anime'
+import type { WallpaperConfig, UIConfig } from '@/types/anime'
 
 interface WallpaperCache {
-  type: WallpaperConfig['type']
-  color?: string
-  imageUrl?: string
-  imageFile?: string
-  position?: string
-  repeat?: string
-  size?: string
+  id: string
+  collectionId: string
+  wallpaper?: string
+  uiConfig?: UIConfig
 }
 
 const CACHE_KEY = 'wallpaper-cache'
@@ -33,7 +30,6 @@ function writeCache(cache: WallpaperCache): void {
 }
 
 function getFileUrl(record: { id: string; collectionId: string }, filename: string): string {
-  // pb.files.getURL is stable for the same record + filename
   return pb.files.getURL(record, filename)
 }
 
@@ -53,7 +49,7 @@ function deriveStyle(
     case 'color':
       return { backgroundColor: config.color }
     case 'image': {
-      if (!imageUrl) return {} // still loading
+      if (!imageUrl) return {}
       return {
         backgroundImage: `url(${imageUrl})`,
         backgroundPosition: config.position || 'center',
@@ -63,6 +59,34 @@ function deriveStyle(
       }
     }
   }
+}
+
+function resolveWallpaper(
+  prefs: { id: string; collectionId: string; wallpaper?: string; uiConfig?: UIConfig } | null | undefined,
+  cache: WallpaperCache | null,
+): { config: WallpaperConfig; imageUrl?: string } {
+  // Server data available (may be null = user has no preferences record yet)
+  if (prefs !== undefined) {
+    const config = prefs?.uiConfig?.wallpaper ?? DEFAULT_WALLPAPER_CONFIG
+    const wallpaperFile = prefs?.wallpaper
+    const imageUrl = (config.type === 'image' && wallpaperFile && prefs)
+      ? getFileUrl(prefs, wallpaperFile)
+      : undefined
+    return { config, imageUrl }
+  }
+
+  // Loading — use cache
+  if (cache) {
+    const config = cache.uiConfig?.wallpaper ?? DEFAULT_WALLPAPER_CONFIG
+    const wallpaperFile = cache.wallpaper
+    const imageUrl = (config.type === 'image' && wallpaperFile)
+      ? getFileUrl({ id: cache.id, collectionId: cache.collectionId }, wallpaperFile)
+      : undefined
+    return { config, imageUrl }
+  }
+
+  // No cache, no server — default
+  return { config: DEFAULT_WALLPAPER_CONFIG }
 }
 
 /**
@@ -87,89 +111,32 @@ export function useWallpaper(): {
   const isAuthenticated = pb.authStore.isValid
 
   // Only call useUserPreferences when authenticated — avoids doomed query on login page
-  const { data: prefs } = useUserPreferences({ enabled: isAuthenticated })
-
-  const serverConfig: WallpaperConfig = prefs?.uiConfig?.wallpaper ?? DEFAULT_WALLPAPER_CONFIG
-  const serverWallpaperFile: string | undefined = prefs?.wallpaper
+  const { data: prefs, isLoading } = useUserPreferences({ enabled: isAuthenticated })
 
   const result = useMemo(() => {
     const cache = readCache()
 
-    // Unauthenticated: use cache or default, not loading
-    if (!isAuthenticated) {
-      if (cache) {
-        const config: WallpaperConfig =
-          cache.type === 'default' ? { type: 'default' }
-          : cache.type === 'color' ? { type: 'color', color: cache.color! }
-          : { type: 'image', position: cache.position, repeat: cache.repeat, size: cache.size }
-        return {
-          style: deriveStyle(config, cache.imageUrl),
-          isLoading: false,
-          imageUrl: cache.imageUrl,
-          config,
-        }
+    // Resolve effective config + imageUrl from server or cache
+    const { config, imageUrl } = resolveWallpaper(prefs, cache)
+
+    // Sync server data back to localStorage
+    if (prefs) {
+      const newCache: WallpaperCache = {
+        id: prefs.id,
+        collectionId: prefs.collectionId,
+        wallpaper: prefs.wallpaper,
+        uiConfig: prefs.uiConfig,
       }
-      return {
-        style: deriveStyle(DEFAULT_WALLPAPER_CONFIG),
-        isLoading: false,
-        imageUrl: undefined,
-        config: DEFAULT_WALLPAPER_CONFIG,
+      if (JSON.stringify(newCache) !== JSON.stringify(cache)) {
+        writeCache(newCache)
       }
     }
 
-    // Authenticated: waiting for server data
-    if (prefs === undefined) {
-      // Show cached style while loading to avoid flicker
-      if (cache) {
-        const config: WallpaperConfig =
-          cache.type === 'default' ? { type: 'default' }
-          : cache.type === 'color' ? { type: 'color', color: cache.color! }
-          : { type: 'image', position: cache.position, repeat: cache.repeat, size: cache.size }
-        return {
-          style: deriveStyle(config, cache.imageUrl),
-          isLoading: true,
-          imageUrl: cache.imageUrl,
-          config,
-        }
-      }
-      return { style: {}, isLoading: true, imageUrl: undefined, config: DEFAULT_WALLPAPER_CONFIG }
-    }
+    // When loading with no cache, render empty style to avoid default-wallpaper flash
+    const style = (isLoading && !cache) ? {} : deriveStyle(config, imageUrl)
 
-    // Authenticated with server data (prefs may be null = no record yet)
-    let imageUrl: string | undefined
-
-    if (serverConfig.type === 'image' && serverWallpaperFile) {
-      // Same file as cached? reuse URL; otherwise resolve & update cache
-      if (cache?.imageFile === serverWallpaperFile && cache?.imageUrl) {
-        imageUrl = cache.imageUrl
-      } else {
-        imageUrl = getFileUrl(prefs!, serverWallpaperFile)
-      }
-    }
-
-    // Build new cache entry
-    const newCache: WallpaperCache = {
-      type: serverConfig.type,
-      color: serverConfig.type === 'color' ? serverConfig.color : undefined,
-      imageUrl,
-      imageFile: serverConfig.type === 'image' ? serverWallpaperFile : undefined,
-      position: serverConfig.type === 'image' ? serverConfig.position : undefined,
-      repeat: serverConfig.type === 'image' ? serverConfig.repeat : undefined,
-      size: serverConfig.type === 'image' ? serverConfig.size : undefined,
-    }
-
-    // Write back only if changed
-    if (JSON.stringify(newCache) !== JSON.stringify(cache)) {
-      writeCache(newCache)
-    }
-
-    return {
-      style: deriveStyle(serverConfig, imageUrl),
-      isLoading: false,
-      imageUrl,
-      config: serverConfig,
-    }
-  }, [prefs, serverConfig, serverWallpaperFile, isAuthenticated])
+    return { style, isLoading, imageUrl, config }
+  }, [prefs, isAuthenticated])
 
   return result
 }
