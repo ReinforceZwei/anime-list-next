@@ -12,6 +12,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { theme } from '@/theme'
 import { DatesProvider } from '@mantine/dates'
 import { WallpaperLayer } from '@/components/WallpaperLayer/WallpaperLayer'
+import { GlassmorphismLayer } from '@/components/GlassmorphismLayer/GlassmorphismLayer'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-tw'
 
@@ -33,6 +34,7 @@ function RootLayout() {
           <ModalStackProvider modals={modals}>
             <Notifications position="top-left" />
             <WallpaperLayer />
+            <GlassmorphismLayer />
             <div>
               <Outlet />
             </div>

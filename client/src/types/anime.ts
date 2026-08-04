@@ -40,12 +40,15 @@ export interface UIConfig {
   pageTitle?: string
   /** Show built-in quick-action buttons (status transitions) on the InfoCard. Default: true */
   showBuiltInActions?: boolean
+  /** Enable glassmorphism (frosted glass) effect on cards, menus and buttons. Default: false */
+  glassmorphism?: boolean
   wallpaper?: WallpaperConfig
 }
 
 export const DEFAULT_UI_CONFIG: UIConfig = {
   pageTitle: '',
   showBuiltInActions: true,
+  glassmorphism: false,
   wallpaper: DEFAULT_WALLPAPER_CONFIG,
 }
 

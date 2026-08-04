@@ -1,0 +1,20 @@
+/*
+ * Glassmorphism tokens.
+ * Enabled globally by `data-glassmorphism` on <html> (managed by GlassmorphismLayer).
+ * Components opt in with `[data-glassmorphism] .className` selectors in their CSS
+ * modules, mirroring Mantine's `[data-mantine-color-scheme='dark']` pattern.
+ */
+:root[data-glassmorphism] {
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-blur: 14px;
+  --glass-saturate: 180%;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.35);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+:root[data-glassmorphism][data-mantine-color-scheme='dark'] {
+  --glass-bg: rgba(30, 30, 46, 0.55);
+  --glass-bg-strong: rgba(45, 45, 68, 0.72);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.12);
+}

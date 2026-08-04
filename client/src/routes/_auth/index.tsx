@@ -26,6 +26,7 @@ import {
   type LocalSearchHandle,
 } from '@/components/LocalSearch/LocalSearch'
 import { FilterPopover } from '@/components/FilterPopover/FilterPopover'
+import glass from '@/components/Glass.module.css'
 import { evaluateFilter } from '@/lib/filterEngine'
 import type { FilterExpression } from '@/types/filter'
 import { useMemo, useRef, useState } from 'react'
@@ -198,6 +199,7 @@ function Index() {
             size="lg"
             radius="xl"
             color="blue"
+            className={glass.roundButton}
             style={(theme) => ({ boxShadow: theme.shadows.md })}
             aria-label="清除篩選"
             onClick={() => setGlobalFilter(null)}
@@ -209,6 +211,7 @@ function Index() {
           variant="white"
           size="lg"
           radius="xl"
+          className={glass.roundButton}
           style={(theme) => ({ boxShadow: theme.shadows.md })}
           aria-label="搜尋 TMDb"
           onClick={openTmdbModal}

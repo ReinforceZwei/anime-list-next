@@ -24,6 +24,7 @@ import { useTagList } from '@/hooks/useTagList'
 import { getDisplayTitle } from '@/lib/animeUtils'
 import { TagMultiSelect } from '@/components/TagMultiSelect/TagMultiSelect'
 import classes from './LocalSearch.module.css'
+import glass from '@/components/Glass.module.css'
 
 interface LocalSearchProps {
   jumpTo: (id: string) => void
@@ -89,6 +90,7 @@ export const LocalSearch = forwardRef<LocalSearchHandle, LocalSearchProps>(
           variant="white"
           size="lg"
           radius="lg"
+          className={glass.roundButton}
           style={(theme) => ({ boxShadow: theme.shadows.md })}
           onClick={() => setOpened((o) => !o)}
           aria-label="搜尋動畫"
@@ -96,7 +98,11 @@ export const LocalSearch = forwardRef<LocalSearchHandle, LocalSearchProps>(
           <IconSearch size="1.2em" />
         </ActionIcon>
         {opened && (
-          <Paper shadow="xl" withBorder className={classes.panel}>
+          <Paper
+            shadow="xl"
+            withBorder
+            className={`${classes.panel} ${glass.panel}`}
+          >
             <Group gap="xs" wrap="nowrap">
               <TextInput
                 ref={inputRef}

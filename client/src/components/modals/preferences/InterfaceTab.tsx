@@ -9,6 +9,7 @@ import {
   SegmentedControl,
   Select,
   Stack,
+  Switch,
   Text,
 } from '@mantine/core'
 import { IconMinus, IconPlus, IconUpload } from '@tabler/icons-react'
@@ -35,6 +36,16 @@ export function InterfaceTab({ form, wallpaper }: InterfaceTabProps) {
 
   return (
     <Stack>
+      <Divider label="玻璃擬態" labelPosition="left" />
+      <Switch
+        label="啟用玻璃擬態效果"
+        description="為卡片、選單與按鈕加入半透明模糊的毛玻璃背景"
+        labelPosition="left"
+        {...form.getInputProps('uiConfig.glassmorphism', {
+          type: 'checkbox',
+        })}
+      />
+
       <Divider label="介面縮放" labelPosition="left" />
       <div>
         <Text size="sm" fw={500} mb={4}>

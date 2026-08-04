@@ -1,0 +1,8 @@
+[data-glassmorphism] .dropdown {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(calc(var(--glass-blur) + 4px))
+    saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 4px))
+    saturate(var(--glass-saturate));
+  border: var(--glass-border);
+}

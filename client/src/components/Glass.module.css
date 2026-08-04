@@ -1,0 +1,22 @@
+/*
+ * Shared glassmorphism helpers.
+ * Only active while <html data-glassmorphism> is present (see GlassmorphismLayer).
+ * - .roundButton : floating white round buttons (menu, search, filter, add, ...)
+ * - .panel       : popover / search dropdown panels
+ */
+[data-glassmorphism] .roundButton {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur))
+    saturate(var(--glass-saturate));
+  border: var(--glass-border);
+}
+
+[data-glassmorphism] .panel {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(calc(var(--glass-blur) + 4px))
+    saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 4px))
+    saturate(var(--glass-saturate));
+  border: var(--glass-border);
+}

@@ -4,6 +4,15 @@
   border-top-right-radius: 0;
 }
 
+[data-glassmorphism] .paper {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur))
+    saturate(var(--glass-saturate));
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
 @media only screen and (min-width: 780px) {
   .paper {
     max-width: 43.75rem;

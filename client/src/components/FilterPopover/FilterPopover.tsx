@@ -12,6 +12,7 @@ import type { FilterExpression } from '@/types/filter'
 import { createEmptyFilter } from '@/types/filter'
 import { FilterBuilder } from '../FilterBuilder/FilterBuilder'
 import classes from './FilterPopover.module.css'
+import glass from '@/components/Glass.module.css'
 
 interface FilterPopoverProps {
   /** The currently applied filter (null = none). */
@@ -63,6 +64,7 @@ export function FilterPopover({ value, onChange }: FilterPopoverProps) {
           variant="white"
           size="lg"
           radius="lg"
+          className={glass.roundButton}
           style={(theme) => ({ boxShadow: theme.shadows.md })}
           onClick={() => setOpened((o) => !o)}
           aria-label="進階篩選"
@@ -72,7 +74,11 @@ export function FilterPopover({ value, onChange }: FilterPopoverProps) {
       </Indicator>
 
       {opened && (
-        <Paper shadow="xl" withBorder className={classes.panel}>
+        <Paper
+          shadow="xl"
+          withBorder
+          className={`${classes.panel} ${glass.panel}`}
+        >
           <Stack gap="sm">
             <Group justify="space-between" wrap="nowrap">
               <Group gap="xs" wrap="nowrap">

@@ -13,6 +13,8 @@ import {
 } from '@tabler/icons-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
+import classes from './AppMenu.module.css'
+import glass from '@/components/Glass.module.css'
 
 export default function AppMenu() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
@@ -26,12 +28,13 @@ export default function AppMenu() {
   }
 
   return (
-    <Menu>
+    <Menu classNames={{ dropdown: classes.dropdown }}>
       <Menu.Target>
         <ActionIcon
           variant="white"
           size="lg"
           radius="xl"
+          className={glass.roundButton}
           style={(theme) => ({ boxShadow: theme.shadows.md })}
           aria-label="選單"
         >
