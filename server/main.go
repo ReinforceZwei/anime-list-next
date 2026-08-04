@@ -83,18 +83,8 @@ func main() {
 		Automigrate: isGoRun,
 	})
 
-	app.OnRecordCreate("users").BindFunc(func(e *core.RecordEvent) error {
-		if cfg.DisableRegister {
-			total, err := e.App.CountRecords("users", nil)
-			if err != nil {
-				return err
-			}
-			if total > 0 {
-				return apis.NewForbiddenError("Registration is disabled.", nil)
-			}
-		}
-		return e.Next()
-	})
+	usersHooks := hooks.NewUsersHooks(cfg.DisableRegister)
+	usersHooks.Register(app)
 
 	animeHooks, err := hooks.NewAnimesHooks(cfg.TmdbApiKey)
 	if err != nil {
