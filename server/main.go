@@ -109,6 +109,7 @@ func main() {
 	sentryMiddleware := middlewares.NewSentryMiddleware()
 
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
+		log.Printf("anime-list-next server version %s (commit %s, built %s)\n", version, commit, date)
 		tmdbRoutes.Register(se)
 		importExportRoutes.Register(se)
 		versionRoutes.Register(se)
