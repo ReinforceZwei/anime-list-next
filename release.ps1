@@ -1,8 +1,10 @@
-# Usage: .\release.ps1 [-Bump patch|minor|major]
+# Usage: .\release.ps1 [-Bump patch|minor|major] [-Push]
 # Bumps the npm version in client/, creates a git commit, and tags it.
+# With -Push, also pushes the commit and tag to origin.
 param(
     [ValidateSet("patch", "minor", "major")]
-    [string]$Bump = "patch"
+    [string]$Bump = "patch",
+    [switch]$Push
 )
 
 $ErrorActionPreference = "Stop"
@@ -30,7 +32,13 @@ git add client/package.json client/package-lock.json
 git commit -m "chore: release $Tag"
 git tag $Tag
 
-Write-Host ""
-Write-Host "Done. Run the following to publish:"
-Write-Host ""
-Write-Host "  git push; git push --tags"
+if ($Push) {
+    Write-Host "Pushing $Tag..."
+    git push
+    git push --tags
+} else {
+    Write-Host ""
+    Write-Host "Done. Run the following to publish:"
+    Write-Host ""
+    Write-Host "  git push; git push --tags"
+}
