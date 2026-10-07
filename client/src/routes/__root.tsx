@@ -2,7 +2,7 @@ import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { MantineProvider, localStorageColorSchemeManager } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
 import '@mantine/notifications/styles.css'
@@ -15,8 +15,10 @@ import { WallpaperLayer } from '@/components/WallpaperLayer/WallpaperLayer'
 import { GlassmorphismLayer } from '@/components/GlassmorphismLayer/GlassmorphismLayer'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-tw'
+import { useEffect } from 'react'
+import { watchSessionRestart } from '@/lib/auth'
+import { queryClient } from '@/lib/queryClient'
 
-const queryClient = new QueryClient()
 const colorSchemeManager = localStorageColorSchemeManager({
   key: 'color-scheme',
 })
@@ -27,6 +29,13 @@ export const Route = createRootRoute({
 })
 
 function RootLayout() {
+  useEffect(
+    // A login that follows a lapsed token must not serve the previous session's
+    // cached records. Routine hourly renewals of a still-valid token do not reset.
+    () => watchSessionRestart(() => queryClient.clear()),
+    [],
+  )
+
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider colorSchemeManager={colorSchemeManager} theme={theme}>
