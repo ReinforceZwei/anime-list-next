@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { pb } from '@/lib/pb'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 
 /**
@@ -10,7 +11,8 @@ import { useUserPreferences } from '@/hooks/useUserPreferences'
  * `[data-glassmorphism] .className` selectors in their CSS modules.
  */
 export function GlassmorphismLayer() {
-  const { data: prefs } = useUserPreferences()
+  // rendered in __root, i.e. on /login too — never run a per-user query without a session
+  const { data: prefs } = useUserPreferences({ enabled: pb.authStore.isValid })
   const enabled = prefs?.uiConfig?.glassmorphism ?? false
 
   useEffect(() => {
