@@ -9,6 +9,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import type { RecordModel } from 'pocketbase'
 import type { LastUpdateRecord } from '@/types/lastUpdate'
+import { shouldRevalidate } from '@/lib/revalidateThrottle'
 import { useLastUpdate } from './useLastUpdate'
 
 /**
@@ -142,13 +143,25 @@ function useStaleDetectionSync() {
   useLastUpdate()
 
   useEffect(() => {
-    // Re-entrancy guard: the triggers below can fire together (e.g. `online` and
-    // PB_CONNECT on a reconnect), and one comparison is enough for both.
+    // The triggers below can fire together (e.g. `online` + PB_CONNECT on a reconnect),
+    // and `visibilitychange` fires on *every* tab/window switch — so a comparison runs
+    // at most once per MIN_REVALIDATE_INTERVAL_MS. A burst of lifecycle events must not
+    // turn into a burst of requests.
     let revalidating = false
+    let lastRunAtMs: number | null = null
 
     const revalidateStaleCollections = async () => {
-      if (revalidating) return
+      const nowMs = Date.now()
+      if (!shouldRevalidate(nowMs, lastRunAtMs, revalidating)) {
+        console.debug(
+          'useStaleDetectionSync: Revalidation skipped (throttled).',
+        )
+        return
+      }
       revalidating = true
+      // Recorded on attempt, not on success, so a failing (offline) attempt is not
+      // retried on every flap either.
+      lastRunAtMs = nowMs
       try {
         console.debug(
           'useStaleDetectionSync: Revalidating cached collections...',
