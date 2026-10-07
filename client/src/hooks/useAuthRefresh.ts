@@ -1,46 +1,34 @@
-import { isTokenExpired } from 'pocketbase'
 import { useEffect } from 'react'
-import { pb } from '@/lib/pb'
-
-// 3 days
-const REFRESH_THRESHOLD_SECONDS = 3 * 24 * 60 * 60
+import { ensureFreshAuth } from '@/lib/auth'
 
 // 1 hour
 const POLL_INTERVAL_MS = 60 * 60 * 1000
 
-async function maybeRefresh() {
-  if (
-    pb.authStore.isValid &&
-    isTokenExpired(pb.authStore.token, REFRESH_THRESHOLD_SECONDS)
-  ) {
-    try {
-      await pb.collection('users').authRefresh()
-    } catch {
-      // If refresh fails the store becomes invalid; the next navigation's
-      // beforeLoad guard will redirect to /login automatically.
-      pb.authStore.clear()
-    }
-  }
-}
-
 /**
- * Proactively refreshes the PocketBase auth token when it is approaching
- * expiry, so users who keep the tab open for extended periods stay logged in.
+ * Keeps the PocketBase session alive for as long as the app is in use.
+ *
+ * PocketBase issues a fixed-lifetime token (`users.authToken.duration`) and refuses
+ * to refresh an expired one, so the token must be renewed *before* it lapses.
+ * Renewing on every open (mount + visibilitychange) is what makes "opened at least
+ * once within the token duration" keep the user signed in indefinitely instead of
+ * requiring the app to be opened inside a 3-day pre-expiry window.
  *
  * Runs on:
  *  - mount (catches a tab restored from background / bfcache)
- *  - every POLL_INTERVAL_MS while the tab is open
- *  - document `visibilitychange` → visible (user switches back to the tab)
+ *  - every POLL_INTERVAL_MS while the app is open
+ *  - document `visibilitychange` → visible (user switches back to the app)
  */
 export function useAuthRefresh() {
   useEffect(() => {
-    maybeRefresh()
+    void ensureFreshAuth()
 
-    const interval = setInterval(maybeRefresh, POLL_INTERVAL_MS)
+    const interval = setInterval(() => {
+      void ensureFreshAuth()
+    }, POLL_INTERVAL_MS)
 
     const handleVisibility = () => {
       if (document.visibilityState === 'visible') {
-        maybeRefresh()
+        void ensureFreshAuth()
       }
     }
     document.addEventListener('visibilitychange', handleVisibility)
