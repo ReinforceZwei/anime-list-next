@@ -57,7 +57,9 @@ export function useAnimeMutation() {
     onSuccess: (data) => {
       queryClient.setQueryData<AnimeRecord[]>(
         [Collections.Animes, userId],
-        (old) => old?.map((item) => (item.id === data.id ? data : item)) ?? [],
+        // No cached list → leave the cache alone (setQueryData ignores an undefined
+        // updater result); caching `[]` here would look like a genuinely empty list.
+        (old) => old?.map((item) => (item.id === data.id ? data : item)),
       )
     },
     onError: showErrorNotification,
@@ -69,7 +71,7 @@ export function useAnimeMutation() {
     onSuccess: (_data, variables) => {
       queryClient.setQueryData<AnimeRecord[]>(
         [Collections.Animes, userId],
-        (old) => old?.filter((item) => item.id !== variables.id) ?? [],
+        (old) => old?.filter((item) => item.id !== variables.id),
       )
     },
     onError: showErrorNotification,
