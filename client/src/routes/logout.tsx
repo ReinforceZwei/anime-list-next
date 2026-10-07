@@ -1,9 +1,9 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { pb } from '../lib/pb'
+import { forgetSession } from '@/lib/auth'
 
 export const Route = createFileRoute('/logout')({
   beforeLoad: () => {
-    pb.authStore.clear()
+    forgetSession()
     throw redirect({ to: '/login', search: { redirect: '/' } })
   },
 })
