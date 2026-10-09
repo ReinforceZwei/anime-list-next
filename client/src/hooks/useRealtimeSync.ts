@@ -5,10 +5,28 @@ import type {
   UserPreferencesRecord,
 } from '@/types/anime'
 import { useQueryClient } from '@tanstack/react-query'
+import type { QueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import type { RecordModel } from 'pocketbase'
 import type { LastUpdateRecord } from '@/types/lastUpdate'
-import { useLastUpdate } from './useLastUpdate'
+import { lastUpdatesQueryKey, useLastUpdate } from './useLastUpdate'
+
+/**
+ * Patches a cached list in place, ignoring the event when the list has no cached data
+ * yet (a realtime event can arrive before the first fetch resolves). `setQueryData`
+ * treats an `undefined` updater result as "no change", so the cache is left alone —
+ * caching a partial array instead would be served as fresh forever
+ * (`staleTime: Infinity`).
+ */
+function patchCachedList<T extends RecordModel>(
+  queryClient: QueryClient,
+  queryKey: unknown[],
+  update: (old: T[]) => T[],
+) {
+  queryClient.setQueryData(queryKey, (old: T[] | undefined) =>
+    old ? update(old) : old,
+  )
+}
 
 function useCollectionRealtimeSync<T extends RecordModel>(
   collection: string,
@@ -25,21 +43,21 @@ function useCollectionRealtimeSync<T extends RecordModel>(
       )
       switch (data.action) {
         case 'create':
-          queryClient.setQueryData(queryKey, (old: T[]) =>
+          patchCachedList<T>(queryClient, queryKey, (old) =>
             old.some((item) => item.id === data.record.id)
               ? old
               : [...old, data.record],
           )
           break
         case 'update':
-          queryClient.setQueryData(queryKey, (old: T[]) =>
+          patchCachedList<T>(queryClient, queryKey, (old) =>
             old.map((item) =>
               item.id === data.record.id ? data.record : item,
             ),
           )
           break
         case 'delete':
-          queryClient.setQueryData(queryKey, (old: T[]) =>
+          patchCachedList<T>(queryClient, queryKey, (old) =>
             old.filter((item) => item.id !== data.record.id),
           )
           break
@@ -109,10 +127,12 @@ function useSingleRecordRealtimeSync<T extends RecordModel>(
 }
 
 /**
- * Subscribes to PB_CONNECT and uses the lastUpdates collection to detect
- * stale cached data after a reconnection (including hard-deletes).
- * For each collection whose lastUpdated timestamp differs from the cache,
- * the corresponding query is invalidated.
+ * Keeps the cached collections in sync with the server by comparing the lastUpdates
+ * timestamps. *When* that comparison runs is left to TanStack Query: `useLastUpdate` holds the
+ * baseline and revalidates it on window focus (which is also what fires when a page is
+ * restored from the bfcache) and on `online`, throttled by its `staleTime`. The one resume
+ * signal TanStack Query cannot know about is PocketBase's own realtime (re)connect, which is
+ * handled here.
  *
  * Query keys use the PocketBase collection name directly so no mapping is needed.
  */
@@ -120,53 +140,28 @@ function useStaleDetectionSync() {
   const queryClient = useQueryClient()
   const userId = pb.authStore.record?.id
 
-  // Fetch last update data and cache it
+  // Mounting the query is what switches its revalidation on: TanStack Query only revalidates
+  // a query on focus/reconnect while it has an active observer.
   useLastUpdate()
 
   useEffect(() => {
-    const unsub = pb.realtime.subscribe('PB_CONNECT', async (data) => {
-      console.debug('useStaleDetectionSync: PB_CONNECT event received:', data)
-
-      const cachedLastUpdates = queryClient.getQueryData<LastUpdateRecord[]>([
-        Collections.LastUpdates,
-        userId,
-      ])
-      if (!cachedLastUpdates?.length) return
-
-      const freshLastUpdates = await pb
-        .collection<LastUpdateRecord>(Collections.LastUpdates)
-        .getFullList({ fields: 'collection,lastUpdated' })
-
-      queryClient.setQueryData(
-        [Collections.LastUpdates, userId],
-        (old: LastUpdateRecord[]) =>
-          old.map((cached) => {
-            const fresh = freshLastUpdates.find(
-              (f) => f.collection === cached.collection,
-            )
-            return fresh
-              ? { ...cached, lastUpdated: fresh.lastUpdated }
-              : cached
-          }),
-      )
-
-      for (const fresh of freshLastUpdates) {
-        const cached = cachedLastUpdates.find(
-          (c) => c.collection === fresh.collection,
-        )
-        if (cached?.lastUpdated === fresh.lastUpdated) continue
-
-        console.debug(
-          `useStaleDetectionSync: Stale cache for "${fresh.collection}", invalidating query...`,
-        )
-        queryClient.invalidateQueries({ queryKey: [fresh.collection, userId] })
-      }
+    // A socket that died while the app was backgrounded leaves no trace anywhere else — the
+    // JS SDK only reconnects on an `error` event, and PocketBase does not log successful SSE
+    // connections — so reconnecting is itself a cue to check. `stale: true` puts it behind the
+    // same floor as the focus/reconnect revalidations, so a flapping socket cannot turn into a
+    // burst of requests.
+    const unsub = pb.realtime.subscribe('PB_CONNECT', () => {
+      console.debug('useStaleDetectionSync: PB_CONNECT event received')
+      void queryClient.refetchQueries({
+        queryKey: lastUpdatesQueryKey(userId),
+        stale: true,
+      })
     })
 
     return () => {
       unsub.then((fn) => fn())
     }
-  }, [userId])
+  }, [userId, queryClient])
 }
 
 export function useAnimeRealtimeSync() {
