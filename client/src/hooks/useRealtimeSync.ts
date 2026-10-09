@@ -9,6 +9,8 @@ import type { QueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import type { RecordModel } from 'pocketbase'
 import type { LastUpdateRecord } from '@/types/lastUpdate'
+import { usePrevious } from '@mantine/hooks'
+import { changedCollections } from '@/lib/lastUpdatesSync'
 import { lastUpdatesQueryKey, useLastUpdate } from './useLastUpdate'
 
 /**
@@ -127,12 +129,14 @@ function useSingleRecordRealtimeSync<T extends RecordModel>(
 }
 
 /**
- * Keeps the cached collections in sync with the server by comparing the lastUpdates
- * timestamps. *When* that comparison runs is left to TanStack Query: `useLastUpdate` holds the
- * baseline and revalidates it on window focus (which is also what fires when a page is
- * restored from the bfcache) and on `online`, throttled by its `staleTime`. The one resume
- * signal TanStack Query cannot know about is PocketBase's own realtime (re)connect, which is
- * handled here.
+ * Keeps the cached collections in sync with the server by comparing the lastUpdates stamps
+ * from one render to the next: whatever moved is a change this client has not accounted for
+ * (this also covers hard-deletes, which produce no realtime record event).
+ *
+ * *When* the comparison runs is left to TanStack Query: `useLastUpdate` revalidates on window
+ * focus (which is also what fires when a page is restored from the bfcache) and on `online`,
+ * throttled by its `staleTime`. The one resume signal TanStack Query cannot know about is
+ * PocketBase's own realtime (re)connect, which is handled here.
  *
  * Query keys use the PocketBase collection name directly so no mapping is needed.
  */
@@ -142,7 +146,22 @@ function useStaleDetectionSync() {
 
   // Mounting the query is what switches its revalidation on: TanStack Query only revalidates
   // a query on focus/reconnect while it has an active observer.
-  useLastUpdate()
+  const { data: lastUpdates } = useLastUpdate()
+  // The stamps as of the previous render — i.e. from before whichever fetch (or realtime
+  // patch) moved them replaced the cache entry.
+  const previousLastUpdates = usePrevious(lastUpdates)
+
+  useEffect(() => {
+    for (const collection of changedCollections(
+      lastUpdates,
+      previousLastUpdates,
+    )) {
+      console.debug(
+        `useStaleDetectionSync: Stale cache for "${collection}", invalidating query...`,
+      )
+      queryClient.invalidateQueries({ queryKey: [collection, userId] })
+    }
+  }, [lastUpdates, previousLastUpdates, queryClient, userId])
 
   useEffect(() => {
     // A socket that died while the app was backgrounded leaves no trace anywhere else — the
