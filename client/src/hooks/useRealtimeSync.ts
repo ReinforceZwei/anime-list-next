@@ -9,8 +9,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import type { RecordModel } from 'pocketbase'
 import type { LastUpdateRecord } from '@/types/lastUpdate'
-import { shouldRevalidate } from '@/lib/revalidateThrottle'
-import { useLastUpdate } from './useLastUpdate'
+import { lastUpdatesQueryKey, useLastUpdate } from './useLastUpdate'
 
 /**
  * Patches a cached list in place, ignoring the event when the list has no cached data
@@ -129,9 +128,11 @@ function useSingleRecordRealtimeSync<T extends RecordModel>(
 
 /**
  * Keeps the cached collections in sync with the server by comparing the lastUpdates
- * timestamps. For each collection whose timestamp differs from the cached one, the
- * corresponding query is invalidated (this also covers hard-deletes, which produce no
- * realtime record event).
+ * timestamps. *When* that comparison runs is left to TanStack Query: `useLastUpdate` holds the
+ * baseline and revalidates it on window focus (which is also what fires when a page is
+ * restored from the bfcache) and on `online`, throttled by its `staleTime`. The one resume
+ * signal TanStack Query cannot know about is PocketBase's own realtime (re)connect, which is
+ * handled here.
  *
  * Query keys use the PocketBase collection name directly so no mapping is needed.
  */
@@ -139,121 +140,26 @@ function useStaleDetectionSync() {
   const queryClient = useQueryClient()
   const userId = pb.authStore.record?.id
 
-  // Fetch last update data and cache it
+  // Mounting the query is what switches its revalidation on: TanStack Query only revalidates
+  // a query on focus/reconnect while it has an active observer.
   useLastUpdate()
 
   useEffect(() => {
-    // The triggers below can fire together (e.g. `online` + PB_CONNECT on a reconnect),
-    // and `visibilitychange` fires on *every* tab/window switch — so a comparison runs
-    // at most once per MIN_REVALIDATE_INTERVAL_MS. A burst of lifecycle events must not
-    // turn into a burst of requests.
-    let revalidating = false
-    let lastRunAtMs: number | null = null
-
-    const revalidateStaleCollections = async () => {
-      const nowMs = Date.now()
-      if (!shouldRevalidate(nowMs, lastRunAtMs, revalidating)) {
-        console.debug(
-          'useStaleDetectionSync: Revalidation skipped (throttled).',
-        )
-        return
-      }
-      revalidating = true
-      // Recorded on attempt, not on success, so a failing (offline) attempt is not
-      // retried on every flap either.
-      lastRunAtMs = nowMs
-      try {
-        console.debug(
-          'useStaleDetectionSync: Revalidating cached collections...',
-        )
-
-        const freshLastUpdates = await pb
-          .collection<LastUpdateRecord>(Collections.LastUpdates)
-          .getFullList({ fields: 'collection,lastUpdated' })
-
-        const cachedLastUpdates =
-          queryClient.getQueryData<LastUpdateRecord[]>([
-            Collections.LastUpdates,
-            userId,
-          ]) ?? []
-
-        if (cachedLastUpdates.length > 0) {
-          // Advance the cached timestamps to what we have just seen, keeping the
-          // fields the comparison request does not ask for.
-          queryClient.setQueryData<LastUpdateRecord[]>(
-            [Collections.LastUpdates, userId],
-            (old = []) =>
-              old.map((cached) => {
-                const fresh = freshLastUpdates.find(
-                  (f) => f.collection === cached.collection,
-                )
-                return fresh
-                  ? { ...cached, lastUpdated: fresh.lastUpdated }
-                  : cached
-              }),
-          )
-        }
-
-        for (const fresh of freshLastUpdates) {
-          const cached = cachedLastUpdates.find(
-            (c) => c.collection === fresh.collection,
-          )
-          // Nothing cached to compare against (PB_CONNECT can beat the first
-          // lastUpdates fetch, and a new session clears the cache): treat every
-          // collection as possibly stale instead of skipping detection entirely.
-          if (cached?.lastUpdated === fresh.lastUpdated) continue
-
-          console.debug(
-            `useStaleDetectionSync: Stale cache for "${fresh.collection}", invalidating query...`,
-          )
-          queryClient.invalidateQueries({
-            queryKey: [fresh.collection, userId],
-          })
-        }
-
-        if (cachedLastUpdates.length === 0) {
-          // The list itself was never cached, so (re)load it — it is the baseline
-          // every later comparison needs.
-          queryClient.invalidateQueries({
-            queryKey: [Collections.LastUpdates, userId],
-          })
-        }
-      } catch (err) {
-        // Offline or a transient failure — the next trigger tries again.
-        console.warn('useStaleDetectionSync: Failed to revalidate:', err)
-      } finally {
-        revalidating = false
-      }
-    }
-
+    // A socket that died while the app was backgrounded leaves no trace anywhere else — the
+    // JS SDK only reconnects on an `error` event, and PocketBase does not log successful SSE
+    // connections — so reconnecting is itself a cue to check. `stale: true` puts it behind the
+    // same floor as the focus/reconnect revalidations, so a flapping socket cannot turn into a
+    // burst of requests.
     const unsub = pb.realtime.subscribe('PB_CONNECT', () => {
       console.debug('useStaleDetectionSync: PB_CONNECT event received')
-      void revalidateStaleCollections()
+      void queryClient.refetchQueries({
+        queryKey: lastUpdatesQueryKey(userId),
+        stale: true,
+      })
     })
-
-    // Resuming the app is also a revalidation point: the socket is not guaranteed to
-    // have survived a lock screen or a bfcache freeze, and PocketBase does not log
-    // successful SSE connections, so a dead socket is invisible otherwise.
-    const handleVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        void revalidateStaleCollections()
-      }
-    }
-    document.addEventListener('visibilitychange', handleVisibility)
-
-    const handlePageShow = (event: PageTransitionEvent) => {
-      if (event.persisted) void revalidateStaleCollections()
-    }
-    window.addEventListener('pageshow', handlePageShow)
-
-    const handleOnline = () => void revalidateStaleCollections()
-    window.addEventListener('online', handleOnline)
 
     return () => {
       unsub.then((fn) => fn())
-      document.removeEventListener('visibilitychange', handleVisibility)
-      window.removeEventListener('pageshow', handlePageShow)
-      window.removeEventListener('online', handleOnline)
     }
   }, [userId, queryClient])
 }
