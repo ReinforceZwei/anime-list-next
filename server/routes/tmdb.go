@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"time"
 
+	"ganigeorgiev.com/pocketbase/dbx"
+	"ganigeorgiev.com/pocketbase/pocketbase/apis"
+	"ganigeorgiev.com/pocketbase/pocketbase/core"
 	tmdb "github.com/cyruzin/golang-tmdb"
-	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase/apis"
-	"github.com/pocketbase/pocketbase/core"
 )
 
 const (

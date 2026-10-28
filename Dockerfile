@@ -30,7 +30,7 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
     npm run build
 
 # ── Server build ─────────────────────────────────────────────────────────────
-FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS server-builder
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS server-builder
 
 ARG APP_VERSION
 ARG COMMIT

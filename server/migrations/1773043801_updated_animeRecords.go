@@ -3,8 +3,8 @@ package migrations
 import (
 	"encoding/json"
 
-	"github.com/pocketbase/pocketbase/core"
-	m "github.com/pocketbase/pocketbase/migrations"
+	"ganigeorgiev.com/pocketbase/pocketbase/core"
+	m "ganigeorgiev.com/pocketbase/pocketbase/migrations"
 )
 
 func init() {
@@ -17,7 +17,7 @@ func init() {
 		// update collection data
 		if err := json.Unmarshal([]byte(`{
 			"indexes": [
-				"CREATE INDEX ` + "`" + `idx_aKYOuyd6iF` + "`" + ` ON ` + "`" + `animeRecords` + "`" + ` (` + "`" + `userId` + "`" + `)"
+				"CREATE INDEX `+"`"+`idx_aKYOuyd6iF`+"`"+` ON `+"`"+`animeRecords`+"`"+` (`+"`"+`userId`+"`"+`)"
 			]
 		}`), &collection); err != nil {
 			return err
