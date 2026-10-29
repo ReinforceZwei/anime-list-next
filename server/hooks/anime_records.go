@@ -3,9 +3,9 @@ package hooks
 import (
 	"log"
 
+	"ganigeorgiev.com/pocketbase/pocketbase/core"
+	"ganigeorgiev.com/pocketbase/pocketbase/tools/types"
 	tmdb "github.com/cyruzin/golang-tmdb"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 const defaultLang = "zh-TW"

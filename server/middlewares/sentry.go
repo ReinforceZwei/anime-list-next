@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
+	"ganigeorgiev.com/pocketbase/pocketbase/core"
+	"ganigeorgiev.com/pocketbase/pocketbase/tools/router"
 	"github.com/getsentry/sentry-go"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/tools/router"
 )
 
 type SentryMiddleware struct{}
