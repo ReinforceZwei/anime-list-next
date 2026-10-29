@@ -52,7 +52,7 @@ Data is persisted in `./pb_data`. Back this directory up regularly.
 
 ### Manual install
 
-Requirements: [Go 1.25+](https://go.dev/dl/) and [Node.js 22+](https://nodejs.org/)
+Requirements: [Go 1.27+](https://go.dev/dl/) and [Node.js 22+](https://nodejs.org/)
 
 1. Clone the repository:
    ```sh
