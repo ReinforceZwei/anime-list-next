@@ -17,6 +17,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/joho/godotenv"
 
+	auditlog "github.com/ReinforceZwei/pocketbase-audit-log"
 	"github.com/ReinforceZwei/anime-list-next/server/config"
 	"github.com/ReinforceZwei/anime-list-next/server/hooks"
 	"github.com/ReinforceZwei/anime-list-next/server/middlewares"
@@ -97,6 +98,47 @@ func main() {
 
 	sseHook := hooks.NewSseHook()
 	sseHook.Register(app)
+
+	auditlog.Register(app,
+		auditlog.WithWatchedCollections("animes", "tags"),
+		auditlog.WithOwnerField("userId"),
+		auditlog.WithIgnoredFields("userId", "isImporting"),
+		auditlog.WithSkipFunc(func(e *core.RecordEvent) bool {
+			return e.Record.GetBool("isImporting")
+		}),
+		auditlog.WithMetadataFunc(func(e *core.RecordEvent) map[string]any {
+			switch e.Record.Collection().Name {
+			case "animes":
+				meta := map[string]any{}
+				if title := e.Record.GetString("cachedTitle"); title != "" {
+					meta["title"] = title
+				} else if custom := e.Record.GetString("customName"); custom != "" {
+					meta["title"] = custom
+				}
+				if season := e.Record.GetString("cachedSeasonName"); season != "" {
+					meta["seasonName"] = season
+				}
+				if tmdbID := e.Record.GetInt("tmdbId"); tmdbID != 0 {
+					meta["tmdbId"] = tmdbID
+				}
+				if mediaType := e.Record.GetString("tmdbMediaType"); mediaType != "" {
+					meta["tmdbMediaType"] = mediaType
+				}
+				return meta
+			case "tags":
+				meta := map[string]any{}
+				if name := e.Record.GetString("name"); name != "" {
+					meta["name"] = name
+				}
+				if color := e.Record.GetString("color"); color != "" {
+					meta["color"] = color
+				}
+				return meta
+			default:
+				return nil
+			}
+		}),
+	)
 
 	tmdbRoutes, err := routes.NewTmdbRoutes(app, cfg.TmdbApiKey)
 	if err != nil {

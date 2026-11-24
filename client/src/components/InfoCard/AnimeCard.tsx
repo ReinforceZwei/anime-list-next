@@ -43,14 +43,15 @@ export default function AnimeCard({
   const posterUrl = tmdbDetail?.poster_path ?? null
   const posterUrlFull = tmdbDetail?.posterOriginal ?? null
 
+  const animeTags = anime?.tags
   const tags = useMemo(() => {
-    if (!anime?.tags) return []
+    if (!animeTags) return []
     return sortTags(
-      anime.tags
+      animeTags
         .map((id) => tagMap.get(id))
         .filter((t): t is NonNullable<typeof t> => !!t),
     )
-  }, [anime?.tags, tagMap])
+  }, [animeTags, tagMap])
 
   const actionButtons = prefs?.actionButtons ?? []
   const showBuiltInActions = prefs?.uiConfig?.showBuiltInActions ?? true
@@ -112,8 +113,11 @@ export default function AnimeCard({
       <InfoCard.CloseButton />
       <InfoCard.Poster />
       <InfoCard.Content>
-        <InfoCard.EditButton />
-        <InfoCard.TmdbButton />
+        <InfoCard.ActionGroup>
+          <InfoCard.HistoryButton />
+          <InfoCard.TmdbButton />
+          <InfoCard.EditButton />
+        </InfoCard.ActionGroup>
         <InfoCard.Title />
         <InfoCard.Status />
         <InfoCard.Tags />

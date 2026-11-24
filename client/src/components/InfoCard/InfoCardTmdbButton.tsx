@@ -1,9 +1,8 @@
-import { ActionIcon } from '@mantine/core'
+import { ActionIcon, Tooltip } from '@mantine/core'
 import { IconDatabase } from '@tabler/icons-react'
 import { modals } from '@/lib/modalStack'
 import { useInfoCard } from './InfoCardContext'
 import { getDisplayTitle } from '@/lib/animeUtils'
-import styles from './InfoCard.module.css'
 
 export default function InfoCardTmdbButton() {
   const { anime, hasTmdbId } = useInfoCard()
@@ -25,7 +24,7 @@ export default function InfoCardTmdbButton() {
   }
 
   return (
-    <div className={styles.tmdbButton}>
+    <Tooltip label="TMDb 詳細資料" withArrow events={{ hover: true, focus: true, touch: false }}>
       <ActionIcon
         radius="xl"
         size="lg"
@@ -36,6 +35,6 @@ export default function InfoCardTmdbButton() {
       >
         <IconDatabase size="1em" />
       </ActionIcon>
-    </div>
+    </Tooltip>
   )
 }

@@ -1,5 +1,6 @@
 import { AboutModal } from './AboutModal'
 import { AddAnimeModal } from './AddAnimeModal'
+import { AuditHistoryModal } from './AuditHistoryModal'
 import { CustomSeasonModal } from './CustomSeasonModal'
 import { EditAnimeModal } from './EditAnimeModal'
 import { TmdbSearchModal } from './TmdbSearchModal'
@@ -11,6 +12,7 @@ import { PreferencesModal } from './PreferencesModal'
 export const modals = {
   about: AboutModal,
   addAnime: AddAnimeModal,
+  auditHistory: AuditHistoryModal,
   customSeason: CustomSeasonModal,
   editAnime: EditAnimeModal,
   tmdbSearch: TmdbSearchModal,

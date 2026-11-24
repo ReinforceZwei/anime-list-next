@@ -5,6 +5,7 @@ go 1.27
 require (
 	ganigeorgiev.com/pocketbase/dbx v1.13.0
 	ganigeorgiev.com/pocketbase/pocketbase v0.41.1
+	github.com/ReinforceZwei/pocketbase-audit-log v0.2.0
 	github.com/cyruzin/golang-tmdb v1.9.2
 	github.com/getsentry/sentry-go v0.46.2
 	github.com/joho/godotenv v1.5.1

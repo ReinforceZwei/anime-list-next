@@ -6,6 +6,7 @@ import type { TagRecord } from '../../types/anime'
 import InfoCardPoster from './InfoCardPoster'
 import InfoCardCloseButton from './InfoCardCloseButton'
 import InfoCardContent from './InfoCardContent'
+import InfoCardActionGroup from './InfoCardActionGroup'
 import InfoCardEditButton from './InfoCardEditButton'
 import InfoCardTitle from './InfoCardTitle'
 import InfoCardStatus from './InfoCardStatus'
@@ -16,6 +17,7 @@ import InfoCardTextSection from './InfoCardTextSection'
 import InfoCardQuickActions from './InfoCardQuickActions'
 import InfoCardRelatedSeasons from './InfoCardRelatedSeasons'
 import InfoCardTmdbButton from './InfoCardTmdbButton'
+import InfoCardHistoryButton from './InfoCardHistoryButton'
 import styles from './InfoCard.module.css'
 import type { ActionButton } from '@/types/filter'
 
@@ -71,6 +73,7 @@ function InfoCard({
 InfoCard.Poster = InfoCardPoster
 InfoCard.CloseButton = InfoCardCloseButton
 InfoCard.Content = InfoCardContent
+InfoCard.ActionGroup = InfoCardActionGroup
 InfoCard.EditButton = InfoCardEditButton
 InfoCard.Title = InfoCardTitle
 InfoCard.Status = InfoCardStatus
@@ -81,5 +84,6 @@ InfoCard.TextSection = InfoCardTextSection
 InfoCard.QuickActions = InfoCardQuickActions
 InfoCard.RelatedSeasons = InfoCardRelatedSeasons
 InfoCard.TmdbButton = InfoCardTmdbButton
+InfoCard.HistoryButton = InfoCardHistoryButton
 
 export default InfoCard

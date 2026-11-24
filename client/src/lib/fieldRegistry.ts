@@ -1,6 +1,21 @@
 import type { FilterableField, FilterOperator } from '@/types/filter'
 
 export type FieldType = 'select' | 'text' | 'number' | 'date' | 'tags'
+export type CollectionFieldType = FieldType | 'boolean'
+
+export interface FieldOption {
+  value: string
+  label: string
+}
+
+export interface CollectionFieldMeta {
+  field: string
+  label: string
+  type: CollectionFieldType
+  options?: FieldOption[]
+  /** Present only when the field is exposed in FilterBuilder */
+  operators?: FilterOperator[]
+}
 
 export interface FieldDef {
   field: FilterableField
@@ -8,23 +23,33 @@ export interface FieldDef {
   type: FieldType
   operators: FilterOperator[]
   /** Options for select fields */
-  options?: { value: string; label: string }[]
+  options?: FieldOption[]
 }
 
-export const SELECT_STATUS_OPTIONS = [
+type AnimeFieldMeta =
+  | FieldDef
+  | {
+      field: 'tmdbId' | 'tmdbSeasonNumber'
+      label: string
+      type: CollectionFieldType
+      options?: FieldOption[]
+      operators?: undefined
+    }
+
+export const SELECT_STATUS_OPTIONS: FieldOption[] = [
   { value: 'planned', label: '待看' },
   { value: 'watching', label: '觀看中' },
   { value: 'completed', label: '已看完' },
   { value: 'dropped', label: '棄番' },
 ]
 
-export const SELECT_DOWNLOAD_OPTIONS = [
+export const SELECT_DOWNLOAD_OPTIONS: FieldOption[] = [
   { value: 'pending', label: '等待下載' },
   { value: 'downloading', label: '下載中' },
   { value: 'downloaded', label: '已下載' },
 ]
 
-export const SELECT_MEDIA_OPTIONS = [
+export const SELECT_MEDIA_OPTIONS: FieldOption[] = [
   { value: 'tv', label: '電視（TV）' },
   { value: 'movie', label: '電影（Movie）' },
 ]
@@ -83,7 +108,7 @@ const TAGS_OPERATORS: FilterOperator[] = [
   'isNotEmpty',
 ]
 
-export const FIELD_REGISTRY: FieldDef[] = [
+export const ANIME_FIELDS: AnimeFieldMeta[] = [
   // Select fields
   {
     field: 'status',
@@ -106,12 +131,22 @@ export const FIELD_REGISTRY: FieldDef[] = [
     operators: MEDIA_TYPE_OPERATORS,
     options: SELECT_MEDIA_OPTIONS,
   },
-  // Number field
+  // Number fields
   {
     field: 'rating',
     label: '評分',
     type: 'number',
     operators: NUMBER_OPERATORS,
+  },
+  {
+    field: 'tmdbId',
+    label: 'TMDb ID',
+    type: 'number',
+  },
+  {
+    field: 'tmdbSeasonNumber',
+    label: 'TMDb 季數',
+    type: 'number',
   },
   // Date fields
   {
@@ -162,6 +197,41 @@ export const FIELD_REGISTRY: FieldDef[] = [
   // Tags
   { field: 'tags', label: '標籤', type: 'tags', operators: TAGS_OPERATORS },
 ]
+
+export const TAG_FIELDS: CollectionFieldMeta[] = [
+  { field: 'name', label: '名稱', type: 'text' },
+  { field: 'color', label: '顏色', type: 'text' },
+  { field: 'weight', label: '權重', type: 'number' },
+  { field: 'hidden', label: '隱藏', type: 'boolean' },
+]
+
+export const COLLECTION_FIELDS: Record<string, CollectionFieldMeta[]> = {
+  animes: ANIME_FIELDS,
+  tags: TAG_FIELDS,
+}
+
+const COLLECTION_FIELD_MAPS = new Map<
+  string,
+  Map<string, CollectionFieldMeta>
+>(
+  Object.entries(COLLECTION_FIELDS).map(([collection, fields]) => [
+    collection,
+    new Map(fields.map((def) => [def.field, def])),
+  ]),
+)
+
+export function getCollectionFieldMeta(
+  collection: string,
+  field: string,
+): CollectionFieldMeta | undefined {
+  return COLLECTION_FIELD_MAPS.get(collection)?.get(field)
+}
+
+function isFilterableField(def: AnimeFieldMeta): def is FieldDef {
+  return Array.isArray(def.operators)
+}
+
+export const FIELD_REGISTRY: FieldDef[] = ANIME_FIELDS.filter(isFilterableField)
 
 export const FIELD_MAP = new Map<FilterableField, FieldDef>(
   FIELD_REGISTRY.map((def) => [def.field, def]),
