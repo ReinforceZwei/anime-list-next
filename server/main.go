@@ -106,6 +106,38 @@ func main() {
 		auditlog.WithSkipFunc(func(e *core.RecordEvent) bool {
 			return e.Record.GetBool("isImporting")
 		}),
+		auditlog.WithMetadataFunc(func(e *core.RecordEvent) map[string]any {
+			switch e.Record.Collection().Name {
+			case "animes":
+				meta := map[string]any{}
+				if title := e.Record.GetString("cachedTitle"); title != "" {
+					meta["title"] = title
+				} else if custom := e.Record.GetString("customName"); custom != "" {
+					meta["title"] = custom
+				}
+				if season := e.Record.GetString("cachedSeasonName"); season != "" {
+					meta["seasonName"] = season
+				}
+				if tmdbID := e.Record.GetInt("tmdbId"); tmdbID != 0 {
+					meta["tmdbId"] = tmdbID
+				}
+				if mediaType := e.Record.GetString("tmdbMediaType"); mediaType != "" {
+					meta["tmdbMediaType"] = mediaType
+				}
+				return meta
+			case "tags":
+				meta := map[string]any{}
+				if name := e.Record.GetString("name"); name != "" {
+					meta["name"] = name
+				}
+				if color := e.Record.GetString("color"); color != "" {
+					meta["color"] = color
+				}
+				return meta
+			default:
+				return nil
+			}
+		}),
 	)
 
 	tmdbRoutes, err := routes.NewTmdbRoutes(app, cfg.TmdbApiKey)

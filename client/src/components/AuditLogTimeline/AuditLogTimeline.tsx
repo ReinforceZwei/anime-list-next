@@ -107,7 +107,24 @@ function resolveRecordTitle(
   animeTitleMap: Map<string, string>,
   tagMap: Map<string, TagRecord>,
 ): string {
+  const metaTitle =
+    typeof log.metadata?.title === 'string' && log.metadata.title.trim() !== ''
+      ? log.metadata.title
+      : null
+  const metaSeason =
+    typeof log.metadata?.seasonName === 'string' &&
+    log.metadata.seasonName.trim() !== ''
+      ? log.metadata.seasonName
+      : null
+  const metaName =
+    typeof log.metadata?.name === 'string' && log.metadata.name.trim() !== ''
+      ? log.metadata.name
+      : null
+
   if (log.collection === 'animes') {
+    if (metaTitle) {
+      return metaSeason ? `${metaTitle} · ${metaSeason}` : metaTitle
+    }
     const live = animeTitleMap.get(log.recordId)
     if (live) return live
     const cachedTitle = extractString(log.changes?.cachedTitle)
@@ -118,6 +135,7 @@ function resolveRecordTitle(
     }
     if (customName) return customName
   } else if (log.collection === 'tags') {
+    if (metaName) return metaName
     const live = tagMap.get(log.recordId)?.name
     if (live) return live
     const name = extractString(log.changes?.name)

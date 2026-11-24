@@ -14,5 +14,6 @@ export interface AuditLogRecord extends RecordModel {
   actorId: string
   ownerId: string
   changes: Record<string, FieldChange>
+  metadata?: Record<string, unknown> | null
   created: string
 }
