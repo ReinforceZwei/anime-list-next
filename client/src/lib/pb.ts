@@ -8,6 +8,7 @@ export const Collections = {
   Tags: 'tags',
   LastUpdates: 'lastUpdates',
   UserPreferences: 'userPreferences',
+  AuditLogs: 'auditLogs',
 } as const
 
 export type CollectionName = (typeof Collections)[keyof typeof Collections]

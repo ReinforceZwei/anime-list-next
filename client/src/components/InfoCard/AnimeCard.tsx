@@ -114,6 +114,7 @@ export default function AnimeCard({
       <InfoCard.Content>
         <InfoCard.EditButton />
         <InfoCard.TmdbButton />
+        <InfoCard.HistoryButton />
         <InfoCard.Title />
         <InfoCard.Status />
         <InfoCard.Tags />

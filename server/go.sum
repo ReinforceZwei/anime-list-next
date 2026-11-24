@@ -6,6 +6,8 @@ ganigeorgiev.com/pocketbase/ozzo-validation/v4 v4.4.1 h1:teL3Lw7HCGZRdIQdqE/gV5D
 ganigeorgiev.com/pocketbase/ozzo-validation/v4 v4.4.1/go.mod h1:oV1SPPkS3PlKYYj+r9YDs48ooAWgC736cuFanXDXxbM=
 ganigeorgiev.com/pocketbase/pocketbase v0.41.1 h1:qIDj5ZE8ysev7LJNcLR4eeYICme5hDF/Ry3bQ9nOcTA=
 ganigeorgiev.com/pocketbase/pocketbase v0.41.1/go.mod h1:PBkQKVnCfL7Hi9MnXY9bJDME/sfEEbZ6VwAb+8xXQXE=
+github.com/ReinforceZwei/pocketbase-audit-log v0.1.0 h1:9d+EJ/7hB5Q6A4Wvex+6svGrtD3oF+RKhN9KULAtIp8=
+github.com/ReinforceZwei/pocketbase-audit-log v0.1.0/go.mod h1:2kEfTCoodeKE2pgiv7u5CfYWRAVKs+6cY11WXU2OWvI=
 github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496/go.mod h1:oGkLhpf+kjZl6xBf758TQhh5XrAeiJv/7FRz/2spLIg=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 h1:DklsrG3dyBCFEj5IhUbnKptjxatkF07cF2ak3yi77so=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=

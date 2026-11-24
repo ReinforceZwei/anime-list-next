@@ -16,6 +16,7 @@ import InfoCardTextSection from './InfoCardTextSection'
 import InfoCardQuickActions from './InfoCardQuickActions'
 import InfoCardRelatedSeasons from './InfoCardRelatedSeasons'
 import InfoCardTmdbButton from './InfoCardTmdbButton'
+import InfoCardHistoryButton from './InfoCardHistoryButton'
 import styles from './InfoCard.module.css'
 import type { ActionButton } from '@/types/filter'
 
@@ -81,5 +82,6 @@ InfoCard.TextSection = InfoCardTextSection
 InfoCard.QuickActions = InfoCardQuickActions
 InfoCard.RelatedSeasons = InfoCardRelatedSeasons
 InfoCard.TmdbButton = InfoCardTmdbButton
+InfoCard.HistoryButton = InfoCardHistoryButton
 
 export default InfoCard

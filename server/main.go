@@ -17,6 +17,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/joho/godotenv"
 
+	auditlog "github.com/ReinforceZwei/pocketbase-audit-log"
 	"github.com/ReinforceZwei/anime-list-next/server/config"
 	"github.com/ReinforceZwei/anime-list-next/server/hooks"
 	"github.com/ReinforceZwei/anime-list-next/server/middlewares"
@@ -97,6 +98,15 @@ func main() {
 
 	sseHook := hooks.NewSseHook()
 	sseHook.Register(app)
+
+	auditlog.Register(app,
+		auditlog.WithWatchedCollections("animes", "tags"),
+		auditlog.WithOwnerField("userId"),
+		auditlog.WithIgnoredFields("userId", "isImporting"),
+		auditlog.WithSkipFunc(func(e *core.RecordEvent) bool {
+			return e.Record.GetBool("isImporting")
+		}),
+	)
 
 	tmdbRoutes, err := routes.NewTmdbRoutes(app, cfg.TmdbApiKey)
 	if err != nil {

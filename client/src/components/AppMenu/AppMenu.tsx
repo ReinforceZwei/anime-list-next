@@ -2,6 +2,7 @@ import { ActionIcon, Menu, useMantineColorScheme } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { modals } from '@/lib/modalStack'
 import {
+  IconHistory,
   IconInfoCircle,
   IconLogout,
   IconMenu2,
@@ -67,6 +68,18 @@ export default function AppMenu() {
           }
         >
           標籤
+        </Menu.Item>
+        <Menu.Item
+          leftSection={<IconHistory size="1em" />}
+          onClick={() =>
+            modals.openContextModal({
+              modal: 'auditHistory',
+              title: '編輯紀錄',
+              innerProps: {},
+            })
+          }
+        >
+          編輯紀錄
         </Menu.Item>
         <Menu.Item
           leftSection={<IconSettings size="1em" />}
