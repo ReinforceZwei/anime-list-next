@@ -6,6 +6,7 @@ import type { TagRecord } from '../../types/anime'
 import InfoCardPoster from './InfoCardPoster'
 import InfoCardCloseButton from './InfoCardCloseButton'
 import InfoCardContent from './InfoCardContent'
+import InfoCardActionGroup from './InfoCardActionGroup'
 import InfoCardEditButton from './InfoCardEditButton'
 import InfoCardTitle from './InfoCardTitle'
 import InfoCardStatus from './InfoCardStatus'
@@ -72,6 +73,7 @@ function InfoCard({
 InfoCard.Poster = InfoCardPoster
 InfoCard.CloseButton = InfoCardCloseButton
 InfoCard.Content = InfoCardContent
+InfoCard.ActionGroup = InfoCardActionGroup
 InfoCard.EditButton = InfoCardEditButton
 InfoCard.Title = InfoCardTitle
 InfoCard.Status = InfoCardStatus

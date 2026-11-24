@@ -1,11 +1,7 @@
 import { Skeleton, Stack, Text } from '@mantine/core'
 import dayjs from 'dayjs'
-import 'dayjs/locale/zh-tw'
+import { formatDateTime } from '@/lib/dateUtils'
 import { useInfoCard } from './InfoCardContext'
-
-function formatDate(iso: string): string {
-  return dayjs(iso).format('YYYY年M月D日 HH:mm')
-}
 
 function daysBetween(a: string, b: string): number {
   // dayjs default truncate the result to zero decimal places
@@ -28,17 +24,17 @@ export default function InfoCardDateTime() {
     <Stack gap={2} mb="xs">
       {created && (
         <Text size="xs" c="dimmed">
-          加入於 {formatDate(created)}
+          加入於 {formatDateTime(created)}
         </Text>
       )}
       {startedAt && (
         <Text size="xs" c="yellow.6">
-          開始於 {formatDate(startedAt)}
+          開始於 {formatDateTime(startedAt)}
         </Text>
       )}
       {completedAt && (
         <Text size="xs" c="teal.5">
-          完成於 {formatDate(completedAt)}
+          完成於 {formatDateTime(completedAt)}
           {startedAt && (
             <Text span c="dimmed">
               （{daysBetween(startedAt, completedAt)} 天）

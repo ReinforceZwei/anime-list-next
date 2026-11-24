@@ -1,13 +1,12 @@
-import { ActionIcon } from '@mantine/core'
+import { ActionIcon, Tooltip } from '@mantine/core'
 import { IconEdit } from '@tabler/icons-react'
 import { useInfoCard } from './InfoCardContext'
-import styles from './InfoCard.module.css'
 
 export default function InfoCardEditButton() {
   const { onEdit } = useInfoCard()
 
   return (
-    <div className={styles.editButton}>
+    <Tooltip label="編輯動畫" withArrow events={{ hover: true, focus: true, touch: false }}>
       <ActionIcon
         radius="xl"
         size="lg"
@@ -18,6 +17,6 @@ export default function InfoCardEditButton() {
       >
         <IconEdit size="1em" />
       </ActionIcon>
-    </div>
+    </Tooltip>
   )
 }

@@ -10,11 +10,12 @@ import {
   Text,
 } from '@mantine/core'
 import { IconArrowRight } from '@tabler/icons-react'
-import dayjs from 'dayjs'
 import { useAuditLogs } from '@/hooks/useAuditLogs'
 import { useAnimeList } from '@/hooks/useAnimeList'
 import { useTagMap } from '@/hooks/useTagMap'
 import { getDisplayTitle } from '@/lib/animeUtils'
+import { formatDate, formatDateTime } from '@/lib/dateUtils'
+import { getCollectionFieldMeta } from '@/lib/fieldRegistry'
 import type { AuditAction, AuditLogRecord, FieldChange } from '@/types/auditLog'
 import type { TagRecord } from '@/types/anime'
 
@@ -29,41 +30,8 @@ const COLLECTION_LABELS: Record<string, string> = {
   tags: '標籤',
 }
 
-const FIELD_LABELS: Record<string, string> = {
-  tmdbId: 'TMDb ID',
-  tmdbSeasonNumber: '季數',
-  tmdbMediaType: '媒體類型',
-  customName: '自訂名稱',
-  cachedTitle: '作品名稱',
-  cachedSeasonName: '季數名稱',
-  status: '觀看狀態',
-  downloadStatus: '下載狀態',
-  startedAt: '開始日期',
-  completedAt: '完成日期',
-  rating: '評分',
-  comment: '心得',
-  remark: '備註',
-  tags: '標籤',
-  name: '標籤名稱',
-  color: '顏色',
-  weight: '權重',
-  hidden: '隱藏',
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  planned: '計畫中',
-  watching: '觀看中',
-  completed: '已看完',
-  dropped: '已棄番',
-}
-
-const DOWNLOAD_STATUS_LABELS: Record<string, string> = {
-  pending: '未下載',
-  downloading: '下載中',
-  downloaded: '已下載',
-}
-
 function formatFieldValue(
+  collection: string,
   field: string,
   value: unknown,
   tagMap: Map<string, TagRecord>,
@@ -74,15 +42,12 @@ function formatFieldValue(
   if (typeof value === 'boolean') {
     return value ? '是' : '否'
   }
-  if (field === 'status' && typeof value === 'string') {
-    return STATUS_LABELS[value] ?? value
-  }
-  if (field === 'downloadStatus' && typeof value === 'string') {
-    return DOWNLOAD_STATUS_LABELS[value] ?? value
+  if (typeof value === 'string') {
+    const options = getCollectionFieldMeta(collection, field)?.options
+    if (options) return options.find((option) => option.value === value)?.label ?? value
   }
   if ((field === 'startedAt' || field === 'completedAt') && typeof value === 'string') {
-    const d = dayjs(value)
-    return d.isValid() ? d.format('YYYY-MM-DD') : value
+    return formatDate(value)
   }
   if (field === 'tags' && Array.isArray(value)) {
     if (value.length === 0) return '（無）'
@@ -237,19 +202,19 @@ export function AuditLogTimeline({
                 )}
               </Group>
               <Text size="xs" c="dimmed" style={{ flexShrink: 0 }}>
-                {dayjs(log.created).format('YYYY-MM-DD HH:mm:ss')}
+                {formatDateTime(log.created)}
               </Text>
             </Group>
 
             {entries.length > 0 && (
               <Stack gap={4}>
                 {entries.map(([field, change]) => {
-                  const oldStr = formatFieldValue(field, change.old, tagMap)
-                  const newStr = formatFieldValue(field, change.new, tagMap)
+                  const oldStr = formatFieldValue(log.collection, field, change.old, tagMap)
+                  const newStr = formatFieldValue(log.collection, field, change.new, tagMap)
                   return (
                     <Group key={field} gap={6} align="flex-start" wrap="wrap">
                       <Text size="xs" fw={500} c="dimmed" miw={72}>
-                        {FIELD_LABELS[field] ?? field}
+                        {getCollectionFieldMeta(log.collection, field)?.label ?? field}
                       </Text>
                       <Group gap={4} align="center" wrap="wrap" style={{ flex: 1 }}>
                         <Text

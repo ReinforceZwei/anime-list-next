@@ -1,12 +1,13 @@
 import { Badge, Group, Skeleton } from '@mantine/core'
+import {
+  SELECT_DOWNLOAD_OPTIONS,
+  SELECT_STATUS_OPTIONS,
+} from '@/lib/fieldRegistry'
 import { useInfoCard } from './InfoCardContext'
 
-const STATUS_LABEL: Record<string, string> = {
-  planned: '待看',
-  watching: '觀看中',
-  completed: '已看完',
-  dropped: '棄番',
-}
+const STATUS_LABEL: Record<string, string> = Object.fromEntries(
+  SELECT_STATUS_OPTIONS.map((o) => [o.value, o.label]),
+)
 
 const STATUS_COLOR: Record<string, string> = {
   planned: 'gray',
@@ -15,11 +16,9 @@ const STATUS_COLOR: Record<string, string> = {
   dropped: 'red',
 }
 
-const DOWNLOAD_LABEL: Record<string, string> = {
-  pending: '等待下載',
-  downloading: '下載中',
-  downloaded: '已下載',
-}
+const DOWNLOAD_LABEL: Record<string, string> = Object.fromEntries(
+  SELECT_DOWNLOAD_OPTIONS.map((o) => [o.value, o.label]),
+)
 
 const DOWNLOAD_COLOR: Record<string, string> = {
   pending: 'gray',
