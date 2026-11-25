@@ -39,8 +39,6 @@ import { useAnimeMutation } from '@/hooks/useAnimeMutation'
 import { useAnimeList } from '@/hooks/useAnimeList'
 import type { TmdbSearchItem } from '@/types/tmdb'
 
-const PANEL_H = 520
-
 type TmdbSearchInnerProps =
   | { mode?: 'create'; onSaved?: (id: string) => void }
   | {
@@ -179,8 +177,9 @@ export function TmdbSearchModal({
       pr={isMobile ? 0 : 'md'}
       style={
         isMobile
-          ? {}
+          ? { minHeight: 0 }
           : {
+              minHeight: 0,
               flexShrink: 0,
               borderRight: '1px solid var(--mantine-color-default-border)',
             }
@@ -290,7 +289,12 @@ export function TmdbSearchModal({
   )
 
   const detailPanel = (
-    <Box flex={1} h="100%" pl={isMobile ? 0 : 'md'} style={{ minWidth: 0 }}>
+    <Box
+      flex={1}
+      h="100%"
+      pl={isMobile ? 0 : 'md'}
+      style={{ minWidth: 0, minHeight: 0 }}
+    >
       {!activeSelected ? (
         <Center h="100%">
           <Text size="sm" c="dimmed">
@@ -302,7 +306,7 @@ export function TmdbSearchModal({
           <Loader />
         </Center>
       ) : detail ? (
-        <ScrollArea h={PANEL_H} offsetScrollbars>
+        <ScrollArea h="100%" offsetScrollbars>
           {isMobile && (
             <ActionIcon
               variant="subtle"
@@ -556,16 +560,42 @@ export function TmdbSearchModal({
   // ── Layout: stack on mobile, side-by-side on desktop ─────────────────────
 
   const content = isMobile ? (
-    <Box h={PANEL_H}>{mobileView === 'search' ? searchPanel : detailPanel}</Box>
+    <Box flex={1} h="100%" style={{ minHeight: 0 }}>
+      {mobileView === 'search' ? searchPanel : detailPanel}
+    </Box>
   ) : (
-    <Group align="stretch" gap={0} h={PANEL_H} wrap="nowrap">
+    <Group
+      align="stretch"
+      gap={0}
+      flex={1}
+      h="100%"
+      wrap="nowrap"
+      style={{ minHeight: 0 }}
+    >
       {searchPanel}
       {detailPanel}
     </Group>
   )
 
   return (
-    <Modal title={title} size="xl" {...modalProps}>
+    <Modal
+      title={title}
+      size="xl"
+      {...modalProps}
+      styles={{
+        content: {
+          height: 'min(590px, calc(100dvh - var(--modal-y-offset, 5dvh) * 2))',
+          display: 'flex',
+          flexDirection: 'column',
+        },
+        body: {
+          flex: 1,
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        },
+      }}
+    >
       {content}
     </Modal>
   )
