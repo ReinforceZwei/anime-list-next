@@ -23,17 +23,10 @@ interface FilterPopoverProps {
 
 export function FilterPopover({ value, onChange }: FilterPopoverProps) {
   const [opened, setOpened] = useState(false)
-  // Local copy for editing; sync on open
+  // Local copy for editing; reset on open
   const [draft, setDraft] = useState<FilterExpression>(
     () => value ?? createEmptyFilter(),
   )
-
-  // Sync draft when opening or when external value changes while open
-  useEffect(() => {
-    if (opened) {
-      setDraft(value ?? createEmptyFilter())
-    }
-  }, [opened, value])
 
   // Close on Escape
   useEffect(() => {
@@ -44,6 +37,13 @@ export function FilterPopover({ value, onChange }: FilterPopoverProps) {
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [opened])
+
+  function handleToggle() {
+    if (!opened) {
+      setDraft(value ?? createEmptyFilter())
+    }
+    setOpened((o) => !o)
+  }
 
   function handleApply() {
     onChange(draft.conditions.length > 0 ? draft : null)
@@ -66,7 +66,7 @@ export function FilterPopover({ value, onChange }: FilterPopoverProps) {
           radius="lg"
           className={glass.roundButton}
           style={(theme) => ({ boxShadow: theme.shadows.md })}
-          onClick={() => setOpened((o) => !o)}
+          onClick={handleToggle}
           aria-label="進階篩選"
         >
           <IconFilter size="1.2em" />

@@ -219,7 +219,7 @@ function Index() {
           <IconPlus size="1.5em" />
         </ActionIcon>
       </Affix>
-      <ElevatorWidget markerRefs={markerRefs.current} />
+      <ElevatorWidget markerRefs={markerRefs} />
     </div>
   )
 }

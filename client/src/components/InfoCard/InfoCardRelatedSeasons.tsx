@@ -8,12 +8,13 @@ export default function InfoCardRelatedSeasons() {
   const { anime, onJumpTo } = useInfoCard()
   const { data: animeList } = useAnimeList()
 
+  const tmdbId = anime?.tmdbId
+  const animeId = anime?.id
+
   const relatedRecords = useMemo(() => {
-    if (!anime?.tmdbId || !animeList) return []
-    return animeList.filter(
-      (a) => a.tmdbId === anime.tmdbId && a.id !== anime.id,
-    )
-  }, [anime?.tmdbId, anime?.id, animeList])
+    if (!tmdbId || !animeList) return []
+    return animeList.filter((a) => a.tmdbId === tmdbId && a.id !== animeId)
+  }, [tmdbId, animeId, animeList])
 
   if (!relatedRecords.length) return null
 

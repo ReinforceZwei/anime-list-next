@@ -1,6 +1,6 @@
 import { ActionIcon, Button, Group, Popover, Text } from '@mantine/core'
 import { IconX } from '@tabler/icons-react'
-import { ICON_OPTIONS, getIconComponent } from './iconCatalog'
+import { ICON_OPTIONS } from './iconCatalog'
 
 interface IconPickerProps {
   value: string | undefined
@@ -8,7 +8,9 @@ interface IconPickerProps {
 }
 
 export function IconPicker({ value, onChange }: IconPickerProps) {
-  const IconComp = getIconComponent(value)
+  const selectedOption = value
+    ? ICON_OPTIONS.find((o) => o.name === value)
+    : undefined
 
   return (
     <div>
@@ -20,7 +22,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
           <Popover.Target>
             {value ? (
               <ActionIcon variant="filled" color="blue" size="lg">
-                {IconComp && <IconComp size="1em" />}
+                {selectedOption && <selectedOption.component size="1em" />}
               </ActionIcon>
             ) : (
               <Button variant="outline" size="sm">

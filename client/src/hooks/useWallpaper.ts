@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { pb } from '@/lib/pb'
 import { useUserPreferences } from '@/hooks/useUserPreferences'
 import { DEFAULT_WALLPAPER_CONFIG } from '@/types/anime'
@@ -133,30 +133,32 @@ export function useWallpaper(): {
     enabled: isAuthenticated,
   })
 
+  // Sync server data back to localStorage
+  useEffect(() => {
+    if (!prefs) return
+    const cache = readCache()
+    const newCache: WallpaperCache = {
+      id: prefs.id,
+      collectionId: prefs.collectionId,
+      wallpaper: prefs.wallpaper,
+      uiConfig: prefs.uiConfig,
+    }
+    if (JSON.stringify(newCache) !== JSON.stringify(cache)) {
+      writeCache(newCache)
+    }
+  }, [prefs])
+
   const result = useMemo(() => {
     const cache = readCache()
 
     // Resolve effective config + imageUrl from server or cache
     const { config, imageUrl } = resolveWallpaper(prefs, cache)
 
-    // Sync server data back to localStorage
-    if (prefs) {
-      const newCache: WallpaperCache = {
-        id: prefs.id,
-        collectionId: prefs.collectionId,
-        wallpaper: prefs.wallpaper,
-        uiConfig: prefs.uiConfig,
-      }
-      if (JSON.stringify(newCache) !== JSON.stringify(cache)) {
-        writeCache(newCache)
-      }
-    }
-
     // When loading with no cache, render empty style to avoid default-wallpaper flash
     const style = isLoading && !cache ? {} : deriveStyle(config, imageUrl)
 
     return { style, isLoading, imageUrl, config }
-  }, [prefs, isAuthenticated])
+  }, [prefs, isLoading])
 
   return result
 }

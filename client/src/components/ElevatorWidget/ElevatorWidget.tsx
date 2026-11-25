@@ -1,9 +1,10 @@
+import type { RefObject } from 'react'
 import { ActionIcon, Paper, Stack } from '@mantine/core'
 import { IconChevronUp, IconChevronDown } from '@tabler/icons-react'
 import classes from './ElevatorWidget.module.css'
 
 interface ElevatorWidgetProps {
-  markerRefs: (HTMLParagraphElement | null)[]
+  markerRefs: RefObject<(HTMLParagraphElement | null)[]>
 }
 
 function isInViewport(rect: DOMRect): boolean {
@@ -44,7 +45,7 @@ export default function ElevatorWidget({ markerRefs }: ElevatorWidgetProps) {
           variant="transparent"
           color="gray"
           size="sm"
-          onClick={() => elevatorUp(markerRefs)}
+          onClick={() => elevatorUp(markerRefs.current)}
           aria-label="Scroll to previous section"
         >
           <IconChevronUp size="1em" />
@@ -53,7 +54,7 @@ export default function ElevatorWidget({ markerRefs }: ElevatorWidgetProps) {
           variant="transparent"
           color="gray"
           size="sm"
-          onClick={() => elevatorDown(markerRefs)}
+          onClick={() => elevatorDown(markerRefs.current)}
           aria-label="Scroll to next section"
         >
           <IconChevronDown size="1em" />

@@ -104,9 +104,10 @@ export function TmdbSearchModal({
   )
 
   const { data: results, isFetching } = useTmdbSearch(debounced)
+  const activeSelected = selected ?? results?.[0] ?? null
   const { data: detail, isFetching: detailFetching } = useTmdbDetail(
-    selected?.mediaType ?? null,
-    selected?.id ?? null,
+    activeSelected?.mediaType ?? null,
+    activeSelected?.id ?? null,
   )
 
   const movieExists = useMemo(
@@ -125,13 +126,11 @@ export function TmdbSearchModal({
     )
   }, [detail, exists])
 
-  useEffect(() => {
+  function handleQueryChange(nextQuery: string) {
+    setQuery(nextQuery)
     setSelected(null)
     setMobileView('search')
-  }, [debounced])
-  useEffect(() => {
-    if (results && results.length > 0 && !selected) setSelected(results[0])
-  }, [results])
+  }
 
   function handleSelect(item: TmdbSearchItem) {
     setSelected(item)
@@ -199,7 +198,7 @@ export function TmdbSearchModal({
               color="gray"
               size="sm"
               onClick={() => {
-                setQuery('')
+                handleQueryChange('')
                 inputRef.current?.focus()
               }}
             >
@@ -208,7 +207,7 @@ export function TmdbSearchModal({
           ) : null
         }
         value={query}
-        onChange={(e) => setQuery(e.currentTarget.value)}
+        onChange={(e) => handleQueryChange(e.currentTarget.value)}
         size="sm"
         ref={inputRef}
       />
@@ -230,7 +229,9 @@ export function TmdbSearchModal({
               style={(theme) => ({
                 borderRadius: theme.radius.sm,
                 backgroundColor:
-                  selected?.id === item.id ? colors.background : 'transparent',
+                  activeSelected?.id === item.id
+                    ? colors.background
+                    : 'transparent',
               })}
             >
               <Group
@@ -290,7 +291,7 @@ export function TmdbSearchModal({
 
   const detailPanel = (
     <Box flex={1} h="100%" pl={isMobile ? 0 : 'md'} style={{ minWidth: 0 }}>
-      {!selected ? (
+      {!activeSelected ? (
         <Center h="100%">
           <Text size="sm" c="dimmed">
             搜尋並選擇作品
